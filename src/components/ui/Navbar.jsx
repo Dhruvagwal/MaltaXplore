@@ -14,12 +14,13 @@ import {
 import { Button } from "./button";
 import Image from "next/image";
 import { useTranslation } from "react-i18next";
+import { Input } from "./input";
 
 function Navbar() {
   const { t } = useTranslation();
   return (
-    <div className="px-16 py-6">
-      <nav className="flex items-center justify-between">
+    <div className="mx-32 border-b-2 py-6">
+      <nav className="flex gap-16 items-center justify-between">
         <div className="flex uppercase items-center gap-4">
           <Image src="images/black_logo.svg" height={150} width={150} />
           <div className="flex items-center gap-4">
@@ -34,6 +35,7 @@ function Navbar() {
             </Button>
           </div>
         </div>
+        <Input placeholder="Search Here..." className="bg-white flex-1"/>
         <div className="flex uppercase items-center gap-4">
           <Button size="sm" asChild variant="outline">
             <Link href="#">{t("navbar.signup")}</Link>

@@ -122,32 +122,16 @@ class Weather extends React.Component {
   };
   render() {
     return (
-      <div className="relative flex justify-between p-16 text-white w-full h-[50vh] items-center overflow-clip rounded-3xl bg-[url('/images/malta_banner.jpg')] bg-no-repeat bg-cover">
-        <div className="flex flex-col justify-between h-full gap-4">
-          <div className="flex flex-col justify-between h-full">
-            <div className="flex flex-col gap-4">
-              <div className="">
-                <span className="text-5xl">{this.state.city}</span>
-                <span className="text-xl">, {this.state.country}</span>
-              </div>
-            </div>
-            <div className="">
-              <div>
-                <div className="current-time">
-                  <Clock
-                    timezone="Europe/Malta"
-                    format="HH:mm:ss"
-                    interval={1000}
-                    ticking={true}
-                  />
-                </div>
-                <div className="current-date">{dateBuilder(new Date())}</div>
-              </div>
-            </div>
-          </div>
+      <div className="relative bg-red-100 rounded-[3rem] w-[32vw] h-full p-4 ">
+        <div className="bg-red-400 items-center text-white flex justify-between p-4 rounded-2xl">
+          <span className="text-xl">
+            {this.state.city}, {this.state.country}
+          </span>
+          <div className="">{dateBuilder(new Date())}</div>
         </div>
-        <div className="bg-[rgba(0,0,0,0.8)] p-4 h-full rounded-3xl">
-          <Forcast data={this.state} />
+        <Forcast data={this.state} />
+        <div className="bg-gradient-to-r from-black to-green-800 h-[30vh] rounded-3xl mt-[-1rem] text-white p-4">
+          Today
         </div>
       </div>
     );

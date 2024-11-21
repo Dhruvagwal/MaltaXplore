@@ -32,43 +32,45 @@ function Forcast(props) {
   }, []);
 
   return (
-    <div className="p-8 ">
+    <div className="p-8 bg-red-400 mt-4 rounded-3xl">
       <ul>
         {typeof weather.main != "undefined" ? (
-          <div>
-            <li className="">
-              <p>
-                {weather.name}, {weather.sys.country}
-              </p>
+          <div className="text-white">
+            <div className="flex justify-evenly">
+              <img
+                className="object-cover bg-white border rounded-full h-16"
+                src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}.png`}
+              />
               <p className="flex text-7xl">
                 {props.data.temperatureC}°<span>C</span>
-                <img
-                  className="temp"
-                  src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}.png`}
-                />
               </p>
-            </li>
-            <br />
-            <li>
-              Temperature{" "}
-              <span className="temp">
-                {Math.round(weather.main.temp)}°c ({weather.weather[0].main})
-              </span>
-            </li>
-            <li>
-              Humidity{" "}
-              <span className="temp">{Math.round(weather.main.humidity)}%</span>
-            </li>
-            <li>
-              Visibility{" "}
-              <span className="temp">{Math.round(weather.visibility)} mi</span>
-            </li>
-            <li>
-              Wind Speed{" "}
-              <span className="temp">
-                {Math.round(weather.wind.speed)} Km/h
-              </span>
-            </li>
+            </div>
+            <br/>
+            <hr />
+            <br/>
+            <div className="flex justify-evenly">
+              <li>
+                <span className="temp text-3xl">
+                  {Math.round(weather.main.humidity)}%
+                </span>
+                <br />
+                Humidity{" "}
+              </li>
+              <li>
+                <span className="temp text-3xl">
+                  {Math.round(weather.main.humidity)}%
+                </span>
+                <br />
+                Humidity{" "}
+              </li>
+              <li>
+                <span className="temp text-3xl">
+                  {Math.round(weather.wind.speed)} Km/h
+                </span>
+                <br />
+                Wind Speed{" "}
+              </li>
+            </div>
           </div>
         ) : (
           <li>

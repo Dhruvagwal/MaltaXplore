@@ -19,7 +19,7 @@ body {
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
     --card: 0 0% 100%;
-    --gradient-primary:0, 73%, 55%;
+    --gradient-primary: 0, 73%, 55%;
     --card-foreground: 0 0% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 3.9%;
@@ -61,7 +61,6 @@ body {
     @apply bg-background text-foreground;
   }
 }
-
 
 .leaflet-container .water {
   fill: #fff !important; /* Your preferred ocean color */
@@ -112,7 +111,6 @@ img {
   max-width: 100%;
 }
 
-
 /*-- //Reset Code --*/
 
 /*-- Index-Page-Styling --*/
@@ -144,7 +142,6 @@ img {
   text-align: right;
 }
 
-
 .forecast {
   width: 40%;
   float: left;
@@ -155,7 +152,6 @@ img {
   padding: 25px 0;
   /* background: white; */
 }
-
 
 @media screen and (max-width: 1920px) {
   .container {
@@ -478,4 +474,25 @@ img {
   position: absolute;
   right: 20px;
   top: 1.5%;
+}
+
+.cut_corner {
+  -webkit-clip-path: polygon(0 0, 0 100%, 100% 100%, 100% 10%, 90% 0);
+  clip-path: polygon(0 0, 0 100%, 100% 100%, 100% 10%, 90% 0);
+}
+
+.r_cut_corner {
+  -webkit-clip-path: polygon(
+    100% 0%,
+    100% 0,
+    100% 100%,
+    0 100%,
+    0% 10%,
+    10% 0%
+  );
+  clip-path: polygon(100% 0%, 100% 0, 100% 100%, 0 100%, 0% 10%, 10% 0%);
+}
+
+.made_simple_drop_shadow {
+  filter: drop-shadow(10px 10px 0px hsla(0, 73%, 55%, 1));
 }

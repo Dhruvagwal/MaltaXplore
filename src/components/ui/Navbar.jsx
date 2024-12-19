@@ -25,17 +25,22 @@ function Navbar() {
           <Image src="images/black_logo.svg" height={150} width={150} />
           <div className="flex items-center gap-4">
             <Button size="sm" asChild className="ml-16" variant="ghost">
-              <Link href="#">{t("navbar.explore")}</Link>
+              <Link href="#">Home</Link>
             </Button>
             <Button size="sm" asChild variant="ghost">
-              <Link href="#">{t("navbar.events")}</Link>
+              <Link href="#">About Us</Link>
             </Button>
             <Button size="sm" asChild variant="ghost">
-              <Link href="#">{t("navbar.askUs")}</Link>
+              <Link href="#">Services</Link>
+            </Button>
+            <Button size="sm" asChild variant="ghost">
+              <Link href="#">Tour Listing</Link>
+            </Button>
+            <Button size="sm" asChild variant="ghost">
+              <Link href="#">Supplier</Link>
             </Button>
           </div>
         </div>
-        <Input placeholder="Search Here..." className="bg-white flex-1"/>
         <div className="flex uppercase items-center gap-4">
           <Button size="sm" asChild variant="outline">
             <Link href="#">{t("navbar.signup")}</Link>

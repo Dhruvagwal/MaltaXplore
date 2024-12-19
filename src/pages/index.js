@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
+  ArrowLeftIcon,
   ArrowRightIcon,
   CodeSandboxLogoIcon,
   Component1Icon,
@@ -55,6 +56,7 @@ import {
 } from "@/components/ui/zoom_carousel";
 import { Progress } from "@/components/ui/progress";
 import Tilt from "react-parallax-tilt";
+import { CommentRatings } from "@/components/ui/rating";
 
 const Categories = () => {
   const [date, setDate] = useState();
@@ -437,7 +439,7 @@ const Events = () => {
     );
   };
   return (
-    <div className="p-32 relative">
+    <div className="px-32 my-48 relative">
       <div className="text-center">
         <p className="text-5xl font-bold">What’s Happening in Malta Today?</p>
         <br />
@@ -460,7 +462,7 @@ const Events = () => {
 
 const MaltaPass = () => {
   return (
-    <div className="p-16 relative px-0">
+    <div className="my-48 relative px-0">
       <Image
         src="/images/maltapass.svg"
         className="w-full"
@@ -518,14 +520,16 @@ const MadeSimple = () => {
         <Card className="made_simple_drop_shadow h-72 flex justify-center items-center">
           <div className="text-center">
             <p className="font-bold mb-1 text-2xl">{data.name}</p>
-            <p className="text-xl px-16 text-muted-foreground">{data.description}</p>
+            <p className="text-xl px-16 text-muted-foreground">
+              {data.description}
+            </p>
           </div>
         </Card>
       </div>
     );
   };
   return (
-    <div className="p-16 px-32 relative text-center bg-red-100 mt-32 cut_corner">
+    <div className="p-16 my-48 px-32 relative text-center bg-red-100 mt-32 cut_corner">
       <div className="text-center">
         <p className="text-5xl font-bold">Booking Made Simple</p>
         <br />
@@ -539,11 +543,129 @@ const MadeSimple = () => {
           <CCard key={index} data={item} />
         ))}
       </div>
-      <br/>
-      <br/>
-      <p className="text-muted-foreground"><strong>Need Help?</strong> Use our <strong>Live Chat</strong> for real-time assistance with any questions or bookings.</p>
-      <br/>
-      <Button size="lg" className="p-8">Start Exploring</Button>
+      <br />
+      <br />
+      <p className="text-muted-foreground">
+        <strong>Need Help?</strong> Use our <strong>Live Chat</strong> for
+        real-time assistance with any questions or bookings.
+      </p>
+      <br />
+      <Button size="lg" className="p-8">
+        Start Exploring
+      </Button>
+    </div>
+  );
+};
+
+const Guests = () => {
+  const REVIEW_DATA = [
+    {
+      review:
+        "We had the most amazing time! Booking through MaltaXplore was easy and seamless. Highly recommend the sunset boat tour!",
+      name: "Sarah",
+      location: "United Kingdom",
+      avatar:
+        "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+      rating: 4.5,
+    },
+    {
+      review:
+        "We had the most amazing time! Booking through MaltaXplore was easy and seamless. Highly recommend the sunset boat tour!",
+      name: "Sarah",
+      location: "United Kingdom",
+      avatar:
+        "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+      rating: 4.5,
+    },
+    {
+      review:
+        "We had the most amazing time! Booking through MaltaXplore was easy and seamless. Highly recommend the sunset boat tour!",
+      name: "Sarah",
+      location: "United Kingdom",
+      avatar:
+        "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+      rating: 4.5,
+    },
+  ];
+  const ReviewCard = ({ data }) => (
+    <Card className="p-8 border-2 hover:border-primary transition-all ease-in-out">
+      <div className="flex items-center justify-between">
+        <Image src="images/el_quotes.svg" width={50} height={50} />
+
+        <CommentRatings rating={data.rating} />
+      </div>
+      <br />
+      <p>{data.review}</p>
+      <br />
+      <div className="flex items-center gap-4">
+        <Image
+          src={data.avatar}
+          className="rounded-full h-12 object-cover w-12"
+          width={50}
+          height={50}
+        />
+        <div>
+          <p className="text-xl font-semibold">{data.name}</p>
+          <p className="text-muted-foreground">{data.location}</p>
+        </div>
+      </div>
+    </Card>
+  );
+  return (
+    <div className="my-48 text-center px-32">
+      <div className="flex w-full justify-between">
+        <div></div>
+        <p className="text-5xl font-bold">What Our Guests Are Saying</p>
+        <div className="flex gap-2 self-end items-center justify-end">
+          <Button variant="outline">
+            <ArrowLeftIcon />
+          </Button>
+          <Button variant="outline">
+            <ArrowRightIcon />
+          </Button>
+        </div>
+      </div>
+      <div className="grid text-left mt-16 grid-cols-3 gap-6">
+        {REVIEW_DATA.map((item) => (
+          <ReviewCard data={item} />
+        ))}
+      </div>
+      <br />
+      <Button size="lg" className="p-8">
+        Read More Reviews
+      </Button>
+    </div>
+  );
+};
+
+const River = () => {
+  return (
+    <div className="px-32 relative">
+      <Image
+        className="rounded-lg w-full"
+        width={1000}
+        height={1000}
+        src="/images/river.png"
+      />
+      <div className="absolute flex items-center justify-center top-0 left-0 w-full h-full">
+        <div className="w-[50%] gap-6 flex items-center justify-center flex-col text-center ">
+          <p className="text-5xl leading-[1.5] font-bold w-full h-full text-white">
+            Ready to Experience Malta Like Never Before?
+          </p>
+          <p className="text-white">
+            Start exploring now and book the best tours, activities, and dining
+            experiences on the island.
+          </p>
+          <div className="flex gap-8">
+            <Button className="p-8" variant="secondary" size="lg">
+              Explore
+            </Button>
+            <Button className="p-8" size="lg">
+              Book Now
+            </Button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
@@ -638,6 +760,8 @@ export default function Home() {
       <Events />
       <MaltaPass />
       <MadeSimple />
+      <Guests />
+      <River />
     </div>
   );
 }

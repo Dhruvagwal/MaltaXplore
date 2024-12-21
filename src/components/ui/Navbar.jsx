@@ -15,6 +15,7 @@ import { Button } from "./button";
 import Image from "next/image";
 import { useTranslation } from "react-i18next";
 import { Input } from "./input";
+import { home, supplier } from "@/data/link";
 
 function Navbar() {
   const { t } = useTranslation();
@@ -25,7 +26,7 @@ function Navbar() {
           <Image src="images/black_logo.svg" height={150} width={150} />
           <div className="flex items-center gap-4">
             <Button size="sm" asChild className="ml-16" variant="ghost">
-              <Link href="#">Home</Link>
+              <Link href={home}>Home</Link>
             </Button>
             <Button size="sm" asChild variant="ghost">
               <Link href="#">About Us</Link>
@@ -37,7 +38,7 @@ function Navbar() {
               <Link href="#">Tour Listing</Link>
             </Button>
             <Button size="sm" asChild variant="ghost">
-              <Link href="#">Supplier</Link>
+              <Link href={supplier}>Supplier</Link>
             </Button>
           </div>
         </div>

@@ -17,21 +17,9 @@ import {
   DotFilledIcon,
   MagnifyingGlassIcon,
 } from "@radix-ui/react-icons";
-import { ChevronRight } from "lucide-react";
-import localFont from "next/font/local";
 import Image from "next/image";
 import { useState } from "react";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
 import {
   Card,
   CardContent,
@@ -51,6 +39,7 @@ import {
 } from "@/components/ui/zoom_carousel";
 import Tilt from "react-parallax-tilt";
 import { Reviews } from "@/components/cui/review";
+import { River } from "@/components/cui/river";
 
 const Categories = () => {
   const [date, setDate] = useState();
@@ -550,130 +539,101 @@ const MadeSimple = () => {
     </div>
   );
 };
-const River = () => {
-  return (
-    <div className="px-32 relative">
-      <Image
-        className="rounded-lg w-full"
-        width={1000}
-        height={1000}
-        src="/images/river.png"
-      />
-      <div className="absolute flex items-center justify-center top-0 left-0 w-full h-full">
-        <div className="w-[50%] gap-6 flex items-center justify-center flex-col text-center ">
-          <p className="text-5xl leading-[1.5] font-bold w-full h-full text-white">
-            Ready to Experience Malta Like Never Before?
-          </p>
-          <p className="text-white">
-            Start exploring now and book the best tours, activities, and dining
-            experiences on the island.
-          </p>
-          <div className="flex gap-8">
-            <Button className="p-8" variant="secondary" size="lg">
-              Explore
-            </Button>
-            <Button className="p-8" size="lg">
-              Book Now
-            </Button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+
 export default function Home() {
   return (
-    <div
-      className={`${geistSans.variable} ${geistMono.variable} font-[family-name:var(--font-geist-sans)]`}
-    >
+    <div>
       <div className="bg-gradient-to-br from-primary-foreground to-transparent">
         <Navbar />
-        <main className="px-32 relative pt-16">
-          <div className="relative">
-            <Image
-              className="w-full"
-              src={"images/Union.svg"}
-              height={1000}
-              width={1000}
-            />
-            <div className="absolute w-full right-5 top-5">
-              <div className="flex items-end justify-end w-full h-[70vh] gap-6">
-                <Image
-                  src="/images/malta_banner.jpg"
-                  className="object-cover rounded-[2rem] relative h-40 w-40"
-                  width={200}
-                  height={200}
-                />
-                <Image
-                  src="/images/malta_hero.jpg"
-                  className="object-cover h-[41vh] w-[15vw] rounded-[2rem]"
-                  width={200}
-                  height={200}
-                />
-                <Weather />
-              </div>
-              <div className="grid grid-cols-2 m-6 px-4">
-                <div className="mb-12 pb-8">
+        <main className="relative pt-16">
+          <div className="px-32">
+            <div className="relative">
+              <Image
+                className="w-full"
+                src={"images/Union.svg"}
+                height={1000}
+                width={1000}
+              />
+              <div className="absolute w-full right-5 top-5">
+                <div className="flex items-end justify-end w-full h-[70vh] gap-6">
                   <Image
-                    src="/images/gozo.jpg"
-                    className="w-full rounded-3xl object-cover h-[68vh]"
-                    width={2000}
-                    height={2000}
+                    src="/images/malta_banner.jpg"
+                    className="object-cover rounded-[2rem] relative h-40 w-40"
+                    width={200}
+                    height={200}
                   />
-                  <Button
-                    className="relative text-white bottom-12 text-xl"
-                    variant="link"
-                  >
-                    Explore Malta Verse
-                  </Button>
+                  <Image
+                    src="/images/malta_hero.jpg"
+                    className="object-cover h-[41vh] w-[15vw] rounded-[2rem]"
+                    width={200}
+                    height={200}
+                  />
+                  <Weather />
                 </div>
-                <Image
-                  src="/images/lady.png"
-                  className="w-full object-cover relative top-[-8rem] ml-11 h-full"
-                  width={200}
-                  height={200}
-                />
+                <div className="grid grid-cols-2 m-6 px-4">
+                  <div className="mb-12 pb-8">
+                    <Image
+                      src="/images/gozo.jpg"
+                      className="w-full rounded-3xl object-cover h-[68vh]"
+                      width={2000}
+                      height={2000}
+                    />
+                    <Button
+                      className="relative text-white bottom-12 text-xl"
+                      variant="link"
+                    >
+                      Explore Malta Verse
+                    </Button>
+                  </div>
+                  <Image
+                    src="/images/lady.png"
+                    className="w-full object-cover relative top-[-8rem] ml-11 h-full"
+                    width={200}
+                    height={200}
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="top-0 flex absolute pt-32">
+              <div>
+                <p className="font-semibold text-xl text-primary">
+                  Discover Malta In One Place
+                </p>
+                <br />
+                <h1 className="text-7xl leading-[1.3] font-bold">
+                  Discover Malta's Best <br /> Experiences
+                </h1>
+                <br />
+                <p className="text-xl leading-[1.5]">
+                  From tours and adventures to dining and relaxation, <br />
+                  find everything you need for the perfect trip to Malta - all
+                  in
+                  <br />
+                  one place
+                </p>
+                <br />
+                <Button size="lg">Start Your Journey</Button>
               </div>
             </div>
           </div>
-          <div className="top-0 flex absolute pt-32">
-            <div>
-              <p className="font-semibold text-xl text-primary">
-                Discover Malta In One Place
-              </p>
-              <br />
-              <h1 className="text-7xl leading-[1.3] font-bold">
-                Discover Malta's Best <br /> Experiences
-              </h1>
-              <br />
-              <p className="text-xl leading-[1.5]">
-                From tours and adventures to dining and relaxation, <br />
-                find everything you need for the perfect trip to Malta - all in
-                <br />
-                one place
-              </p>
-              <br />
-              <Button size="lg">Start Your Journey</Button>
-            </div>
-          </div>
+
+          {/* Categories Search */}
+          <Categories />
+          {/* Phone Features */}
+          <PhoneFeatures />
+          {/* Top Picks */}
+          <TopPicks />
+          {/* Categories */}
+          <CCategories />
+          {/* Itenary */}
+          <Iteneray />
+          <Events />
+          <MaltaPass />
+          <MadeSimple />
+          <Reviews heading="What Our Guests Are Saying" />
+          <River />
         </main>
       </div>
-
-      {/* Categories Search */}
-      <Categories />
-      {/* Phone Features */}
-      <PhoneFeatures />
-      {/* Top Picks */}
-      <TopPicks />
-      {/* Categories */}
-      <CCategories />
-      {/* Itenary */}
-      <Iteneray />
-      <Events />
-      <MaltaPass />
-      <MadeSimple />
-      <Reviews heading="What Our Guests Are Saying" />
-      <River />
     </div>
   );
 }

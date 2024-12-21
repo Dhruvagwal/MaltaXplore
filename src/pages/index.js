@@ -42,6 +42,7 @@ import { Reviews } from "@/components/cui/review";
 import { River } from "@/components/cui/river";
 import Link from "next/link";
 import { realTimeEvents } from "@/data/link";
+import EventCard from "@/components/cui/event";
 
 const Categories = () => {
   const [date, setDate] = useState();
@@ -359,32 +360,36 @@ const Iteneray = () => {
 };
 
 const Events = () => {
-  const DATA = [
+  const events = [
     {
-      name: "Valletta Food Festival",
-      description: "Sample the best local dishes in Malta’s capital",
-      location: "Malta’s capital",
-      time: "3pm - 10pm",
-      image:
-        "https://images.pexels.com/photos/1540338/pexels-photo-1540338.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+      location: "Malta Capital",
+      time: "3:00Pm - 5:00Pm",
+      date: "24 Nov, 2024 - 25 Nov, 2024",
+      title: "Valletta Food Festival",
+      description:
+        "Join us for a week-long food festival at the Malta Capital's iconic Old St. Stephen Hotel.",
+      url: "https://images.pexels.com/photos/3171837/pexels-photo-3171837.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
     },
     {
-      name: "Sunset Boat Party",
-      description: "Dance the night away while cruising along the coast",
-      location: "Malta’s capital",
-      time: "Malta’s capital",
-      image:
-        "https://images.pexels.com/photos/625644/pexels-photo-625644.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+      location: "Gozo Island",
+      time: "10:00Am - 4:00Pm",
+      date: "10 Dec, 2024",
+      title: "Gozo Adventure Day",
+      description:
+        "Explore the breathtaking landscapes of Gozo Island with guided hikes, kayaking, and cultural tours.",
+      url: "https://images.pexels.com/photos/672532/pexels-photo-672532.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
     },
     {
-      name: "Open-Air Concert in Gozo",
-      description: "Enjoy live music under the stars",
-      location: "5pm - Midnight",
-      time: "7pm - 11pm",
-      image:
-        "https://images.pexels.com/photos/769525/pexels-photo-769525.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+      location: "Valletta Waterfront",
+      time: "6:00Pm - 11:00Pm",
+      date: "31 Dec, 2024",
+      title: "New Year's Eve Fireworks",
+      description:
+        "Celebrate the New Year with a stunning fireworks display at the picturesque Valletta Waterfront.",
+      url: "https://images.pexels.com/photos/949592/pexels-photo-949592.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
     },
   ];
+
   const CCard = ({ data }) => {
     return (
       <div className="flex w-full items-center">
@@ -434,9 +439,19 @@ const Events = () => {
         </p>
       </div>
       <div className="flex flex-col items-center gap-16 mt-16">
-        {DATA.map((item, index) => (
-          <CCard data={item} key={index} />
-        ))}
+        <div className="grid grid-cols-3 gap-8">
+          {events.map((item, index) => (
+            <EventCard
+              key={index}
+              location={item.location}
+              time={item.time}
+              date={item.date}
+              title={item.title}
+              description={item.description}
+              url={item.url}
+            />
+          ))}
+        </div>
         <Button asChild className="p-8 " size="lg">
           <Link href={realTimeEvents}>See All Events</Link>
         </Button>

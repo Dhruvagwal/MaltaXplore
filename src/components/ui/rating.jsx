@@ -26,6 +26,7 @@ export const CommentRatings = ({
   Icon = <Star />,
   variant = "default",
   onRatingChange,
+  disabled = true,
   ...props
 }) => {
   const [hoverRating, setHoverRating] = useState(null);
@@ -33,17 +34,20 @@ export const CommentRatings = ({
   const [isHovering, setIsHovering] = useState(false);
 
   const handleMouseEnter = (event) => {
+    if (disabled) return;
     setIsHovering(true);
     const starIndex = parseInt(event.currentTarget.dataset.starIndex || "0");
     setHoverRating(starIndex);
   };
 
   const handleMouseLeave = () => {
+    if (disabled) return;
     setIsHovering(false);
     setHoverRating(null);
   };
 
   const handleClick = (event) => {
+    if (disabled) return;
     const starIndex = parseInt(event.currentTarget.dataset.starIndex || "0");
     setCurrentRating(starIndex);
     setHoverRating(null);

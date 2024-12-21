@@ -40,6 +40,8 @@ import {
 import Tilt from "react-parallax-tilt";
 import { Reviews } from "@/components/cui/review";
 import { River } from "@/components/cui/river";
+import Link from "next/link";
+import { realTimeEvents } from "@/data/link";
 
 const Categories = () => {
   const [date, setDate] = useState();
@@ -435,8 +437,8 @@ const Events = () => {
         {DATA.map((item, index) => (
           <CCard data={item} key={index} />
         ))}
-        <Button className="p-8 " size="lg">
-          See All Events
+        <Button asChild className="p-8 " size="lg">
+          <Link href={realTimeEvents}>See All Events</Link>
         </Button>
       </div>
     </div>

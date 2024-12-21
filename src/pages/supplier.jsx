@@ -3,7 +3,9 @@ import { River } from "@/components/cui/river";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import Navbar from "@/components/ui/Navbar";
+import { supplierRegistration } from "@/data/link";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 function supplier() {
@@ -65,8 +67,8 @@ function supplier() {
               MaltaXplore, the go-to platform for booking <br />
               tours, experiences, and services in Malta.
             </p>
-            <Button size="lg" className="p-8 w-fit">
-              Get Started Now
+            <Button asChild size="lg" className="p-8 w-fit">
+              <Link href={supplierRegistration}>Get Started Now</Link>
             </Button>
           </div>
           <div className="flex-1">
@@ -156,8 +158,8 @@ function supplier() {
                 <p>{item.description}</p>
               </div>
             ))}
-            <Button size="lg" className="p-8 w-fit">
-              Get Started Now
+            <Button asChild size="lg" className="p-8 w-fit">
+              <Link href={supplierRegistration}>Get Started Now</Link>
             </Button>
           </div>
         </div>

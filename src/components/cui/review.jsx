@@ -3,8 +3,10 @@ import { ArrowLeftIcon, ArrowRightIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
 import { CommentRatings } from "@/components/ui/rating";
 import { Card } from "../ui/card";
+import Link from "next/link";
+import { ratingReviews } from "@/data/link";
 
-export const Reviews = ({heading=""}) => {
+export const Reviews = ({ heading = "" }) => {
   const REVIEW_DATA = [
     {
       review:
@@ -78,8 +80,8 @@ export const Reviews = ({heading=""}) => {
         ))}
       </div>
       <br />
-      <Button size="lg" className="p-8">
-        Read More Reviews
+      <Button asChild size="lg" className="p-8">
+        <Link href={ratingReviews}>Read More Reviews</Link>
       </Button>
     </div>
   );

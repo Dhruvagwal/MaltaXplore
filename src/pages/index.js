@@ -1,30 +1,12 @@
 import Weather from "@/components/Home/Weather";
 import { Button } from "@/components/ui/button";
-import { DatePicker } from "@/components/ui/datepicker";
-import { Input } from "@/components/ui/input";
 import Navbar from "@/components/ui/Navbar";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  CodeSandboxLogoIcon,
-  Component1Icon,
-  DotFilledIcon,
-  MagnifyingGlassIcon,
-} from "@radix-ui/react-icons";
+import { CodeSandboxLogoIcon, DotFilledIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
-import { useState } from "react";
-
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -37,56 +19,14 @@ import {
   CarouselPrevious,
   CarouselProgress,
 } from "@/components/ui/zoom_carousel";
-import Tilt from "react-parallax-tilt";
 import { Reviews } from "@/components/cui/review";
 import { River } from "@/components/cui/river";
 import Link from "next/link";
-import { realTimeEvents } from "@/data/link";
+import { maltapass, realTimeEvents, search } from "@/data/link";
 import EventCard from "@/components/cui/event";
-
-const Categories = () => {
-  const [date, setDate] = useState();
-  return (
-    <div className="mt-16 flex items-center relative z-10 gap-2 p-4 border bg-white mx-auto w-fit shadow-lg rounded-xl">
-      <div>
-        <p className="text-sm text-muted-foreground p-1 flex items-center gap-1 text-red-500 py-2">
-          <Component1Icon />
-          Categories
-        </p>
-        <Select>
-          <SelectTrigger className="w-[10vw]">
-            <SelectValue placeholder="Select Category" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectItem value="hotels">Hotels</SelectItem>
-              <SelectItem value="things">Things to do</SelectItem>
-              <SelectItem value="restaurants">Restaurants</SelectItem>
-              <SelectItem value="homes">Holiday Homes</SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-      </div>
-      <div>
-        <p className="text-sm text-muted-foreground p-1 flex items-center gap-1 text-red-500 py-2">
-          <Component1Icon />
-          Categories
-        </p>
-        <DatePicker date={date} setDate={setDate} />
-      </div>
-      <div>
-        <p className="text-sm text-muted-foreground p-1 flex items-center gap-1 text-red-500 py-2">
-          <Component1Icon />
-          Add Guest
-        </p>
-        <Input placeholder="Search Here..." type="number" />
-      </div>
-      <Button className="p-9 flex items-center gap-2 text-xl">
-        <MagnifyingGlassIcon /> Search
-      </Button>
-    </div>
-  );
-};
+import CategoryCard from "@/components/cui/CategoryCard";
+import { Categories } from "@/components/cui/category";
+import { ServiceCard } from "@/components/cui/ServiceCard";
 
 const PhoneFeatures = () => {
   const FeatureCard = ({ title = "", desc = "" }) => (
@@ -129,8 +69,8 @@ const PhoneFeatures = () => {
         <div>
           <img src="images/phone.png" />
           <br />
-          <Button size="lg" className="p-8">
-            Start Exploring
+          <Button asChild size="lg" className="p-8">
+            <Link href={search}> Start Exploring</Link>
           </Button>
         </div>
         <div className="flex items-center flex-col gap-8">
@@ -181,43 +121,6 @@ const TopPicks = () => {
         "Dive into the deep blue and discover Malta’s underwater treasures. Perfect for beginners and seasoned divers.",
     },
   ];
-  const CarouselCard = ({ index, data }) => {
-    return (
-      <CarouselItem index={index} className="md:basis-1/2 lg:basis-1/3">
-        <Card>
-          <div className="relative">
-            <Image
-              height={500}
-              width={400}
-              className="rounded-t-xl w-full"
-              src={`https://picsum.photos/500/400?random=${index}`}
-            />
-            <div className="backdrop-blur-sm bg-white bottom-4 right-4 rounded-full p-2 px-4 absolute z-10 flex items-center text-xs">
-              <DotFilledIcon height={20} width={20} className="text-red-400" />{" "}
-              {data.title} & More Info
-            </div>
-          </div>
-          <CardContent className="p-8">
-            <div className="flex justify-between items-center">
-              <p className="text-base w-[50%] text-ellipsis font-semibold">
-                {data.title}
-              </p>
-              <span className="">
-                Starting at:{" "}
-                <span className="text-primary font-bold text-base">$500</span>
-              </span>
-            </div>
-            <br />
-            <p className="text-muted-foreground text-ellipsis text-sm">
-              {data.description}
-            </p>
-            <br />
-            <Button className="w-full">Book Now</Button>
-          </CardContent>
-        </Card>
-      </CarouselItem>
-    );
-  };
   return (
     <div className="my-48 px-32">
       <div className="flex lg:gap-64 justify-between">
@@ -237,8 +140,11 @@ const TopPicks = () => {
       >
         <CarouselContent className="">
           {CARD_DATA.map((item, index) => (
-            <CarouselCard data={item} index={index} />
+            <CarouselItem index={index} className="md:basis-1/2 lg:basis-1/3">
+              <ServiceCard data={item} index={index} />
+            </CarouselItem>
           ))}
+
           <CarouselItem
             index={CARD_DATA.length}
             className="md:basis-1/2 lg:basis-1/3"
@@ -276,25 +182,7 @@ const CCategories = () => {
       image: "",
     },
   ];
-  const CCategoriesCard = ({ data, index }) => {
-    return (
-      <Card className="col-span-2 group hover:text-white hover:bg-primary transition-all ease-in-out p-4 text-left">
-        <Image
-          height={400}
-          width={400}
-          className="rounded-xl w-full"
-          src={`https://picsum.photos/500/400?random=${index}`}
-        />
 
-        <div className="mt-16">
-          <p className="text-xl font-semibold">{data.name}</p>
-          <p className="group-hover:text-gray-100 text-muted-foreground">
-            {data.desc}
-          </p>
-        </div>
-      </Card>
-    );
-  };
   return (
     <div className="p-16 px-32 relative text-center bg-red-100 mt-32 r_cut_corner">
       <div className="text-center">
@@ -307,13 +195,9 @@ const CCategories = () => {
       <br />
       <div className="grid grid-cols-6 gap-6">
         {CATEGORIES.map((item, index) => (
-          <CCategoriesCard index={index} data={item} />
+          <CategoryCard index={index} data={item} />
         ))}
       </div>
-      <br />
-      <Button size="lg" className="p-8">
-        Explore All Categories
-      </Button>
     </div>
   );
 };
@@ -390,44 +274,6 @@ const Events = () => {
     },
   ];
 
-  const CCard = ({ data }) => {
-    return (
-      <div className="flex w-full items-center">
-        <Tilt className="relative z-10" tiltAngleYManual={5}>
-          <Image
-            src={data.image}
-            width={600}
-            height={600}
-            className="rounded-xl object-cover h-72"
-          />
-        </Tilt>
-        <div className="relative h-[40vh] w-full">
-          <Tilt
-            tiltAngleYManual={-5}
-            className="w-[calc(100%+10rem)] h-full z-[-1]"
-          >
-            <div className="border-2 pl-[10rem] ml-[-10rem] h-full w-full rounded-xl border-primary p-16"></div>
-          </Tilt>
-          <div className="absolute flex flex-col gap-4 p-16 top-0 left-0">
-            <p className="font-bold text-2xl">{data.name}</p>
-            <p>{data.description}</p>
-            <p>
-              <span className="text-muted-foreground">Location:</span>
-              <span className="font-bold"> {data.location}</span>
-            </p>
-            <p>
-              <span className="text-muted-foreground">Time:</span>{" "}
-              <span className="font-bold"> {data.time}</span>
-            </p>
-            <div className="flex gap-6 mt-6">
-              <Button>Book Ticket</Button>
-              <Button variant="outline">Book Ticket</Button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
   return (
     <div className="px-32 my-48 relative">
       <div className="text-center">
@@ -485,8 +331,8 @@ const MaltaPass = () => {
           while you explore.
         </p>
         <br />
-        <Button variant="secondary" className="p-8">
-          Get My Maltapass
+        <Button variant="secondary" asChild className="p-8">
+          <Link href={maltapass}>Get My Maltapass</Link>
         </Button>
       </div>
     </div>
@@ -550,8 +396,8 @@ const MadeSimple = () => {
         real-time assistance with any questions or bookings.
       </p>
       <br />
-      <Button size="lg" className="p-8">
-        Start Exploring
+      <Button size="lg" asChild className="p-8">
+        <Link href={search}>Start Exploring</Link>
       </Button>
     </div>
   );
@@ -598,8 +444,9 @@ export default function Home() {
                     <Button
                       className="relative text-white bottom-12 text-xl"
                       variant="link"
+                      asChild
                     >
-                      Explore Malta Verse
+                      <Link href={search}>Explore Malta Verse</Link>
                     </Button>
                   </div>
                   <Image
@@ -629,13 +476,15 @@ export default function Home() {
                   one place
                 </p>
                 <br />
-                <Button size="lg">Start Your Journey</Button>
+                <Button asChild size="lg">
+                  <Link href={search}>Start Your Journey</Link>
+                </Button>
               </div>
             </div>
           </div>
 
           {/* Categories Search */}
-          <Categories />
+          <Categories className="mt-16" />
           {/* Phone Features */}
           <PhoneFeatures />
           {/* Top Picks */}

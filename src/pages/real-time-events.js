@@ -3,7 +3,6 @@ import EventCard from "@/components/cui/event";
 import { Button } from "@/components/ui/button";
 import { DatePicker } from "@/components/ui/datepicker";
 import { Input } from "@/components/ui/input";
-import Navbar from "@/components/ui/Navbar";
 import {
   Select,
   SelectContent,
@@ -107,18 +106,17 @@ function RealTimeEvents() {
   const [date, setDate] = useState();
   return (
     <div className="from-primary-foreground to-transparent">
-      <Navbar />
       <main className="pt-16">
         {/* Banner */}
         <Banner url="https://images.pexels.com/photos/3171837/pexels-photo-3171837.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2">
           <p className="text-3xl font-bold text-white">Real Time Events</p>
         </Banner>
 
-        <div className="px-32 py-16 mt-16">
+        <div className="px-8 md:px-32 py-16 mt-16">
           {/* heading */}
-          <div className="flex justify-between items-center">
+          <div className="flex flex-col md:flex-row justify-between items-center max-md:gap-4">
             <p className="text-3xl font-bold">Today’s Events</p>
-            <div className="flex items-center gap-4">
+            <div className="flex flex-col md:flex-row items-center gap-4">
               <div className="flex items-center gap-2">
                 <Input placeholder="Search by character" />
                 <Button className="p-2 px-3">
@@ -127,7 +125,7 @@ function RealTimeEvents() {
               </div>
               <DatePicker date={date} setDate={setDate} />
               <Select>
-                <SelectTrigger className="w-[10vw]">
+                <SelectTrigger className="w-full md:w-[10vw]">
                   <SelectValue placeholder="Category" />
                 </SelectTrigger>
                 <SelectContent>
@@ -142,7 +140,7 @@ function RealTimeEvents() {
             </div>
           </div>
           {/* events */}
-          <div className="grid mt-8 grid-cols-3 gap-8 ">
+          <div className="grid mt-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 ">
             {popularEvents.map((item, index) => (
               <EventCard
                 key={index}
@@ -157,9 +155,9 @@ function RealTimeEvents() {
           </div>
         </div>
 
-        <div className="px-32 py-16">
+        <div className="px-8 md:px-32 py-16">
           <p className="text-3xl font-bold mb-8 text-center">Upcoming Events</p>
-          <div className="grid grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {events.map((item, index) => (
               <EventCard
                 key={index}
@@ -173,7 +171,7 @@ function RealTimeEvents() {
             ))}
           </div>
         </div>
-        <div className="px-32 pt-16">
+        <div className="px-8 md:px-32 pt-16">
           <p className="text-3xl font-bold mb-8 text-center">
             Event locations and nearby services
           </p>

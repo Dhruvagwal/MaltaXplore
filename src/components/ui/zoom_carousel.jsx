@@ -181,7 +181,7 @@ const CarouselPrevious = React.forwardRef(
         className={cn(
           "absolute  h-8 w-8 rounded-full",
           orientation === "horizontal"
-            ? "-left-12 top-1/2 -translate-y-1/2"
+            ? "-left-8 md:-left-12 top-1/2 -translate-y-1/2"
             : "-top-12 left-1/2 -translate-x-1/2 rotate-90",
           className
         )}
@@ -209,7 +209,7 @@ const CarouselNext = React.forwardRef(
         className={cn(
           "absolute h-8 w-8 rounded-full",
           orientation === "horizontal"
-            ? "-right-12 top-1/2 -translate-y-1/2"
+            ? "-right-6 md:-right-12 top-1/2 -translate-y-1/2"
             : "-bottom-12 left-1/2 -translate-x-1/2 rotate-90",
           className
         )}
@@ -229,10 +229,10 @@ const CarouselProgress = React.forwardRef(({ length }, ref) => {
   const { active } = useCarousel();
   return (
     <div ref={ref}>
-      <div className="ml-[32vw] relative z-10 flex gap-4 items-center w-[30vw]">
-        <span className="text-5xl">0{active + 1}</span>{" "}
+      <div className="ml-[16vw] md:ml-[32vw] relative z-10 flex gap-2 md:gap-4 items-center w-[50vw] md:w-[30vw] max-md:mt-16">
+        <span className="text-3xl md:text-5xl">0{active + 1}</span>{" "}
         <Progress value={((active + 1) * 100) / length} />{" "}
-        <span className="text-5xl">0{length}</span>
+        <span className="text-3xl md:text-5xl">0{length}</span>
       </div>
     </div>
   );

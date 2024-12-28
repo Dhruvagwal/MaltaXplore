@@ -2,7 +2,6 @@ import Faq from "@/components/cui/faq";
 import { River } from "@/components/cui/river";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import Navbar from "@/components/ui/Navbar";
 import { supplierRegistration } from "@/data/link";
 import Image from "next/image";
 import Link from "next/link";
@@ -50,12 +49,11 @@ function supplier() {
   ];
   return (
     <main>
-      <div className="bg-gradient-to-br h-screen from-primary-foreground to-transparent">
-        <Navbar />
+      <div className="bg-gradient-to-br md:h-screen from-primary-foreground to-transparent">
         {/* Hero Section */}
-        <div className="flex  gap-64 items-center px-32 pt-16">
+        <div className="flex gap-64 items-center px-16 md:px-32 pt-16">
           <div className="flex-1 flex flex-col gap-8">
-            <h1 className="text-7xl leading-[1.3] font-bold">
+            <h1 className="text-4xl md:text-7xl leading-[1.3] font-bold">
               Join Malta’s
               <br />
               Leading Tourism
@@ -67,11 +65,11 @@ function supplier() {
               MaltaXplore, the go-to platform for booking <br />
               tours, experiences, and services in Malta.
             </p>
-            <Button asChild size="lg" className="p-8 w-fit">
+            <Button asChild size="lg" className="md:p-8 w-fit">
               <Link href={supplierRegistration}>Get Started Now</Link>
             </Button>
           </div>
-          <div className="flex-1">
+          <div className="max-md:hidden flex-1">
             <Image
               width={700}
               height={700}
@@ -82,7 +80,7 @@ function supplier() {
         </div>
       </div>
       {/* Steps */}
-      <div className="p-16 border-2 text-center rounded-2xl border-primary/50 my-48 mx-32">
+      <div className="p-8 md:p-16 border-2 text-center rounded-2xl border-primary/50 my-24 md:my-48 mx-8 md:mx-32">
         <p className="text-3xl font-bold">Simple Process to Become Partner</p>
         <br />
         <div className="relative">
@@ -90,10 +88,10 @@ function supplier() {
             src="/images/supplier_steps.svg"
             width={1000}
             height={1000}
-            className="w-full ml-4"
+            className="w-full ml-4 max-md:hidden"
           />
-          <div className="absolute w-full top-24 left-0">
-            <div className="w-[95%] mx-auto grid grid-cols-3">
+          <div className="md:absolute w-full top-24 left-0">
+            <div className="w-[95%] mx-auto md:grid md:grid-cols-3 max-md:space-y-12">
               <div className="flex-1 mt-8">
                 <p className="font-bold text-xl">Register Your Plan</p>
                 <br />
@@ -102,7 +100,7 @@ function supplier() {
                   design a partnership package tailored to your business needs.
                 </p>
               </div>
-              <div className="flex-1">
+              <div className="flex-1 max-md:mt-2">
                 <p className="font-bold text-xl">Connect with Our Team</p>
                 <br />
                 <p className="w-[70%] mx-auto">
@@ -110,7 +108,7 @@ function supplier() {
                   partnership can enhance your offerings.
                 </p>
               </div>
-              <div className="flex-1 mt-8 ml-4">
+              <div className="flex-1 mt-2 md:mt-8 ml-4">
                 <p className="font-bold text-xl">Grow up Together</p>
                 <br />
                 <p className="w-[70%] mx-auto">
@@ -123,13 +121,13 @@ function supplier() {
         </div>
       </div>
       {/* Deals */}
-      <div className="my-48 px-32 text-center">
+      <div className="my-24 md:my-48 px-8 md:px-32 text-center">
         <p className="text-3xl font-bold">
           Best Partnership Deal With MaltaXplore?
         </p>
-        <div className="grid mt-16 grid-cols-3 gap-8">
+        <div className="md:grid md:grid-cols-3 mt-16 max-md:space-y-12 gap-8">
           {DEALS.map((item, idx) => (
-            <Card className="p-16" key={idx}>
+            <Card className="p-8 md:p-16" key={idx}>
               <CardHeader>
                 <p className="font-bold text-xl">{item.name}</p>
               </CardHeader>
@@ -141,16 +139,16 @@ function supplier() {
         </div>
       </div>
       {/* Benifits */}
-      <div className="p-16 grid grid-cols-2 place-content-center my-48 px-32 text-center bg-red-100 cut_corner">
+      <div className="p-8 md:p-16 md:grid md:grid-cols-2 place-content-center my-24 md:my-48 max-md:mx-8 md:px-32 text-center bg-red-100 cut_corner">
         <Image
           width={500}
           height={500}
-          className="object-contain self-end"
+          className="object-contain self-end max-md:hidden"
           src="/images/benefits_supplier.svg"
         />
         <div className="">
           <p className="text-3xl font-bold">Benefit of Become Partner</p>
-          <div className="grid grid-cols-2 gap-16 mt-16 text-left">
+          <div className="md:grid md:grid-cols-2 gap-16 mt-16 text-left max-md:space-y-12">
             {PARTNERS.map((item, index) => (
               <div key={index}>
                 <p className="font-bold text-xl">{item.title}</p>
@@ -158,7 +156,7 @@ function supplier() {
                 <p>{item.description}</p>
               </div>
             ))}
-            <Button asChild size="lg" className="p-8 w-fit">
+            <Button asChild size="lg" className="md:p-8 w-fit">
               <Link href={supplierRegistration}>Get Started Now</Link>
             </Button>
           </div>

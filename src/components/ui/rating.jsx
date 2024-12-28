@@ -9,7 +9,7 @@ const ratingVariants = {
     emptyStar: "text-primary",
   },
   destructive: {
-    star: "text-red-500",
+    star: "text-primary-foreground0",
     emptyStar: "text-red-200",
   },
   yellow: {

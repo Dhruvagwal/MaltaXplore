@@ -8,7 +8,7 @@ import {
 
 function Faq({data=[]}) {
   return (
-    <div className="px-64 my-48">
+    <div className="mx-8 md:px-64 my-12 md:my-48">
       <p className="text-3xl font-bold text-center mb-16">Frequently Asked Question</p>
       <Accordion type="single" collapsible>
         {data.map((item, index)=><AccordionItem key={index} value={`item-${index+1}`}>

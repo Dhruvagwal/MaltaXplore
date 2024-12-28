@@ -8,7 +8,7 @@ import Link from "next/link";
 
 const CategoryCard = ({ data, index }) => {
   return (
-    <Card className="col-span-2 group hover:text-white hover:bg-primary transition-all ease-in-out p-4 text-left">
+    <Card className="col-span-1 group hover:text-white hover:bg-primary transition-all ease-in-out p-4 text-left">
       <div className="relative overflow-visible">
         <div className="cut-bottom_right_corner  rounded-xl overflow-hidden">
           <Image

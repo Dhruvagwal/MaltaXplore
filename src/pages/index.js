@@ -1,6 +1,5 @@
 import Weather from "@/components/Home/Weather";
 import { Button } from "@/components/ui/button";
-import Navbar from "@/components/ui/Navbar";
 import { CodeSandboxLogoIcon, DotFilledIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
 import {
@@ -19,7 +18,7 @@ import {
   CarouselPrevious,
   CarouselProgress,
 } from "@/components/ui/zoom_carousel";
-import { Reviews } from "@/components/cui/review";
+import Reviews from "@/components/cui/review";
 import { River } from "@/components/cui/river";
 import Link from "next/link";
 import { maltapass, realTimeEvents, search } from "@/data/link";
@@ -122,12 +121,12 @@ const TopPicks = () => {
     },
   ];
   return (
-    <div className="my-48 px-32">
-      <div className="flex lg:gap-64 justify-between">
-        <p className="text-5xl font-bold">
+    <div className="my-48 px-9 md:px-32">
+      <div className="flex flex-col md:flex-row lg:gap-64 justify-between">
+        <p className="text-4xl md:text-5xl font-bold">
           Top Picks for Your Maltese Adventure
         </p>
-        <p className="text-xl text-right">
+        <p className="text-xl text-left md:text-right">
           Start with our most popular experiences and tours perfect for getting
           the most out of Malta.
         </p>
@@ -138,7 +137,7 @@ const TopPicks = () => {
         }}
         className="w-full mt-16"
       >
-        <CarouselContent className="">
+        <CarouselContent className="max-md:mr-10">
           {CARD_DATA.map((item, index) => (
             <CarouselItem index={index} className="md:basis-1/2 lg:basis-1/3">
               <ServiceCard data={item} index={index} />
@@ -184,16 +183,16 @@ const CCategories = () => {
   ];
 
   return (
-    <div className="p-16 px-32 relative text-center bg-red-100 mt-32 r_cut_corner">
+    <div className="p-16 px-8 md:px-32 relative text-center bg-red-100 mt-32 r_cut_corner">
       <div className="text-center">
-        <p className="text-5xl font-bold">Explore by Categories</p>
+        <p className="text-4xl md:text-5xl font-bold">Explore by Categories</p>
         <br />
-        <p className="text-2xl text-muted-foreground">
+        <p className="text-xl md:text-2xl text-muted-foreground">
           What Would You Like to Do?
         </p>
       </div>
       <br />
-      <div className="grid grid-cols-6 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {CATEGORIES.map((item, index) => (
           <CategoryCard index={index} data={item} />
         ))}
@@ -275,17 +274,17 @@ const Events = () => {
   ];
 
   return (
-    <div className="px-32 my-48 relative">
+    <div className="px-8 md:px-32 my-48 relative">
       <div className="text-center">
-        <p className="text-5xl font-bold">What’s Happening in Malta Today?</p>
+        <p className="text-4xl md:text-5xl font-bold">What’s Happening in Malta Today?</p>
         <br />
-        <p className="text-2xl text-muted-foreground">
+        <p className="text-xl md:text-2xl text-muted-foreground">
           Stay up to date with all the daily events, festivals, and activities
           happening across the island.
         </p>
       </div>
       <div className="flex flex-col items-center gap-16 mt-16">
-        <div className="grid grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {events.map((item, index) => (
             <EventCard
               key={index}
@@ -375,16 +374,16 @@ const MadeSimple = () => {
     );
   };
   return (
-    <div className="p-16 my-48 px-32 relative text-center bg-red-100 mt-32 cut_corner">
+    <div className="p-16 my-48 px-8 md:px-32 relative text-center bg-red-100 mt-32 cut_corner">
       <div className="text-center">
-        <p className="text-5xl font-bold">Booking Made Simple</p>
+        <p className="text-4xl md:text-5xl font-bold">Booking Made Simple</p>
         <br />
-        <p className="text-2xl text-muted-foreground">
+        <p className="text-xl md:text-2xl text-muted-foreground">
           We’ve made it easy to book your next adventure
         </p>
       </div>
       <br />
-      <div className="grid grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-8">
         {CARD_DATA.map((item, index) => (
           <CCard key={index} data={item} />
         ))}
@@ -407,7 +406,7 @@ export default function Home() {
   return (
     <div>
       <div className="bg-gradient-to-br from-primary-foreground to-transparent">
-        <Navbar />
+        {/* <Navbar /> */}
         <main className="relative pt-16">
           <div className="px-32">
             <div className="relative">

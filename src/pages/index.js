@@ -93,7 +93,7 @@ const PhoneFeatures = () => {
   );
 };
 
-const TopPicks = () => {
+export const TopPicks = () => {
   const CARD_DATA = [
     {
       image: "",

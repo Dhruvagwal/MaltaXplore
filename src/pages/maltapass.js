@@ -7,6 +7,7 @@ import Reviews from "@/components/cui/review";
 // import hero from '/images/maltapasshero.svg'
 // import bg from '../../public/Rectangle 102.svg'
 import { River } from "@/components/cui/river";
+import Image from "next/image";
 
 const reviews = [
   {
@@ -43,33 +44,31 @@ function maltapass() {
     <div className="min-h-screen flex flex-col">
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="relative bg-[#E5484D] overflow-hidden">
-          {/* <div className="container mx-auto px-4"> */}
-          <div className="max-md:px-8">
-            <div className="grid md:grid-cols-2 gap-28 items-center py-12 md:py-20">
-              {/* <div className="grid md:grid-cols-2 gap-8 items-center"> */}
-              <div className="text-white space-y-6 relative z-10 md:pl-24 ">
-                <span className="text-sm font-medium">MaltaPass</span>
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-                  Unlock the Best of Malta with One Pass
-                </h1>
-                <p className="text-lg opacity-90">
-                  The MaltaPass is your ultimate key to discovering Malta's rich
-                  history, stunning landscapes, and vibrant culture—all while
-                  saving money and making your journey hassle-free.
-                </p>
-              </div>
-              <div className=" relative h-[300px] md:h-[400px]">
-                <img
-                  src="/images/metapasshero.svg"
-                  alt="Malta Harbor"
-                  className="absolute inset-0 w-full h-full object-cover rounded-lg"
-                />
-                <div className="absolute right-4 top-4 md:right-[85%] md:top-[25%] w-[150px] h-[150px] md:w-[180px] md:h-[180px] bg-white rounded-full flex flex-col items-center justify-center text-[#E5484D] font-bold">
-                  <div className="text-5xl md:text-7xl">30%</div>
-                  <div className="text-sm">UP TO OFF</div>
-                </div>
-              </div>
+        <section className="relative bg-[#E5484D] max-md:px-8 grid md:grid-cols-2 gap-28 mx-32 items-center">
+          <div className="text-white space-y-6 py-32 relative z-10 md:pl-24 ">
+            <span className="text-sm font-medium">MaltaPass</span>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+              Unlock the Best of Malta with One Pass
+            </h1>
+            <p className="text-lg opacity-90">
+              The MaltaPass is your ultimate key to discovering Malta's rich
+              history, stunning landscapes, and vibrant culture—all while saving
+              money and making your journey hassle-free.
+            </p>
+          </div>
+          <div className="relative h-full w-full">
+            <Image
+              width={1000}
+              height={1000}
+              src="/images/metapasshero.svg"
+              alt="Malta Harbor"
+              className="absolute right-0 top-0 inset-0 w-full h-full object-cover"
+            />
+            <div className="absolute right-4 top-4 md:righgit commit -am starter
+            cls
+            git pust-[85%] md:top-[25%] w-[150px] h-[150px] md:w-[180px] md:h-[180px] bg-white rounded-full flex flex-col items-center justify-center text-[#E5484D] font-bold">
+              <div className="text-5xl md:text-7xl">30%</div>
+              <div className="text-sm">UP TO OFF</div>
             </div>
           </div>
         </section>
@@ -87,7 +86,7 @@ function maltapass() {
                   alt="Malta Landscape"
                   className="rounded-lg col-span-2 md:col-span-1 md:mt-3"
                 />
-                     <img
+                <img
                   src="https://s3-alpha-sig.figma.com/img/1299/b1b3/1f15317fa9a9af9a70f739a3d67e707b?Expires=1735516800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=oh6LqwMB~IiP4eB4eFnqfE-sj4iSxCB9qmXayH0u0WMidCIs7beDyOEfPkDcZ1HVTOUe3-pV8D8GJfPTbcqdgRN6mcVqBtGhqVeGS5k-6pAkh250xlS8Kjg5Ds-0TTs1Cu4lYWaDwdU-VdHPKC7dkqXAoyUGQweCbRv1gFBtgFlmx0vJjbkuayEwNq0yr035uu5VFuEkV3PZCeMVtLTa95699V93TAIF7Zbxh~f~2nSbKJkDjSbf8FmV18zWeuP8nH1rj8PZhj13lTL5wzAtnE0Bwc5YCXuR4FLJuIQJ~VwIksuouiSE33bGFCNnv5QVgLUZCLebr1T4FiViBrDEIA__"
                   width={300}
                   height={200}
@@ -430,8 +429,7 @@ function maltapass() {
             </Button>
           </div>
         </section> */}
-              <River />
-        
+        <River />
       </main>
     </div>
   );

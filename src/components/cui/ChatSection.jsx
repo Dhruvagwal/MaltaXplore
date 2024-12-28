@@ -5,7 +5,7 @@ export function ChatSection() {
   return (
     <div className="bg-[#E5484D] rounded-xl overflow-hidden">
       {/* <div className="container mx-auto px-4 py-12"> */}
-      <div className="mx-auto px-4 py-12">
+      <div className="mx-auto px-4 md:px-28 py-12">
         <div className="grid md:grid-cols-2 gap-8 items-center">
           <div className="relative h-[300px] md:h-[400px]">
             <Image
@@ -18,7 +18,7 @@ export function ChatSection() {
           </div>
           <div className="text-white space-y-6">
             <h2 className="text-4xl font-bold">Got questions about Malta?</h2>
-            <p className="text-2xl">We're here to help – let's chat!</p>
+            <p className="ext-2xl md:text-4xl font-bold">We're here to help – let's chat!</p>
             <Button className="bg-white text-[#E5484D] hover:bg-white/90">
               Live Chat With Agent
             </Button>

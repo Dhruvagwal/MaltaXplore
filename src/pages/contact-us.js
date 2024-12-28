@@ -52,7 +52,7 @@ const ContactPage = () => {
         <div className="py-12">
           <ContactForm />
         </div>
-        <div className="max-md:mx-8 mt-16">
+        <div className="mx-8 md:mx-32 mt-16">
           <ChatSection />
         </div>
 

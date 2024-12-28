@@ -243,7 +243,7 @@ const Aboutus = () => {
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-16 text-gray-900 max-md:mx-8">
             Meet with our smart team
           </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-16 md:gap-8 max-w-6xl mx-8 md:mx-auto">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-16 md:gap-8 max-w-6xl mx-4 md:mx-auto">
             {teamMembers.map((member) => (
               <div key={member.id} className="group">
                 <div className="aspect-[3/4] rounded-2xl overflow-hidden mb-4">
@@ -300,8 +300,8 @@ const Aboutus = () => {
               us, and our expert team will be happy to assist you.
             </p>
           </div>
-          <ContactForm />
         </Section>
+        <ContactForm />
       </main>
     </div>
   );

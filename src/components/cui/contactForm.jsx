@@ -8,7 +8,7 @@ import { GitHubLogoIcon, InstagramLogoIcon } from "@radix-ui/react-icons";
 
 const ContactForm = () => {
   return (
-    <div className="max-w-6xl mx-8 md:mx-auto grid md:grid-cols-2 gap-12">
+    <div className="max-w-6xl mx-8 md:mx-32 grid md:grid-cols-2 gap-12">
       {/* Contact Form */}
       <Card className="shadow-lg rounded-lg overflow-hidden">
         <CardContent className="p-8">

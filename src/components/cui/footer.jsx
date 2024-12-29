@@ -4,7 +4,7 @@ import Image from "next/image";
 import { Separator } from "../ui/separator";
 import Link from "next/link";
 import { Facebook, Twitter, Instagram, Github, Phone } from "lucide-react";
-import { home } from "@/data/link";
+import { home, aboutUs, contactUs, search, tourListing } from "@/data/link";
 import { EnvelopeClosedIcon } from "@radix-ui/react-icons";
 
 export function Footer() {
@@ -13,16 +13,16 @@ export function Footer() {
       <Image
         width={1000}
         height={1000}
-        className="w-screen"
+        className="w-screen max-md:hidden"
         src="/images/footer_back.svg"
       />
-      <div className="absolute bg-primary flex flex-col h-auto w-full w-full py-16 px-32 top-0 left-0">
+      <div className="absolute bg-primary flex flex-col h-auto w-full py-16 px-32 top-0 left-0">
         <div className="flex items-center justify-between">
           <p className="text-3xl text-white font-semibold uppercase leading-[1.3]">
             {" "}
             So why late? one steep <br /> far from a tour
           </p>
-          <div className="flex">
+          <div className="flex max-md:w-full max-md:px-8">
             <Input
               className="bg-white text-black"
               placeholder="Your Email Address"
@@ -33,7 +33,7 @@ export function Footer() {
           </div>
         </div>
         <Separator className="my-8 bg-white/40" />
-        <div className="grid py-8 h-full grid-cols-5">
+        <div className="grid py-8 h-full max-md:space-y-8 md:grid-cols-5">
           <div>
             <Image src="images/white_logo.svg" height={150} width={150} />
             <br />
@@ -73,16 +73,16 @@ export function Footer() {
           <div className="flex flex-col gap-4">
             <p className="font-bold">About Us</p>
             <Link href={home}>Home</Link>
-            <Link href="#">About Us</Link>
-            <Link href="#">Destination</Link>
-            <Link href="#">Contact us</Link>
+            <Link href={aboutUs}>About Us</Link>
+            <Link href={tourListing}>Destination</Link>
+            <Link href={contactUs}>Contact us</Link>
           </div>
           <div className="flex flex-col gap-4">
             <p className="font-bold">Services</p>
-            <Link href="#">Support</Link>
-            <Link href="#">Explore</Link>
-            <Link href="#">Get in Touch</Link>
-            <Link href="#">Get in Touch</Link>
+            <Link href={contactUs}>Support</Link>
+            <Link href={search}>Explore</Link>
+            <Link href={contactUs}>Get in Touch</Link>
+            <Link href={contactUs}>Get in Touch</Link>
           </div>
           <div className="flex flex-col gap-4">
             <p className="font-bold">Contact Info</p>

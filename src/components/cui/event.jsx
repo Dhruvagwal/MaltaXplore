@@ -3,6 +3,8 @@ import { Card } from "../ui/card";
 import Image from "next/image";
 import { Clock10, MapPin } from "lucide-react";
 import { Button } from "../ui/button";
+import Link from "next/link";
+import { tourListing } from "@/data/link";
 
 function EventCard({ url, location, time, date, title, description }) {
   return (
@@ -16,19 +18,23 @@ function EventCard({ url, location, time, date, title, description }) {
       <div className="flex flex-col my-4 gap-2">
         <div className="flex font-semibold text-sm gap-8">
           <p className="flex gap-1 text-muted-foreground items-center">
-            <MapPin className="text-primary h-4 w-4"/> {location}
+            <MapPin className="text-primary h-4 w-4" /> {location}
           </p>
           <p className="flex gap-1  text-muted-foreground items-center">
-            <Clock10 className="text-primary  h-4 w-4"/> {time}
+            <Clock10 className="text-primary  h-4 w-4" /> {time}
           </p>
         </div>
         <p className="text-primary font-semibold">{date}</p>
         <p className="text-xl mt-2 font-bold">{title}</p>
         <p className="text-muted-foreground">{description}</p>
-        <br/>
+        <br />
         <div className="flex items-center gap-4">
-            <Button className="w-full py-6">Book Ticket</Button>
-            <Button className="w-full py-6" variant="outline">More Info</Button>
+          <Button asChild className="w-full py-6">
+            <Link href={tourListing}>Book Now</Link>
+          </Button>
+          <Button className="w-full py-6" variant="outline">
+            More Info
+          </Button>
         </div>
       </div>
     </Card>

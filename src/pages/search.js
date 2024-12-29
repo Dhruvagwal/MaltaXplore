@@ -2,7 +2,6 @@ import Banner from "@/components/cui/banner";
 import { Categories } from "@/components/cui/category";
 import { ServiceCard } from "@/components/cui/ServiceCard";
 import { Button } from "@/components/ui/button";
-import Navbar from "@/components/ui/Navbar";
 import { CommentRatings } from "@/components/ui/rating";
 import { Separator } from "@/components/ui/separator";
 import { categories, maltaLocations } from "@/data/data";
@@ -189,21 +188,20 @@ function ExploreCategories() {
 
   return (
     <div className="from-primary-foreground to-transparent">
-      <Navbar />
       <main className="pt-16">
         {/* Banner */}
         <Banner url="https://images.pexels.com/photos/3171837/pexels-photo-3171837.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2">
-          <div className="flex justify-center items-center flex-col gap-8">
-            <p className="text-3xl font-bold text-white">Explore Experiences</p>
+          <div className="flex justify-center items-center flex-col gap-2 md:gap-8">
+            <p className="text-2xl md:text-3xl font-bold text-white">Explore Experiences</p>
             <Categories />
           </div>
         </Banner>
-        <div className="px-32 grid gap-8 grid-cols-6 py-16 mt-16">
-          <div className="col-span-2 flex flex-col gap-6">
+        <div className="px-8 md:px-32 grid grid-cols-1 gap-8 md:grid-cols-6 py-16 mt-16">
+          <div className="md:col-span-2 flex flex-col gap-6">
             <p className="text-3xl font-bold">Filter Your Needs</p>
             <div className="border p-4 rounded-lg">
               <FormWrapper
-                className="flex flex-col gap-6"
+                className="flex flex-col gap-12 md:gap-6"
                 onSubmit={onSubmit}
                 onError={onError}
               >
@@ -262,10 +260,10 @@ function ExploreCategories() {
               </FormWrapper>
             </div>
           </div>
-          <div className="col-span-4">
+          <div className="md:col-span-4 max-md:my-12">
             <p className="text-3xl font-bold">Results</p>
             <Separator className="my-4" />
-            <div className="gap-4 grid grid-cols-2">
+            <div className="gap-16 md:gap-4 grid grid-cols-1 md:grid-cols-2">
               {chunkedData[currentPage].map((item, index) => (
                 <ServiceCard
                   key={index}

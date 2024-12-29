@@ -46,14 +46,6 @@ function Navbar() {
                 variant="ghost"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               >
-                <Link href={tourListing}>Tour Listing</Link>
-              </Button>
-              <Button
-                size="sm"
-                asChild
-                variant="ghost"
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              >
                 <Link href={aboutUs}>About Us</Link>
               </Button>
               <Button

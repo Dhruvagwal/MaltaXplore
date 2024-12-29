@@ -23,7 +23,7 @@ export const Categories = ({className}) => {
   return (
     <div
       className={cn(
-        "flex items-center relative z-10 gap-2 p-4 border bg-white mx-auto w-fit shadow-lg rounded-xl",
+        "md:flex items-center relative z-10 md:gap-2 p-2 md:p-4 border bg-white mx-auto w-fit shadow-lg rounded-xl max-md:space-y-1",
         className
       )}
     >
@@ -33,7 +33,7 @@ export const Categories = ({className}) => {
           Categories
         </p>
         <Select onValueChange={setCategory}>
-          <SelectTrigger className="w-[10vw]">
+          <SelectTrigger className="w-full md:w-[10vw]">
             <SelectValue placeholder="Select Category" />
           </SelectTrigger>
           <SelectContent>
@@ -65,7 +65,7 @@ export const Categories = ({className}) => {
           type="number"
         />
       </div>
-      <Button asChild className="p-9 flex items-center gap-2 text-xl">
+      <Button asChild className="md:p-9 flex items-center gap-2 text-xl">
         <Link
           href={{
             pathname: search,

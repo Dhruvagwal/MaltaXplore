@@ -21,7 +21,7 @@ import {
   X,
 } from "lucide-react";
 import Reviews from "@/components/cui/review";
-
+import { TopPicks } from "./index";
 const reviews = [
   {
     id: 1,
@@ -334,149 +334,7 @@ function TourismPage() {
       />
 
       {/* Top Picks */}
-      <section className="py-12 md:py-24 bg-white">
-        {/* <div className="container px-4 mx-auto"> */}
-        <div className="px-4 md:mx-32">
-          <div className="max-md:mx-8 flex flex-col md:flex-row justify-between items-start gap-8 mb-12">
-            <h2 className="text-3xl md:text-5xl font-bold text-gray-900 leading-tight">
-              Top Picks for Your
-              <br />
-              Maltese Adventure
-            </h2>
-            <p className="text-gray-600 md:max-w-md text-lg">
-              Start with our most popular experiences and tours—perfect for
-              getting the most out of Malta.
-            </p>
-          </div>
-
-          <div className="relative overflow-hidden">
-            <div className="flex transition-transform duration-500 ease-out">
-              {[
-                {
-                  title: "Explore Malta's Ancient Wonders",
-                  description:
-                    "From UNESCO World Heritage sites to hidden catacombs, explore Malta's rich history with our guided tours.",
-                  price: "$500",
-                  image: "./a1.jpg",
-                },
-                {
-                  title: "Luxury Yacht Charters",
-                  description:
-                    "Sail the Mediterranean in style. Enjoy breathtaking views, exclusive access to hidden coves, and VIP service.",
-                  price: "$500",
-                  image: "./a2.png",
-                },
-                {
-                  title: "Dine by the Sea - Seaside Restaurants",
-                  description:
-                    "Taste authentic Maltese cuisine at our top seaside restaurants. From fresh seafood to local delicacies, you'll love the view as much as the food.",
-                  price: "$500",
-                  image: "./a3.png",
-                },
-                {
-                  title: "Scuba Diving Adventures",
-                  description:
-                    "Dive into the crystal-clear waters of the Mediterranean. Perfect for beginners and experienced divers alike.",
-                  price: "$500",
-                  image: "./a4.png",
-                },
-              ].map((pick, index) => (
-                <div
-                  key={index}
-                  className={`transition-all duration-500 ${
-                    index === currentSlide
-                      ? "w-full md:w-[40%] px-4"
-                      : "hidden md:block md:w-[20%] px-2"
-                  }`}
-                >
-                  <div className="bg-white rounded-2xl overflow-hidden shadow-lg group">
-                    <div className="relative overflow-hidden">
-                      <img
-                        src={pick.image}
-                        alt={pick.title}
-                        className={`w-full object-cover ${
-                          index === currentSlide
-                            ? "h-[300px] md:h-[500px]"
-                            : "h-[200px] md:h-[300px]"
-                        }`}
-                      />
-                      <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full flex items-center gap-2 shadow-lg">
-                        <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-                        <span className="text-sm font-medium">
-                          Restaurant & More Info
-                        </span>
-                      </div>
-                    </div>
-                    <div className="p-6">
-                      <div className="flex justify-between items-start mb-4">
-                        <h3
-                          className={`font-bold text-gray-900 ${
-                            index === currentSlide
-                              ? "text-xl md:text-2xl"
-                              : "text-lg"
-                          }`}
-                        >
-                          {pick.title}
-                        </h3>
-                        <div className="text-right">
-                          <div className="text-sm text-gray-500">
-                            Starting at:
-                          </div>
-                          <div className="text-[#E5484D] font-bold text-xl">
-                            {pick.price}
-                          </div>
-                        </div>
-                      </div>
-                      <p
-                        className={`text-gray-600 mb-6 ${
-                          index === currentSlide ? "text-base" : "text-sm"
-                        }`}
-                      >
-                        {pick.description}
-                      </p>
-                      <Button className="w-full bg-[#E5484D] text-white hover:bg-[#E5484D]/90 transform hover:-translate-y-1 transition-all duration-300">
-                        Book Now
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <button
-              className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 md:w-14 md:h-14 bg-white rounded-full shadow-lg flex items-center justify-center z-10 hover:scale-110 transition-transform duration-300 focus:outline-none focus:ring-2 focus:ring-[#E5484D]"
-              onClick={() => {
-                setCurrentSlide((prev) => (prev > 0 ? prev - 1 : 3));
-              }}
-            >
-              <ChevronLeft className="w-5 h-5 md:w-6 md:h-6 text-gray-700" />
-            </button>
-            <button
-              className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 md:w-14 md:h-14 bg-white rounded-full shadow-lg flex items-center justify-center z-10 hover:scale-110 transition-transform duration-300 focus:outline-none focus:ring-2 focus:ring-[#E5484D]"
-              onClick={() => {
-                setCurrentSlide((prev) => (prev < 3 ? prev + 1 : 0));
-              }}
-            >
-              <ChevronRight className="w-5 h-5 md:w-6 md:h-6 text-gray-700" />
-            </button>
-          </div>
-
-          <div className="flex justify-center items-center gap-4 md:gap-8 mt-8 md:mt-12">
-            <span className="text-3xl md:text-4xl font-bold text-gray-900">
-              0{currentSlide + 1}
-            </span>
-            <div className="h-[2px] w-20 md:w-32 bg-gray-200">
-              <div
-                className="h-full bg-[#E5484D]"
-                style={{ width: `${((currentSlide + 1) / 4) * 100}%` }}
-              />
-            </div>
-            <span className="text-3xl md:text-4xl font-bold text-gray-400">
-              04
-            </span>
-          </div>
-        </div>
-      </section>
+      <TopPicks />
     </main>
   );
 }

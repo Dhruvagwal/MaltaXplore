@@ -49,13 +49,13 @@ const ContactPage = () => {
           </Banner>
         </div>
 
-        <div className="mx-8 md:mx-32 md:px-4 py-12">
+        <div className="py-12">
           <ContactForm />
-
-          <div className="mt-16">
-            <ChatSection />
-          </div>
         </div>
+        <div className="mx-8 md:mx-32 mt-16">
+          <ChatSection />
+        </div>
+
         <Faq data={faqData} />
       </main>
     </div>

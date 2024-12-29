@@ -9,14 +9,14 @@ import { EnvelopeClosedIcon } from "@radix-ui/react-icons";
 
 export function Footer() {
   return (
-    <footer className="mt-48 text-white/80 relative">
+    <footer className="mt-48 h-full text-white/80 relative">
       <Image
         width={1000}
         height={1000}
         className="w-screen"
         src="/images/footer_back.svg"
       />
-      <div className="absolute flex flex-col h-full w-full py-16 px-32 top-0 left-0">
+      <div className="absolute bg-primary flex flex-col h-auto w-full w-full py-16 px-32 top-0 left-0">
         <div className="flex items-center justify-between">
           <p className="text-3xl text-white font-semibold uppercase leading-[1.3]">
             {" "}

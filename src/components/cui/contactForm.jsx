@@ -11,7 +11,7 @@ const ContactForm = () => {
     <div className="max-w-7xl mx-8 md:mx-48">
       {/* Contact Form */}
       <Card className="shadow-lg rounded-lg overflow-hidden md:py-12">
-        <CardContent className="p-8 grid md:grid-cols-3 gap-12 md:gap-32 px-32">
+        <CardContent className="p-8 grid md:grid-cols-3 gap-12 md:gap-32 md:px-32">
           <div className="space-y-6 col-span-2">
             <div className="grid md:grid-cols-2 gap-6">
               <div className="space-y-2">

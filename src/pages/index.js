@@ -29,7 +29,7 @@ import { ServiceCard } from "@/components/cui/ServiceCard";
 
 const PhoneFeatures = () => {
   const FeatureCard = ({ title = "", desc = "" }) => (
-    <Card className="w-[350px] text-left">
+    <Card className="w-[350px] text-left max-md:w-full">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <div className="shadow-md border rounded-full p-2">
@@ -42,13 +42,13 @@ const PhoneFeatures = () => {
     </Card>
   );
   return (
-    <div className="p-16 relative text-center bg-red-100 mt-32 cut_corner">
+    <div className="p-8 md:p-16 relative text-center bg-red-100 mt-32 cut_corner">
       <img
         src="images/curve_line.svg"
-        className="absolute z-[-1] h-full w-full object-scale-down"
+        className="md:absolute z-[-1] h-full w-full object-scale-down"
       />
-      <p className="text-5xl font-bold">Why Choose MaltaXplore?</p>
-      <div className="flex mt-16 items-center gap-8 justify-center">
+      <p className="text-4xl md:text-5xl font-bold">Why Choose MaltaXplore?</p>
+      <div className="md:flex mt-16 items-center gap-8 justify-center">
         <div className="flex items-center flex-col gap-8">
           <FeatureCard
             title="All-in-One Platform"
@@ -60,22 +60,22 @@ const PhoneFeatures = () => {
           />
           <Image
             src="/images/pool.jpg"
-            className="object-cover rounded-[2rem] relative h-64 w-64"
+            className="object-cover rounded-[2rem] relative h-64 w-full md:w-64"
             width={200}
             height={200}
           />
         </div>
-        <div>
+        <div className="max-md:flex max-md:items-center max-md:flex-col mt-8 md:mt-0">
           <img src="images/phone.png" />
           <br />
           <Button asChild size="lg" className="p-8">
             <Link href={search}> Start Exploring</Link>
           </Button>
         </div>
-        <div className="flex items-center flex-col gap-8">
+        <div className="flex items-center flex-col gap-8 mt-8 md:mt-0">
           <Image
             src="/images/malta_banner.jpg"
-            className="object-cover rounded-[2rem] relative h-64 w-64"
+            className="object-cover rounded-[2rem] relative h-64 w-full md:w-64"
             width={200}
             height={200}
           />
@@ -203,10 +203,10 @@ const CCategories = () => {
 
 const Iteneray = () => {
   return (
-    <div className="my-48 px-32">
-      <div className="flex lg:gap-64 justify-between">
+    <div className="my-48 px-8 md:px-32">
+      <div className="flex flex-col md:flex-row gap-8 lg:gap-64 justify-between max-md:px-1">
         <p className="text-5xl font-bold">Create Your Own Perfect Itinerary</p>
-        <p className="text-xl text-right">
+        <p className="text-xl md:text-right">
           Customize your trip based on what you love. Whether you’re an
           adventure-seeker, a foodie, or a culture enthusiast, we’ll help you
           craft the perfect experience.
@@ -215,25 +215,29 @@ const Iteneray = () => {
       <div className="relative mt-16">
         <Image
           src="/images/iteneray_back.svg"
-          className="w-full"
+          className="w-full max-md:hidden"
           width={2000}
           height={2000}
         />
 
-        <div className="absolute top-0 left-0 w-full p-16 pr-0">
-          <div className="flex w-full justify-between">
-            <p className="text-5xl shrink-0 font-semibold leading-[1.5] text-white">
+        <div className="md:absolute top-0 left-0 w-full p-10 md:p-16 md:pr-0 max-md:bg-[#E03737] max-md:rounded-md">
+          <div className="flex flex-col md:flex-row w-full justify-between">
+            <p className="text-3xl md:text-5xl shrink-0 font-semibold leading-[1.5] text-white">
               Based on your preferences,
               <br /> we’ll suggest experiences you’ll <br />
               love, from sightseeing tours <br />
               to gourmet restaurants.
             </p>
-            <p className="text-6xl mt-[-4rem] shrink-0 text-right font-bold leading-[1.5]">
+            <p className="text-4xl md:text-6xl md:mt-[-4rem] shrink-0 md:text-right font-bold leading-[1.5]">
               Don’t know <br />
               where to start?{" "}
             </p>
           </div>
-          <Button variant="secondary" className="p-8 mt-32 px-16" size="lg">
+          <Button
+            variant="secondary"
+            className="p-8 mt-12 md:mt-32 md:px-16 max-md:w-full"
+            size="lg"
+          >
             Build My Itinerary
           </Button>
         </div>
@@ -276,7 +280,9 @@ const Events = () => {
   return (
     <div className="px-8 md:px-32 my-48 relative">
       <div className="text-center">
-        <p className="text-4xl md:text-5xl font-bold">What’s Happening in Malta Today?</p>
+        <p className="text-4xl md:text-5xl font-bold">
+          What’s Happening in Malta Today?
+        </p>
         <br />
         <p className="text-xl md:text-2xl text-muted-foreground">
           Stay up to date with all the daily events, festivals, and activities
@@ -307,24 +313,24 @@ const Events = () => {
 
 const MaltaPass = () => {
   return (
-    <div className="my-48 relative px-0">
+    <div className="my-48 relative px-8 md:px-0">
       <Image
         src="/images/maltapass.svg"
-        className="w-full"
+        className="w-full hidden md:block"
         width={1000}
         height={1000}
       />
-      <div className="absolute top-20 right-0 p-32 w-[50%] text-white">
-        <p className="text-5xl leading-[1.5] font-bold">
+      <div className="md:absolute top-0 md:top-20 right-0 p-10 md:p-32 w-[100%] md:w-[50%] text-white max-md:bg-[#E03737] max-md:rounded-md">
+        <p className="text-3xl md:text-5xl leading-[1.5] font-bold">
           Maltapass – Explore <br />
           More, Pay Less
         </p>
         <br />
-        <p className="text-3xl">
+        <p className="text-2xl md:text-3xl">
           Introducing Maltapass – Exclusive Discounts for Your Stay
         </p>
         <br />
-        <p className="text-xl">
+        <p className="text-lg md:text-xl">
           Unlock free discounts on top attractions, dining, and more with
           Maltapass. Available for 1-day or 1-week, it’s the perfect way to save
           while you explore.

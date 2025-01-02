@@ -11,9 +11,31 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { SearchIcon } from "lucide-react";
+import { SearchIcon, XIcon } from "lucide-react";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import CPagination from "@/components/ui/CPagniation";
+import { Separator } from "@/components/ui/separator";
+import { useRouter } from "next/router";
+import useCustomForm from "@/hooks/use-custom-form";
+// import { get, ref } from "firebase/database";
+// import { db } from "../firebase/firebaseConfig";
+
+// async function fetchDataFromRealtimeDB() {
+//   try {
+//     const snapshot = await get(ref(db, "services")); 
+//     if (snapshot.exists()) {
+//       const data = snapshot.val(); 
+//       return data;
+//     } else {
+//       console.log("No data available.");
+//       return [];
+//     }
+//   } catch (error) {
+//     console.error("Error fetching Realtime DB data:", error);
+//     return [];
+//   }
+// }
 
 const popularEvents = [
   {
@@ -70,6 +92,69 @@ const popularEvents = [
       "Stroll along the Sliema Promenade and enjoy art installations, live music, and food stalls.",
     url: "https://images.pexels.com/photos/3171837/pexels-photo-3171837.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
   },
+  {
+    location: "Malta Capital",
+    time: "3:00Pm - 5:00Pm",
+    date: "24 Nov, 2024 - 25 Nov, 2024",
+    title: "Valletta Food Festival",
+    description:
+      "Join us for a week-long food festival at the Malta Capital's iconic Old St. Stephen Hotel.",
+    url: "https://images.pexels.com/photos/3171837/pexels-photo-3171837.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+  },
+  {
+    location: "Gozo Island",
+    time: "10:00Am - 4:00Pm",
+    date: "10 Dec, 2024",
+    title: "Gozo Adventure Day",
+    description:
+      "Explore the breathtaking landscapes of Gozo Island with guided hikes, kayaking, and cultural tours.",
+    url: "https://images.pexels.com/photos/672532/pexels-photo-672532.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+  },
+  {
+    location: "Valletta Waterfront",
+    time: "6:00Pm - 11:00Pm",
+    date: "31 Dec, 2024",
+    title: "New Year's Eve Fireworks",
+    description:
+      "Celebrate the New Year with a stunning fireworks display at the picturesque Valletta Waterfront.",
+    url: "https://images.pexels.com/photos/949592/pexels-photo-949592.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+  },
+  {
+    location: "Valletta Waterfront",
+    time: "6:00Pm - 11:00Pm",
+    date: "31 Dec, 2024",
+    title: "New Year's Eve Fireworks",
+    description:
+      "Celebrate the New Year with a stunning fireworks display at the picturesque Valletta Waterfront.",
+    url: "https://images.pexels.com/photos/949592/pexels-photo-949592.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+  },
+  {
+    location: "Valletta Waterfront",
+    time: "6:00Pm - 11:00Pm",
+    date: "31 Dec, 2024",
+    title: "New Year's Eve Fireworks",
+    description:
+      "Celebrate the New Year with a stunning fireworks display at the picturesque Valletta Waterfront.",
+    url: "https://images.pexels.com/photos/949592/pexels-photo-949592.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+  },
+  {
+    location: "Valletta Waterfront",
+    time: "6:00Pm - 11:00Pm",
+    date: "31 Dec, 2024",
+    title: "New Year's Eve Fireworks",
+    description:
+      "Celebrate the New Year with a stunning fireworks display at the picturesque Valletta Waterfront.",
+    url: "https://images.pexels.com/photos/949592/pexels-photo-949592.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+  },
+  {
+    location: "Valletta Waterfront",
+    time: "6:00Pm - 11:00Pm",
+    date: "31 Dec, 2024",
+    title: "New Year's Eve Fireworks",
+    description:
+      "Celebrate the New Year with a stunning fireworks display at the picturesque Valletta Waterfront.",
+    url: "https://images.pexels.com/photos/949592/pexels-photo-949592.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+  },
 ];
 
 const events = [
@@ -102,8 +187,89 @@ const events = [
   },
 ];
 
+const chunkArray = (array, size) => {
+  const result = [];
+  for (let i = 0; i < array.length; i += size) {
+    result.push(array.slice(i, i + size));
+  }
+  return result;
+};
+const SIZE = 6;
+
 function RealTimeEvents() {
+  const router = useRouter();
+  const { query } = router;
   const [date, setDate] = useState();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchedEvents, setSearchedEvents] = useState(popularEvents);
+  const [buttonState, setButtonState] = useState(false);
+  const { watch, setValue } = useCustomForm({});
+
+  const range = watch("range");
+  const min = watch("min");
+  const max = watch("max");
+
+  useEffect(() => {
+    if (!range) return;
+    setValue("min", range[0]);
+    setValue("max", range[1]);
+  }, [range]);
+
+  useEffect(() => {
+    if (!range) return;
+    setValue("range", [min, max]);
+  }, [min, max]);
+
+  // Get the current page from the query parameter or default to 0
+  const currentPage = parseInt(query.page, 10) || 0;
+
+  // Split the data into chunks (6 items per page)
+  const chunkedData = chunkArray(searchedEvents, SIZE);
+
+  // Handle page change and update the URL query param
+  const handlePageChange = (page) => {
+    router.push({
+      pathname: router.pathname,
+      query: { ...router.query, page: page.toString() },
+    });
+  };
+
+  useEffect(() => {
+    if (currentPage >= chunkedData.length) {
+      handlePageChange(chunkedData.length - 1);
+    }
+  }, [currentPage, chunkedData.length]);
+
+  const handleSearch = () => {
+    if (searchTerm.trim() === "") {
+      setSearchedEvents(popularEvents);
+      setButtonState(false);
+    } else {
+      const filtered = popularEvents.filter((event) =>
+        event.title.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      if (filtered) {
+        setButtonState(true);
+      }
+      setSearchedEvents(filtered);
+    }
+  };
+
+  // const [data, setData] = useState([]);
+
+  // useEffect(() => {
+  //   async function fetchData() {
+  //     try {
+  //       const fetchedData = await fetchDataFromRealtimeDB();
+  //       setData(fetchedData);
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //     }
+  //   }
+  //   fetchData();
+  // }, []);
+
+
   return (
     <div className="from-primary-foreground to-transparent">
       <main className="pt-16">
@@ -118,10 +284,27 @@ function RealTimeEvents() {
             <p className="text-3xl font-bold">Today’s Events</p>
             <div className="flex flex-col md:flex-row items-center gap-4">
               <div className="flex items-center gap-2">
-                <Input placeholder="Search by character" />
-                <Button className="p-2 px-3">
-                  <SearchIcon width={15} height={15} />
-                </Button>
+                <Input
+                  placeholder="Search by character"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                {buttonState === true ? (
+                  <Button
+                    className="p-2 px-3"
+                    onClick={() => {
+                      setSearchTerm("");
+                      setButtonState(false);
+                      setSearchedEvents(popularEvents);
+                    }}
+                  >
+                    <XIcon width={15} height={15} />
+                  </Button>
+                ) : (
+                  <Button className="p-2 px-3" onClick={handleSearch}>
+                    <SearchIcon width={15} height={15} />
+                  </Button>
+                )}
               </div>
               <DatePicker date={date} setDate={setDate} />
               <Select>
@@ -141,7 +324,7 @@ function RealTimeEvents() {
           </div>
           {/* events */}
           <div className="grid mt-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 ">
-            {popularEvents.map((item, index) => (
+            {chunkedData[currentPage]?.map((item, index) => (
               <EventCard
                 key={index}
                 location={item.location}
@@ -153,6 +336,13 @@ function RealTimeEvents() {
               />
             ))}
           </div>
+
+          <Separator className="my-4" />
+          <CPagination
+            className="mx-auto"
+            size={SIZE}
+            data={chunkedData.map((_, idx) => idx)}
+          />
         </div>
 
         <div className="px-8 md:px-32 py-16">

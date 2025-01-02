@@ -96,30 +96,43 @@ const PhoneFeatures = () => {
 export const TopPicks = () => {
   const CARD_DATA = [
     {
-      image: "",
+      id: 1,
+      image: "https://example.com/image1.jpg",
       title: "Explore Malta’s Ancient Wonders",
+      price: 150,
       description:
         "From UNESCO World Heritage sites to hidden catacombs, explore Malta’s rich history with our guided tours.",
+      category: "Cat-1", // Cultural & Heritage
     },
     {
-      image: "",
+      id: 2,
+      image: "https://example.com/image2.jpg",
       title: "Luxury Yacht Charters",
+      price: "500",
       description:
         "Sail the Mediterranean in style. Enjoy breathtaking views, exclusive access to hidden coves, and VIP service.",
+      category: "Cat-5", // Adventure Activities & Experiences
     },
     {
-      image: "",
+      id: 3,
+      image: "https://example.com/image3.jpg",
       title: "Dine by the Sea",
+      price: "500",
       description:
         "Taste authentic Maltese cuisine at our top seaside restaurants. From fresh seafood to local delicacies...",
+      category: "Cat-4", // Dining & Culinary
     },
     {
-      image: "",
+      id: 4,
+      image: "https://example.com/image4.jpg",
       title: "Scuba Diving Adventures",
+      price: "500",
       description:
         "Dive into the deep blue and discover Malta’s underwater treasures. Perfect for beginners and seasoned divers.",
+      category: "Cat-5", // Adventure Activities & Experiences
     },
   ];
+
   return (
     <div className="my-48 px-9 md:px-32">
       <div className="flex flex-col md:flex-row lg:gap-64 justify-between">

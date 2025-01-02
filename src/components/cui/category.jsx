@@ -9,17 +9,35 @@ import {
 } from "../ui/select";
 import Link from "next/link";
 import { Button } from "../ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { categories } from "@/data/data";
 import { DatePicker } from "../ui/datepicker";
 import { Input } from "../ui/input";
 import { search } from "@/data/link";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/router";
 
-export const Categories = ({className}) => {
+export const Categories = ({ className }) => {
+  const router = useRouter();
+  const { query } = router;
   const [date, setDate] = useState();
   const [category, setCategory] = useState();
   const [guest, setGuest] = useState();
+
+  const buildQuery = () => {
+    const query = {};
+    if (category) query.category = category;
+    if (guest) query.guest = guest;
+    if (date) query.date = String(date);
+    return query;
+  };
+
+  useEffect(() => {
+    if (query.category) {
+      setCategory(query.category);
+    }
+  }, [query.category]);
+
   return (
     <div
       className={cn(
@@ -32,14 +50,14 @@ export const Categories = ({className}) => {
           <Component1Icon />
           Categories
         </p>
-        <Select onValueChange={setCategory}>
+        <Select value={category} onValueChange={setCategory}>
           <SelectTrigger className="w-full md:w-[10vw]">
             <SelectValue placeholder="Select Category" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
               {Object.keys(categories).map((category) => (
-                <SelectItem value={category}>
+                <SelectItem key={category} value={category}>
                   {categories[category].name}
                 </SelectItem>
               ))}
@@ -50,7 +68,7 @@ export const Categories = ({className}) => {
       <div>
         <p className="text-sm text-muted-foreground p-1 flex items-center gap-1 text-primary-foreground0 py-2">
           <Component1Icon />
-          Categories
+          Date
         </p>
         <DatePicker date={date} setDate={setDate} />
       </div>
@@ -69,7 +87,7 @@ export const Categories = ({className}) => {
         <Link
           href={{
             pathname: search,
-            query: { category, guest, date: String(date) },
+            query: buildQuery(),
           }}
         >
           <MagnifyingGlassIcon /> Search

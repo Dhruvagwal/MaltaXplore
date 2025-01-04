@@ -2,6 +2,7 @@ import React, { useState, useEffect, Component } from "react";
 import axios from "axios";
 import apiKeys from "./apiKeys";
 import ReactAnimatedWeather from "react-animated-weather";
+import { Umbrella, Droplets, Wind } from "lucide-react";
 
 function Forcast(props) {
   const [query, setQuery] = useState("");
@@ -45,29 +46,30 @@ function Forcast(props) {
                 {props.data.temperatureC}°<span>C</span>
               </p>
             </div>
-            <br/>
+            <br />
             <hr />
-            <br/>
+            <br />
             <div className="flex justify-evenly">
-              <li>
-                <span className="temp text-3xl">
+              <li className="flex flex-col items-center space-y-2">
+                <Umbrella />
+                <span className="temp text-2xl pb-2">
+                  {weather.rain ? Math.round(weather.rain["1h"]) : 0}%
+                </span>
+                
+                Precipitation
+              </li>
+              <li className="flex flex-col items-center space-y-2">
+                <Droplets />
+                <span className="temp text-2xl pb-2">
                   {Math.round(weather.main.humidity)}%
                 </span>
-                <br />
                 Humidity{" "}
               </li>
-              <li>
-                <span className="temp text-3xl">
-                  {Math.round(weather.main.humidity)}%
-                </span>
-                <br />
-                Humidity{" "}
-              </li>
-              <li>
-                <span className="temp text-3xl">
+              <li className="flex flex-col items-center space-y-2">
+                <Wind />
+                <span className="temp text-2xl pb-2">
                   {Math.round(weather.wind.speed)} Km/h
                 </span>
-                <br />
                 Wind Speed{" "}
               </li>
             </div>

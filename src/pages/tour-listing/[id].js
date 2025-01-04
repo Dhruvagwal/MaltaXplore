@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -29,6 +29,24 @@ import { TopPicks } from ".././index";
 import { useRouter } from "next/router";
 import { Separator } from "@/components/ui/separator";
 import ReviewsPage from "@/components/cui/reviews-page";
+import { get, ref } from "firebase/database";
+import { db } from "@/firebase/firebaseConfig";
+
+async function fetchDataFromRealtimeDB() {
+  try {
+    const snapshot = await get(ref(db, "services"));
+    if (snapshot.exists()) {
+      const data = snapshot.val();
+      return data;
+    } else {
+      console.log("No data available.");
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching Realtime DB data:", error);
+    return [];
+  }
+}
 
 const reviews = [
   {
@@ -94,6 +112,7 @@ const CARD_DATA = [
 function TourismPage() {
   const router = useRouter();
   const { id } = router.query;
+  const [services, setServices] = useState([]);
 
   const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
@@ -101,7 +120,43 @@ function TourismPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSignupOpen, setIsSignupOpen] = useState(false);
 
-  const tourData = CARD_DATA.find((item) => item.id === parseInt(id));
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const fetchedData = await fetchDataFromRealtimeDB();
+        // Extract all services into a flat array
+        const allServices = Object.keys(fetchedData || {}).reduce(
+          (acc, categoryKey) => {
+            const subCategories = fetchedData[categoryKey];
+            if (subCategories) {
+              Object.keys(subCategories || {}).forEach((subCategoryKey) => {
+                const subCategoryData = subCategories[subCategoryKey];
+                if (subCategoryData) {
+                  Object.keys(subCategoryData || {}).forEach((itemKey) => {
+                    const item = subCategoryData[itemKey];
+                    if (item) acc.push(item); // Add the item to the flat array
+                  });
+                }
+              });
+            }
+            return acc;
+          },
+          []
+        );
+
+        setServices(allServices);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+    fetchData();
+  }, []);
+
+  // const tourData = services.find((service) => {
+  //   return service.id === parseInt(id);
+  // });
+
+  const tourData = services[0];
 
   return (
     <main className="min-h-screen bg-white">
@@ -167,7 +222,8 @@ function TourismPage() {
             <div className="flex items-center gap-2 text-sm sm:text-base text-gray-600">
               <MapPin className="w-4 h-4" />
               <span className="line-clamp-1">
-                Dar Merhba Bik, 130, Triq Birbal, BZN 1708, Malta
+                {/* Dar Merhba Bik, 130, Triq Birbal, BZN 1708, Malta */}
+                {tourData?.location}
               </span>
             </div>
           </div>
@@ -188,10 +244,17 @@ function TourismPage() {
         <div className="grid lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
             <div>
-              <h2 className="text-3xl font-bold">
-                About {tourData?.title}
-              </h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 py-12 gap-4">
+              <h2 className="text-3xl font-bold">About {tourData?.title}</h2>
+
+              {tourData?.features?.map((f) => (
+                <div className="grid grid-cols-2 md:grid-cols-4 my-4 py-8 gap-4 bg-primary-foreground px-4">
+                  <div className="flex gap-2">
+                    <Clock5 className="text-[#e03837]" />
+                    <p>{f}</p>
+                  </div>
+                </div>
+              ))}
+              {/* <div className="grid grid-cols-2 md:grid-cols-4 my-4 py-8 gap-4 bg-primary-foreground px-4">
                 <div className="flex gap-2">
                   <Clock5 className="text-[#e03837]" />
                   <p>Nov 16 - 20</p>
@@ -211,15 +274,16 @@ function TourismPage() {
                   <Clock5 className="text-[#e03837]" />
                   <p>Pickup</p>
                 </div>
-              </div>
+              </div> */}
               <div className="prose prose-lg max-w-none">
                 <p>
-                  Discover the timeless beauty and historical depth of Malta, a
+                  {/* Discover the timeless beauty and historical depth of Malta, a
                   Mediterranean gem teeming with ancient marvels and captivating
                   stories. From the awe-inspiring megalithic temples that
                   predate the Egyptian pyramids, to the storied fortresses that
                   have defended Malta for centuries, this island nation offers a
-                  journey through time like no other.
+                  journey through time like no other. */}
+                  {tourData?.location}
                 </p>
                 <div className="mt-8 space-y-6">
                   <div>
@@ -263,36 +327,12 @@ function TourismPage() {
                 Special Benefit
               </h2>
               <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <Check className="h-5 w-6 md:w-5 bg-green-500 text-white rounded-full p-1" />{" "}
-                  <span className="text-gray-600">
-                    Discover the timeless beauty and historical depth of Malta
-                  </span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Check className="h-5 w-6 md:w-5 bg-green-500 text-white rounded-full p-1" />{" "}
-                  <span className="text-gray-600">
-                    Discover the timeless beauty and historical depth of Malta
-                  </span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Check className="h-5 w-6 md:w-5 bg-green-500 text-white rounded-full p-1" />{" "}
-                  <span className="text-gray-600">
-                    Discover the timeless beauty and historical depth of Malta
-                  </span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Check className="h-5 w-6 md:w-5 bg-green-500 text-white rounded-full p-1" />{" "}
-                  <span className="text-gray-600">
-                    Discover the timeless beauty and historical depth of Malta
-                  </span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Check className="h-5 w-6 md:w-5 bg-green-500 text-white rounded-full p-1" />{" "}
-                  <span className="text-gray-600">
-                    Discover the timeless beauty and historical depth of Malta
-                  </span>
-                </div>
+                {tourData?.specialBenefits?.map((benefit) => (
+                  <div className="flex items-center gap-3">
+                    <Check className="h-5 w-6 md:w-5 bg-green-500 text-white rounded-full p-1" />{" "}
+                    <span className="text-gray-600">{benefit}</span>
+                  </div>
+                ))}
               </div>
             </div>
 
@@ -304,40 +344,24 @@ function TourismPage() {
               </h2>
               <div className="flex flex-col md:flex-row gap-16">
                 <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <Check className="h-5 w-5 bg-green-500 text-white rounded-full p-1" />
-                    <span className="text-gray-600">Discover the timeless</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Check className="h-5 w-5 bg-green-500 text-white rounded-full p-1" />{" "}
-                    <span className="text-gray-600">Discover the timeless</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Check className="h-5 w-5 bg-green-500 text-white rounded-full p-1" />{" "}
-                    <span className="text-gray-600">Discover the timeless</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Check className="h-5 w-5 bg-green-500 text-white rounded-full p-1" />{" "}
-                    <span className="text-gray-600">Discover the timeless</span>
-                  </div>
+                  {tourData?.includes
+                    ?.filter((item) => item.isIncluded)
+                    .map((item) => (
+                      <div className="flex items-center gap-3" key={item.id}>
+                        <Check className="h-5 w-5 bg-green-500 text-white rounded-full p-1" />
+                        <span className="text-gray-600">{item.text}</span>
+                      </div>
+                    ))}
                 </div>
                 <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <Minus className="h-5 w-5 bg-red-500 text-white rounded-full p-1" />
-                    <span className="text-gray-600">Discover the timeless</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Minus className="h-5 w-5 bg-red-500 text-white rounded-full p-1" />{" "}
-                    <span className="text-gray-600">Discover the timeless</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Minus className="h-5 w-5 bg-red-500 text-white rounded-full p-1" />{" "}
-                    <span className="text-gray-600">Discover the timeless</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Minus className="h-5 w-5 bg-red-500 text-white rounded-full p-1" />{" "}
-                    <span className="text-gray-600">Discover the timeless</span>
-                  </div>
+                  {tourData?.includes
+                    ?.filter((item) => !item.isIncluded)
+                    .map((item) => (
+                      <div className="flex items-center gap-3" key={item.id}>
+                        <Minus className="h-5 w-5 bg-red-500 text-white rounded-full p-1" />
+                        <span className="text-gray-600">{item.text}</span>
+                      </div>
+                    ))}
                 </div>
               </div>
             </div>
@@ -352,7 +376,7 @@ function TourismPage() {
           <div>
             <Card className="sticky top-24">
               <CardHeader className="bg-[#E5484D] text-white rounded-t-lg">
-                <CardTitle className="text-3xl">€550.00</CardTitle>
+                <CardTitle className="text-3xl">${tourData?.price}</CardTitle>
                 <p className="text-white/90">per person</p>
               </CardHeader>
               <CardContent className="p-6 space-y-6">
@@ -425,7 +449,7 @@ function TourismPage() {
                   <div className="flex justify-between mb-2">
                     <span>Total</span>
                     <span className="font-bold">
-                      €{550 * (adults + children * 0.5)}.00
+                      €{tourData?.price * (adults + children * 0.5)}.00
                     </span>
                   </div>
                   <Button className="w-full bg-[#E5484D] hover:bg-[#E5484D]/90 text-white transition-all duration-300 transform hover:scale-[1.02]">
@@ -495,7 +519,7 @@ function TourismPage() {
       /> */}
 
       {/* Top Picks */}
-      <TopPicks />
+      <TopPicks services={services} />
     </main>
   );
 }

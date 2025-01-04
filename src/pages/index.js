@@ -93,7 +93,7 @@ const PhoneFeatures = () => {
   );
 };
 
-export const TopPicks = () => {
+export const TopPicks = ({ services }) => {
   const CARD_DATA = [
     {
       id: 1,
@@ -151,22 +151,22 @@ export const TopPicks = () => {
         className="w-full mt-16"
       >
         <CarouselContent className="max-md:mr-10">
-          {CARD_DATA.map((item, index) => (
+          {services?.map((item, index) => (
             <CarouselItem index={index} className="md:basis-1/2 lg:basis-1/3">
               <ServiceCard data={item} index={index} />
             </CarouselItem>
           ))}
 
           <CarouselItem
-            index={CARD_DATA.length}
+            index={services?.length}
             className="md:basis-1/2 lg:basis-1/3"
           />
           <CarouselItem
-            index={CARD_DATA.length + 1}
+            index={services?.length + 1}
             className="md:basis-1/2 lg:basis-1/3"
           />
         </CarouselContent>
-        <CarouselProgress length={CARD_DATA.length} />
+        <CarouselProgress length={services?.length} />
         <CarouselPrevious />
         <CarouselNext />
       </Carousel>
@@ -175,23 +175,41 @@ export const TopPicks = () => {
 };
 const CCategories = () => {
   const CATEGORIES = [
-    { desc: "Lorem Ipsum Dolor simit", name: "Tours & Excursions", image: "" },
-    { desc: "Lorem Ipsum Dolor simit", name: "Restaurants & Cafés", image: "" },
+    {
+      desc: "Lorem Ipsum Dolor simit",
+      name: "Tours & Excursions",
+      image: "",
+      category: "cat-1",
+    },
+    {
+      desc: "Lorem Ipsum Dolor simit",
+      name: "Restaurants & Cafés",
+      image: "",
+      category: "cat-2",
+    },
     {
       desc: "Lorem Ipsum Dolor simit",
       name: "Private Drivers & Airport Transfers",
       image: "",
+      category: "cat-3",
     },
     {
       desc: "Lorem Ipsum Dolor simit",
       name: "Adventure Activities",
       image: "",
+      category: "cat-4",
     },
-    { desc: "Lorem Ipsum Dolor simit", name: "Wellness & Spa", image: "" },
+    {
+      desc: "Lorem Ipsum Dolor simit",
+      name: "Wellness & Spa",
+      image: "",
+      category: "cat-5",
+    },
     {
       desc: "Lorem Ipsum Dolor simit",
       name: "Shopping & Souvenirs",
       image: "",
+      category: "cat-6",
     },
   ];
 
@@ -421,41 +439,93 @@ const MadeSimple = () => {
   );
 };
 
+import { get, ref } from "firebase/database";
+import { db } from "@/firebase/firebaseConfig";
+import { useState, useEffect } from "react";
+async function fetchDataFromRealtimeDB() {
+  try {
+    const snapshot = await get(ref(db, "services"));
+    if (snapshot.exists()) {
+      const data = snapshot.val();
+      return data;
+    } else {
+      console.log("No data available.");
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching Realtime DB data:", error);
+    return [];
+  }
+}
+
 export default function Home() {
+  const [services, setServices] = useState([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const fetchedData = await fetchDataFromRealtimeDB();
+        // Extract all services into a flat array
+        const allServices = Object.keys(fetchedData || {}).reduce(
+          (acc, categoryKey) => {
+            const subCategories = fetchedData[categoryKey];
+            if (subCategories) {
+              Object.keys(subCategories || {}).forEach((subCategoryKey) => {
+                const subCategoryData = subCategories[subCategoryKey];
+                if (subCategoryData) {
+                  Object.keys(subCategoryData || {}).forEach((itemKey) => {
+                    const item = subCategoryData[itemKey];
+                    if (item) acc.push(item); // Add the item to the flat array
+                  });
+                }
+              });
+            }
+            return acc;
+          },
+          []
+        );
+
+        setServices(allServices);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+    fetchData();
+  }, []);
   return (
     <div>
       <div className="bg-gradient-to-br from-primary-foreground to-transparent">
         {/* <Navbar /> */}
-        <main className="relative pt-16">
-          <div className="px-32">
-            <div className="relative">
+        <main className="lg:relative pt-16">
+          <div className="lg:px-32 max-lg:flex max-lg:flex-col">
+            <div className="lg:relative max-lg:order-2">
               <Image
-                className="w-full"
+                className="w-full max-lg:hidden"
                 src={"images/Union.svg"}
                 height={1000}
                 width={1000}
               />
-              <div className="absolute w-full right-5 top-5">
-                <div className="flex items-end justify-end w-full h-[70vh] gap-6">
+              <div className="lg:absolute w-full right-5 top-5 space-y-8">
+                <div className="lg:flex lg:items-end lg:justify-end w-full h-full lg:h-[70vh] gap-6 max-lg:space-y-4 max-lg:px-8">
                   <Image
                     src="/images/malta_banner.jpg"
-                    className="object-cover rounded-[2rem] relative h-40 w-40"
+                    className="object-cover rounded-[2rem] lg:relative h-auto lg:h-40 w-full lg:w-40"
                     width={200}
                     height={200}
                   />
                   <Image
                     src="/images/malta_hero.jpg"
-                    className="object-cover h-[41vh] w-[15vw] rounded-[2rem]"
+                    className="object-cover h-[41vh] w-full lg:w-[15vw] rounded-[2rem] max-lg:hidden"
                     width={200}
                     height={200}
                   />
                   <Weather />
                 </div>
-                <div className="grid grid-cols-2 m-6 px-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 m-6 px-4">
                   <div className="mb-12 pb-8">
                     <Image
                       src="/images/gozo.jpg"
-                      className="w-full rounded-3xl object-cover h-[68vh]"
+                      className="w-full rounded-3xl object-cover h-[400px] lg:h-[68vh]"
                       width={2000}
                       height={2000}
                     />
@@ -469,14 +539,14 @@ export default function Home() {
                   </div>
                   <Image
                     src="/images/lady.png"
-                    className="w-full object-cover relative top-[-8rem] ml-11 h-full"
+                    className="w-full object-cover lg:relative top-[-8rem] ml-11 h-full max-lg:hidden"
                     width={200}
                     height={200}
                   />
                 </div>
               </div>
             </div>
-            <div className="top-0 flex absolute pt-32">
+            <div className="lg:top-0 flex lg:absolute lg:pt-32 max-lg:px-16 max-lg:my-20 max-lg:order-1">
               <div>
                 <p className="font-semibold text-xl text-primary">
                   Discover Malta In One Place
@@ -502,11 +572,11 @@ export default function Home() {
           </div>
 
           {/* Categories Search */}
-          <Categories className="mt-16" />
+          <Categories className="lg:my-16 max-md:w-[80%]" />
           {/* Phone Features */}
           <PhoneFeatures />
           {/* Top Picks */}
-          <TopPicks />
+          <TopPicks services={services} />
           {/* Categories */}
           <CCategories />
           {/* Itenary */}

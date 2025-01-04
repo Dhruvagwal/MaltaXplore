@@ -18,24 +18,7 @@ import CPagination from "@/components/ui/CPagniation";
 import { Separator } from "@/components/ui/separator";
 import { useRouter } from "next/router";
 import useCustomForm from "@/hooks/use-custom-form";
-// import { get, ref } from "firebase/database";
-// import { db } from "../firebase/firebaseConfig";
 
-// async function fetchDataFromRealtimeDB() {
-//   try {
-//     const snapshot = await get(ref(db, "services")); 
-//     if (snapshot.exists()) {
-//       const data = snapshot.val(); 
-//       return data;
-//     } else {
-//       console.log("No data available.");
-//       return [];
-//     }
-//   } catch (error) {
-//     console.error("Error fetching Realtime DB data:", error);
-//     return [];
-//   }
-// }
 
 const popularEvents = [
   {
@@ -255,20 +238,6 @@ function RealTimeEvents() {
     }
   };
 
-  // const [data, setData] = useState([]);
-
-  // useEffect(() => {
-  //   async function fetchData() {
-  //     try {
-  //       const fetchedData = await fetchDataFromRealtimeDB();
-  //       setData(fetchedData);
-  //     } catch (error) {
-  //       console.error("Error fetching data:", error);
-  //     }
-  //   }
-  //   fetchData();
-  // }, []);
-
 
   return (
     <div className="from-primary-foreground to-transparent">
@@ -371,7 +340,7 @@ function RealTimeEvents() {
             height="800"
             loading="lazy"
             allowfullscreen
-            src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=New%20York&zoom=10&maptype=roadmap"
+            src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=Malta&zoom=12&maptype=roadmap"
           ></iframe>
         </div>
       </main>

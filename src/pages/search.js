@@ -9,6 +9,26 @@ import useCustomForm from "@/hooks/use-custom-form";
 import React, { useState, useEffect } from "react";
 import CPagination from "@/components/ui/CPagniation";
 import { useRouter } from "next/router";
+import Lottie from "lottie-react";
+import animationData from "../../public/empty.json";
+import { get, ref } from "firebase/database";
+import { db } from "@/firebase/firebaseConfig";
+
+async function fetchDataFromRealtimeDB() {
+  try {
+    const snapshot = await get(ref(db, "services"));
+    if (snapshot.exists()) {
+      const data = snapshot.val();
+      return data;
+    } else {
+      console.log("No data available.");
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching Realtime DB data:", error);
+    return [];
+  }
+}
 
 const CARD_DATA = [
   {
@@ -136,9 +156,42 @@ function ExploreCategories() {
   const router = useRouter();
   const { query } = router;
   const { date, category, guest } = query;
+  const [services, setServices] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedSubcategories, setSelectedSubcategories] = useState([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const fetchedData = await fetchDataFromRealtimeDB();
+        // Extract all services into a flat array
+        const allServices = Object.keys(fetchedData || {}).reduce(
+          (acc, categoryKey) => {
+            const subCategories = fetchedData[categoryKey];
+            if (subCategories) {
+              Object.keys(subCategories || {}).forEach((subCategoryKey) => {
+                const subCategoryData = subCategories[subCategoryKey];
+                if (subCategoryData) {
+                  Object.keys(subCategoryData || {}).forEach((itemKey) => {
+                    const item = subCategoryData[itemKey];
+                    if (item) acc.push(item); // Add the item to the flat array
+                  });
+                }
+              });
+            }
+            return acc;
+          },
+          []
+        );
+
+        setServices(allServices);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+    fetchData();
+  }, []);
 
   const {
     FormCheckbox,
@@ -169,15 +222,19 @@ function ExploreCategories() {
   }, [min, max]);
 
   useEffect(() => {
-    if (category) {
-      const filtered = CARD_DATA.filter(
-        (card) => card.category.toLowerCase() === category.toLowerCase()
-      );
-      setFilteredData(filtered);
-    } else {
-      setFilteredData(CARD_DATA);
+    if (!category && services.length > 0) {
+      setFilteredData(services);
     }
-  }, [category]);
+  }, [category, services]);
+
+  useEffect(() => {
+    if (category) {
+      const filtered = services.filter(
+        (service) => service.category?.toLowerCase() === category.toLowerCase()
+      );
+      setFilteredData(filtered.length > 0 ? filtered : []);
+    }
+  }, [category, services]);
 
   // Get the current page from the query parameter or default to 0
   const currentPage =
@@ -204,46 +261,47 @@ function ExploreCategories() {
 
   //apply button
   const handleApplyFilterButton = async () => {
-    let filtered = CARD_DATA;
-  
-    // Service filter based on selected categories
+    let filtered = services;
+
+    // Filter by selected categories
     if (selectedCategories.length > 0) {
-      filtered = filtered.filter((card) =>
+      filtered = filtered.filter((service) =>
         selectedCategories.some(
-          (service) => card.category.toLowerCase() === service.toLowerCase()
+          (category) =>
+            service.category?.toLowerCase() === category.toLowerCase()
         )
       );
     }
-  
-    // Type filter based on selected subcategories
+
+    // Filter by selected subcategories
     if (selectedSubcategories.length > 0) {
-      filtered = filtered.filter((card) =>
+      filtered = filtered.filter((service) =>
         selectedSubcategories.some(
-          (sub) => card.subcategory.toLowerCase() === sub.toLowerCase()
+          (subCategory) =>
+            service.subCategory?.toLowerCase() === subCategory.toLowerCase()
         )
       );
     }
-  
-    // Price range filter 
+
+    // Price range filter
     if (min !== undefined && max !== undefined) {
-      filtered = filtered.filter((card) => {
-        const price = parseFloat(card.price);
+      filtered = filtered.filter((service) => {
+        const price = parseFloat(service.price);
         return price >= min && price <= max;
       });
     }
 
     //location based filter
-    const selectedLocation = watch("location"); 
+    const selectedLocation = watch("location");
     if (selectedLocation) {
-      filtered = filtered.filter((card) =>
-        card.location.toLowerCase() === selectedLocation.toLowerCase()
+      filtered = filtered.filter(
+        (service) =>
+          service.location.toLowerCase() === selectedLocation.toLowerCase()
       );
     }
-  
-    // Set the final filtered data
+
     setFilteredData(filtered);
   };
-  
 
   const handleCategoryChange = (categoryKey, isChecked) => {
     setSelectedCategories((prev) => {
@@ -253,14 +311,14 @@ function ExploreCategories() {
         return prev.filter((key) => key !== categoryKey);
       }
     });
-  
+
     if (!isChecked) {
       setSelectedSubcategories((prev) =>
         prev.filter((sub) => !categories[categoryKey]?.subcategories[sub])
       );
     }
   };
-  
+
   const handleSubcategoryChange = (categoryKey, subKey, isChecked) => {
     setSelectedSubcategories((prev) => {
       if (isChecked) {
@@ -270,8 +328,21 @@ function ExploreCategories() {
       }
     });
   };
-  
-  
+
+  // useEffect(() => {
+  //   async function fetchData() {
+  //     try {
+  //       const fetchedData = await fetchDataFromRealtimeDB();
+  //       setData(fetchedData);
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //     }
+  //   }
+  //   fetchData();
+  // }, []);
+
+  // console.log("service card data", data);
+  // console.log("service card data", data["cat-1"]["cat1-sub4"]["02445462-a507-46aa-99ed-5e1205857bda"]);
 
   return (
     <div className="from-primary-foreground to-transparent">
@@ -330,7 +401,11 @@ function ExploreCategories() {
                                 categories[categoryKey].subcategories[subKey]
                               }
                               onChange={(isChecked) =>
-                                handleSubcategoryChange(categoryKey, subKey, isChecked)
+                                handleSubcategoryChange(
+                                  categoryKey,
+                                  subKey,
+                                  isChecked
+                                )
                               }
                             />
                           ))}
@@ -383,9 +458,17 @@ function ExploreCategories() {
             <p className="text-3xl font-bold">Results</p>
             <Separator className="my-4" />
             {filteredData.length === 0 ? (
-              <p className="text-xl font-bold text-center text-gray-500 my-40">
-                No services found for the selected category.
-              </p>
+              <div className="flex flex-col justify-center items-center my-40 gap-4">
+                <Lottie
+                  animationData={animationData}
+                  loop={true}
+                  autoplay={true}
+                  style={{ width: "300px", height: "300px" }}
+                />
+                <p className="text-xl font-bold text-gray-500">
+                  No services found.
+                </p>
+              </div>
             ) : (
               <>
                 <div className="gap-16 md:gap-4 grid grid-cols-1 md:grid-cols-2">
@@ -398,6 +481,35 @@ function ExploreCategories() {
                     />
                   ))}
                 </div>
+
+                {/* <div className="gap-16 md:gap-4 grid grid-cols-1 md:grid-cols-2">
+  {Object.keys(data || {}).map((categoryKey) => {
+    // Iterate over each category (e.g., "cat-1")
+    return Object.keys(data[categoryKey] || {}).map((subCategoryKey) => {
+      // Iterate over each subcategory (e.g., "cat1-sub4")
+      const subCategoryData = data[categoryKey]?.[subCategoryKey];
+
+      // If the subcategory exists and has individual items, render them
+      return subCategoryData ? (
+        Object.keys(subCategoryData || {}).map((itemKey) => {
+          // Iterate over each service card item (e.g., "02445462-a507-46aa-99ed-5e1205857bda")
+          const item = subCategoryData[itemKey];
+
+          // Render ServiceCard for each item
+          return (
+            <ServiceCard
+              key={item.id || itemKey} // Use the ID or itemKey as the key
+              className="col-span-1"
+              index={itemKey} // Or use index if needed
+              data={item} // Pass item data to ServiceCard
+            />
+          );
+        })
+      ) : null; // If subCategoryData is undefined, don't render
+    });
+  })}
+</div> */}
+
                 <Separator className="my-4" />
                 <CPagination
                   className="mx-auto"

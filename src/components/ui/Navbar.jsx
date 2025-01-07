@@ -8,7 +8,6 @@ import {
   contactUs,
   home,
   maltapass,
-  tourListing,
   supplier,
 } from "@/data/link";
 

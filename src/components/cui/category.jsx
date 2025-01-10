@@ -12,7 +12,7 @@ import { Button } from "../ui/button";
 import { useState, useEffect } from "react";
 import { categories } from "@/data/data";
 import { DatePicker } from "../ui/datepicker";
-import { Input } from "../ui/input";
+import { Input } from "@/components/ui/input";
 import { search } from "@/data/link";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/router";

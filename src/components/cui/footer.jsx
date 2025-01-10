@@ -1,7 +1,7 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { Separator } from "../ui/separator";
+import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import { Facebook, Twitter, Instagram, Github, Phone } from "lucide-react";
 import { home, aboutUs, contactUs, search, tourListing } from "@/data/link";

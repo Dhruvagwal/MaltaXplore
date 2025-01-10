@@ -6,7 +6,7 @@ import { ChevronDownIcon } from "@radix-ui/react-icons"
 const Accordion = AccordionPrimitive.Root
 
 const AccordionItem = React.forwardRef(({ className, ...props }, ref) => (
-  <AccordionPrimitive.Item ref={ref} className={cn("bg-zinc-50 p-4 mt-8 rounded-lg", className)} {...props} />
+  <AccordionPrimitive.Item ref={ref} className={cn("bg-zinc-50 p-4 rounded-lg", className)} {...props} />
 ))
 AccordionItem.displayName = "AccordionItem"
 

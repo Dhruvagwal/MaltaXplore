@@ -98,4 +98,33 @@ export const categories = {
     { label: "Marsa", value: "marsal" },
     { label: "Xlendi", value: "xlendi" }
   ];
+
+  export const months = [
+    { label: "January", value: "01" },
+    { label: "February", value: "02" },
+    { label: "March", value: "03" },
+    { label: "April", value: "04" },
+    { label: "May", value: "05" },
+    { label: "June", value: "06" },
+    { label: "July", value: "07" },
+    { label: "August", value: "08" },
+    { label: "September", value: "09" },
+    { label: "October", value: "10" },
+    { label: "November", value: "11" },
+    { label: "December", value: "12" }
+  ];  
   
+  export const countries = [
+    { label: "Malta", value: "malta" },
+    { label: "United Kingdom", value: "united_kingdom" },
+    { label: "United States", value: "united_states" },
+    { label: "Germany", value: "germany" },
+    { label: "France", value: "france" },
+    { label: "Italy", value: "italy" },
+    { label: "Spain", value: "spain" },
+    { label: "Portugal", value: "portugal" },
+    { label: "Australia", value: "australia" },
+    { label: "Canada", value: "canada" },
+    { label: "India", value: "india" },
+    { label: "Brazil", value: "brazil" }
+  ];

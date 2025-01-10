@@ -8,3 +8,4 @@ export const ratingReviews = "/rating-reviews"
 export const contactUs = "/contact-us"
 export const aboutUs = "/about-us"
 export const tourListing = "/tour-listing/[id]";
+export const booking = "/bookings/[id]";

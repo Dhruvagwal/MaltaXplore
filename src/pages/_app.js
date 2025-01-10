@@ -7,6 +7,9 @@ import Navbar from "@/components/ui/Navbar";
 import { Footer } from "@/components/cui/footer";
 import { BookingProvider } from "@/context/bookingContext";
 import { ContactDetailsProvider } from "@/context/contactDetailsContext";
+import { useAuthState } from "@/context/ueAuthContext";
+import useFirebase from "@/hooks/use-firebase";
+import { useEffect } from "react";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -20,6 +23,18 @@ const geistMono = localFont({
 });
 
 export default function App({ Component, pageProps }) {
+  const { setAuth } = useAuthState();
+  const {
+    auth: { getUserInfo },
+  } = useFirebase();
+
+  useEffect(() => {
+    getUserInfo().then((res) => {
+      if (!res) return;
+      setAuth(true);
+    });
+  }, []);
+  
   return (
     <>
       <ScrollArea

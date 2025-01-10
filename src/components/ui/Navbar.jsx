@@ -1,18 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useTranslation } from "react-i18next";
 import { Button } from "./button";
-import {
-  aboutUs,
-  contactUs,
-  home,
-  maltapass,
-  supplier,
-} from "@/data/link";
+import { aboutUs, contactUs, home, maltapass, supplier } from "@/data/link";
+import useFirebase from "@/hooks/use-firebase";
+import { useAuthState } from "@/context/ueAuthContext";
 
 function Navbar() {
   const { t } = useTranslation();
+
+  const {
+    auth: { googleSignIn },
+  } = useFirebase();
+  const { auth } = useAuthState();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
@@ -72,43 +73,30 @@ function Navbar() {
                 <Link href={contactUs}>Contact Us</Link>
               </Button>
             </div>
-
-            <div className="md:hidden flex flex-col md:flex-row gap-4 max-md:mt-4 w-full">
-              <Button
-                size="sm"
-                asChild
-                variant="outline"
-                className="w-full md:w-auto"
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              >
-                <Link href="#">{t("navbar.signup")}</Link>
-              </Button>
-              <Button
-                size="sm"
-                asChild
-                className="w-full md:w-auto"
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              >
-                <Link href="#">{t("navbar.login")}</Link>
-              </Button>
-            </div>
           </div>
         </div>
 
         {/* Signup and Login Buttons */}
         <div className="flex items-center gap-4">
-          <Button
-            size="sm"
-            asChild
-            variant="outline"
-            className="md:w-auto w-full max-md:hidden"
-          >
-            <Link href="#">{t("navbar.signup")}</Link>
-          </Button>
-          <Button size="sm" asChild className="md:w-auto w-full max-md:hidden">
-            <Link href="#">{t("navbar.login")}</Link>
-          </Button>
-
+          {auth ? (
+            <Button
+              size="sm"
+              asChild
+              className="w-full md:w-auto"
+              onClick={() => {}}
+            >
+              <Link href="#">Dashboard</Link>
+            </Button>
+          ) : (
+            <Button
+              size="sm"
+              asChild
+              className="w-full md:w-auto"
+              onClick={() => googleSignIn()}
+            >
+              <Link href="#">{t("navbar.login")}</Link>
+            </Button>
+          )}
           {/* Hamburger Menu */}
           <button
             className="md:hidden p-2 rounded focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"

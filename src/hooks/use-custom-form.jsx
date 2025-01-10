@@ -24,10 +24,11 @@ import React from "react";
 import { useForm, Path, DefaultValues } from "react-hook-form";
 import { z, ZodSchema } from "zod";
 import { cn } from "@/lib/utils";
+import { Slider } from "@/components/ui/slider";
+import { Command, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 
 const useCustomForm = ({ schema, defaultValues = {} }) => {  
   const form = useForm({
-    resolver: zodResolver(schema),
     defaultValues,
     mode: "onChange",
   });
@@ -157,6 +158,43 @@ const useCustomForm = ({ schema, defaultValues = {} }) => {
     />
   );
 
+  
+  const FormCommand = ({ title, id, options }) => (
+    <FormField
+      control={control}
+      name={id}
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>{title}</FormLabel>
+          <FormControl>
+            <Command>
+              <CommandInput
+                placeholder="Search or command"
+                value={field.value}
+                onValueChange={field.onChange}
+              />
+                <CommandList>
+              
+                  <CommandGroup heading="Locations">
+                    {options.map((option) => (
+                      <CommandItem
+                        key={option.value}
+                        onSelect={() => field.onChange(option.value)}
+                      >
+                        {option.label}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+            </Command>
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+
+
   const FormTextarea = ({ title, placeholder, id }) => (
     <FormField
       control={control}
@@ -190,6 +228,31 @@ const useCustomForm = ({ schema, defaultValues = {} }) => {
     />
   );
 
+
+  const FormSlider = ({ title, id, min, max, step = 1 }) => (
+    <FormField
+      control={control}
+      name={id}
+      render={({ field }) => {
+        return (
+          <FormItem>
+            <FormLabel>{title}</FormLabel>
+            <FormControl>
+              <Slider
+                min={min}
+                max={max}
+                step={step}
+                value={field.value || [min, max]} // Default to min value if no value is set
+                onValueChange={field.onChange} // Pass updated value to form
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        );
+      }}
+    />
+  );
+
   return {
     FormWrapper,
     FormInput,
@@ -199,6 +262,8 @@ const useCustomForm = ({ schema, defaultValues = {} }) => {
     FormTextarea,
     FormCheckbox,
     handleSubmit,
+    FormSlider,
+    FormCommand,
     ...props,
   };
 };

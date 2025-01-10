@@ -162,39 +162,39 @@ const CCategories = () => {
   const CATEGORIES = [
     {
       desc: "Lorem Ipsum Dolor simit",
-      name: "Tours & Excursions",
-      image: "",
+      name: "Tour Operator",
+      image: "/tour-operator.jpg",
       category: "cat-1",
     },
     {
       desc: "Lorem Ipsum Dolor simit",
-      name: "Restaurants & Cafés",
-      image: "",
+      name: "Accommodation Provider",
+      image: "/accomodation.jpg",
       category: "cat-2",
     },
     {
       desc: "Lorem Ipsum Dolor simit",
-      name: "Private Drivers & Airport Transfers",
-      image: "",
+      name: "Car Rental & Transportation",
+      image: "/car-rental.jpg",
       category: "cat-3",
     },
     {
       desc: "Lorem Ipsum Dolor simit",
-      name: "Adventure Activities",
-      image: "",
-      category: "cat-4",
-    },
-    {
-      desc: "Lorem Ipsum Dolor simit",
-      name: "Wellness & Spa",
-      image: "",
+      name: "Adventure Activities & Experiences",
+      image: "/adventure.jpg",
       category: "cat-5",
     },
     {
       desc: "Lorem Ipsum Dolor simit",
-      name: "Shopping & Souvenirs",
-      image: "",
+      name: "Photography & Videography Services",
+      image: "/photography.jpg",
       category: "cat-6",
+    },
+    {
+      desc: "Lorem Ipsum Dolor simit",
+      name: "Conference & Business Meeting Venues",
+      image: "/conf-hall.jpg",
+      category: "cat-7",
     },
   ];
 
@@ -251,10 +251,10 @@ const Iteneray = () => {
           </div>
           <Button
             variant="secondary"
-            className="p-8 mt-12 md:mt-32 md:px-16 max-md:w-full"
+            className="p-8 mt-12 md:mt-40 md:px-16 max-md:w-full"
             size="lg"
           >
-            Build My Itinerary
+            Start Exploring
           </Button>
         </div>
       </div>
@@ -477,7 +477,7 @@ export default function Home() {
         console.error("Error fetching data:", error);
       } finally {
         setIsLoading(false);
-      }  
+      }
     }
     fetchData();
   }, []);
@@ -549,7 +549,6 @@ export default function Home() {
                 <p className="text-lg lg:text-xl leading-[1.5]">
                   From tours and adventures to dining and relaxation, <br />
                   find everything you need for the perfect trip to Malta - all
-                  
                   <br />
                   in one place
                 </p>
@@ -559,14 +558,14 @@ export default function Home() {
                 </Button>
               </div>
             </div>
-          </div>  
+          </div>
 
           {/* Categories Search */}
           <Categories className="lg:my-16 max-md:w-[80%]" />
-          {/* Phone Features */} 
-          <PhoneFeatures /> 
+          {/* Phone Features */}
+          <PhoneFeatures />
           {/* Top Picks */}
-          <TopPicks services={services} loading={isLoading}/>
+          <TopPicks services={services} loading={isLoading} />
           {/* Categories */}
           <CCategories />
           {/* Itenary */}

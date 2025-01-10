@@ -162,25 +162,25 @@ class Weather extends React.Component {
 
   render() {
     return (
-      <div className="lg:relative bg-red-100 rounded-[3rem] lg:w-[32vw] h-full p-8 lg:p-4 max-lg:space-y-8">
+      <div className="lg:relative bg-red-100 rounded-[3rem] lg:w-[32vw] h-full p-4 max-lg:space-y-8">
         <div className="bg-red-400 items-center text-white flex justify-between p-4 rounded-2xl">
-          <span className="text-xl">
+          <span className="text-sm md:text-xl">
             {this.state.city}, {this.state.country}
           </span>
-          <div className="">{dateBuilder(new Date())}</div>
+          <div className="text-sm md:text-xl">{dateBuilder(new Date())}</div>
         </div>
         <Forcast data={this.state} />
         {/* <div className="bg-gradient-to-r from-black to-green-800 h-[30vh] rounded-3xl mt-[-1rem] text-white p-4">
           Today
         </div> */}
-        <div className="bg-gradient-to-r from-black to-green-800 h-[26vh] rounded-3xl mt-[-1rem] text-white p-4">
+        <div className="bg-gradient-to-r from-black to-green-800 h-[26vh] rounded-3xl text-white p-4">
           <h2 className="text-xl font-md pl-4">Today</h2>
           <div className="grid grid-cols-4">
             {this.state.hourlyWeather?.map((hour, index) => (
               <div key={index} className="flex flex-col items-center gap-2 py-8 lg:py-4">
-                <p className="font-thin">{hour.time}</p>
+                <p className="text-xs md:text-base font-thin">{hour.time}</p>
                 <img src={`https:${hour.conditionIcon}`} alt="" className="w-10 h-10"/>
-                <p className="text-lg">{Math.round(hour.temperature)}°C</p>
+                <p className="text-sm md:text-lg">{Math.round(hour.temperature)}°C</p>
               </div>
             ))}
           </div>

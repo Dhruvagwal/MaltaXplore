@@ -26,6 +26,7 @@ import EventCard from "@/components/cui/event";
 import CategoryCard from "@/components/cui/CategoryCard";
 import { Categories } from "@/components/cui/category";
 import { ServiceCard } from "@/components/cui/ServiceCard";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const PhoneFeatures = () => {
   const FeatureCard = ({ title = "", desc = "" }) => (
@@ -93,57 +94,41 @@ const PhoneFeatures = () => {
   );
 };
 
-export const TopPicks = ({ services }) => {
-  const CARD_DATA = [
-    {
-      id: 1,
-      image: "https://example.com/image1.jpg",
-      title: "Explore Malta’s Ancient Wonders",
-      price: 150,
-      description:
-        "From UNESCO World Heritage sites to hidden catacombs, explore Malta’s rich history with our guided tours.",
-      category: "Cat-1", // Cultural & Heritage
-    },
-    {
-      id: 2,
-      image: "https://example.com/image2.jpg",
-      title: "Luxury Yacht Charters",
-      price: "500",
-      description:
-        "Sail the Mediterranean in style. Enjoy breathtaking views, exclusive access to hidden coves, and VIP service.",
-      category: "Cat-5", // Adventure Activities & Experiences
-    },
-    {
-      id: 3,
-      image: "https://example.com/image3.jpg",
-      title: "Dine by the Sea",
-      price: "500",
-      description:
-        "Taste authentic Maltese cuisine at our top seaside restaurants. From fresh seafood to local delicacies...",
-      category: "Cat-4", // Dining & Culinary
-    },
-    {
-      id: 4,
-      image: "https://example.com/image4.jpg",
-      title: "Scuba Diving Adventures",
-      price: "500",
-      description:
-        "Dive into the deep blue and discover Malta’s underwater treasures. Perfect for beginners and seasoned divers.",
-      category: "Cat-5", // Adventure Activities & Experiences
-    },
-  ];
+export const TopPicks = ({ services, loading }) => {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) return null;
 
   return (
     <div className="my-48 px-9 md:px-32">
       <div className="flex flex-col md:flex-row lg:gap-64 justify-between">
-        <p className="text-4xl md:text-5xl font-bold">
-          Top Picks for Your Maltese Adventure
-        </p>
-        <p className="text-xl text-left md:text-right">
-          Start with our most popular experiences and tours perfect for getting
-          the most out of Malta.
-        </p>
+        {loading ? (
+          <div className="flex flex-col gap-4 w-1/2">
+            <Skeleton className="h-8" />
+            <Skeleton className="h-8" />
+          </div>
+        ) : (
+          <p className="text-4xl md:text-5xl font-bold">
+            Top Picks for Your Maltese Adventure
+          </p>
+        )}
+        {loading ? (
+          <div className="flex flex-col gap-4 w-1/2 ">
+            <Skeleton className="h-6" />
+            <Skeleton className="h-6" />
+          </div>
+        ) : (
+          <p className="text-xl text-left md:text-right">
+            "Start with our most popular experiences and tours perfect for
+            getting the most out of Malta."
+          </p>
+        )}
       </div>
+
       <Carousel
         opts={{
           align: "start",
@@ -153,7 +138,7 @@ export const TopPicks = ({ services }) => {
         <CarouselContent className="max-md:mr-10">
           {services?.map((item, index) => (
             <CarouselItem index={index} className="md:basis-1/2 lg:basis-1/3">
-              <ServiceCard data={item} index={index} />
+              <ServiceCard data={item} index={index} loading={loading} />
             </CarouselItem>
           ))}
 
@@ -234,7 +219,7 @@ const CCategories = () => {
 
 const Iteneray = () => {
   return (
-    <div className="my-48 px-8 md:px-32">
+    <div className="my-48 px-8 md:px-32 xl:px-20">
       <div className="flex flex-col md:flex-row gap-8 lg:gap-64 justify-between max-md:px-1">
         <p className="text-5xl font-bold">Create Your Own Perfect Itinerary</p>
         <p className="text-xl md:text-right">
@@ -259,7 +244,7 @@ const Iteneray = () => {
               love, from sightseeing tours <br />
               to gourmet restaurants.
             </p>
-            <p className="text-4xl md:text-6xl md:mt-[-4rem] shrink-0 md:text-right font-bold leading-[1.5]">
+            <p className="text-4xl md:text-6xl md:mt-[-2rem] shrink-0 md:text-right font-bold leading-[1.5]">
               Don’t know <br />
               where to start?{" "}
             </p>
@@ -460,10 +445,12 @@ async function fetchDataFromRealtimeDB() {
 
 export default function Home() {
   const [services, setServices] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
       try {
+        setIsLoading(true);
         const fetchedData = await fetchDataFromRealtimeDB();
         // Extract all services into a flat array
         const allServices = Object.keys(fetchedData || {}).reduce(
@@ -475,7 +462,7 @@ export default function Home() {
                 if (subCategoryData) {
                   Object.keys(subCategoryData || {}).forEach((itemKey) => {
                     const item = subCategoryData[itemKey];
-                    if (item) acc.push(item); // Add the item to the flat array
+                    if (item) acc.push(item);
                   });
                 }
               });
@@ -488,16 +475,19 @@ export default function Home() {
         setServices(allServices);
       } catch (error) {
         console.error("Error fetching data:", error);
-      }
+      } finally {
+        setIsLoading(false);
+      }  
     }
     fetchData();
   }, []);
+
   return (
     <div>
       <div className="bg-gradient-to-br from-primary-foreground to-transparent">
         {/* <Navbar /> */}
         <main className="lg:relative pt-16">
-          <div className="lg:px-32 max-lg:flex max-lg:flex-col">
+          <div className="md:px-32 xl:px-20 max-lg:flex max-lg:flex-col">
             <div className="lg:relative max-lg:order-2">
               <Image
                 className="w-full max-lg:hidden"
@@ -505,17 +495,17 @@ export default function Home() {
                 height={1000}
                 width={1000}
               />
-              <div className="lg:absolute w-full right-5 top-5 space-y-8">
+              <div className="lg:absolute w-full right-10 top-20 space-y-8">
                 <div className="lg:flex lg:items-end lg:justify-end w-full h-full lg:h-[70vh] gap-6 max-lg:space-y-4 max-lg:px-8">
                   <Image
                     src="/images/malta_banner.jpg"
-                    className="object-cover rounded-[2rem] lg:relative h-auto lg:h-40 w-full lg:w-40"
+                    className="object-cover rounded-[2rem] lg:relative h-auto lg:h-40 w-full lg:w-40 top-8"
                     width={200}
                     height={200}
                   />
                   <Image
                     src="/images/malta_hero.jpg"
-                    className="object-cover h-[41vh] w-full lg:w-[15vw] rounded-[2rem] max-lg:hidden"
+                    className="object-cover h-[48vh] lg:relative w-full lg:w-[15vw] rounded-[2rem] max-lg:hidden top-3"
                     width={200}
                     height={200}
                   />
@@ -525,12 +515,12 @@ export default function Home() {
                   <div className="mb-12 pb-8">
                     <Image
                       src="/images/gozo.jpg"
-                      className="w-full rounded-3xl object-cover h-[400px] lg:h-[68vh]"
+                      className="w-full rounded-3xl lg:relative object-cover h-[400px] lg:h-[68vh] top-10 left-4"
                       width={2000}
                       height={2000}
                     />
                     <Button
-                      className="relative text-white bottom-12 text-xl"
+                      className="relative text-white bottom-4 left-4 text-xl"
                       variant="link"
                       asChild
                     >
@@ -546,37 +536,37 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <div className="lg:top-0 flex lg:absolute lg:pt-32 max-lg:px-16 max-lg:my-20 max-lg:order-1">
+            <div className="lg:top-0 flex lg:absolute lg:pt-32 max-lg:my-20 max-lg:order-1 max-md:justify-center px-8 lg:px-0">
               <div>
                 <p className="font-semibold text-xl text-primary">
                   Discover Malta In One Place
                 </p>
                 <br />
-                <h1 className="text-7xl leading-[1.3] font-bold">
+                <h1 className="text-5xl md:text-6xl lg:text-7xl leading-[1.3] font-bold">
                   Discover Malta's Best <br /> Experiences
                 </h1>
                 <br />
-                <p className="text-xl leading-[1.5]">
+                <p className="text-lg lg:text-xl leading-[1.5]">
                   From tours and adventures to dining and relaxation, <br />
                   find everything you need for the perfect trip to Malta - all
-                  in
+                  
                   <br />
-                  one place
+                  in one place
                 </p>
                 <br />
-                <Button asChild size="lg">
+                <Button asChild size="lg" className="md:p-8">
                   <Link href={search}>Start Your Journey</Link>
                 </Button>
               </div>
             </div>
-          </div>
+          </div>  
 
           {/* Categories Search */}
           <Categories className="lg:my-16 max-md:w-[80%]" />
-          {/* Phone Features */}
-          <PhoneFeatures />
+          {/* Phone Features */} 
+          <PhoneFeatures /> 
           {/* Top Picks */}
-          <TopPicks services={services} />
+          <TopPicks services={services} loading={isLoading}/>
           {/* Categories */}
           <CCategories />
           {/* Itenary */}

@@ -1,70 +1,52 @@
 "use client";
-import React, { useReducer } from "react";
+import React from "react";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { ref, set } from "firebase/database";
-import { db } from "@/firebase/firebaseConfig";
-
-const initialState = {
-  supplierType: "",
-  businessName: "",
-  contactPerson: "",
-  phone: "",
-  email: "",
-  businessAddress: "",
-  toursActivities: "",
-  businessLicenseNumber: "",
-  bankDetails: "",
-};
-
-function reducer(state, action) {
-  return { ...state, [action.field]: action.value };
-}
+import { addSeller, businessActivities, types } from "@/lib/schema";
+import useCustomForm from "@/hooks/use-custom-form";
+import useFirebase from "@/hooks/use-firebase";
+import { useToast } from "@/hooks/use-toast";
+import { v4 } from "uuid";
 
 function SupplierRegistration() {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const { toast } = useToast();
 
-  const handleChange = (field) => (event) => {
-    dispatch({ field, value: event.target.value });
+  const {
+    FormWrapper,
+    FormInput,
+    FormSelect,
+    formState: { isSubmitting },
+    watch,
+  } = useCustomForm({
+    schema: addSeller,
+  });
+
+  const {
+    crud: { writeData },
+  } = useFirebase();
+
+  const businessType = watch("type");
+
+  const handleSubmit = async (data) => {
+    try {
+      await writeData(`/supplier-queries/${v4()}`, data);
+      toast({
+        variant: "success",
+        title: "Form Submitted",
+        description: "Registration Successfull!",
+      });
+    } catch (error) {
+      console.error("Error submitting the form: ", error);
+    }
   };
 
-  const handleSelectChange = (field, value) => {
-    dispatch({ field, value });
-  };
-
-  const handleSubmit = () => {
-    console.log("Form Data:", state);
-
-    // const supplierId = Date.now().toString();
-
-    // const supplierRef = ref(db, "suppliers/" + supplierId);
-
-    // set(supplierRef, {
-    //   supplierType: state.supplierType,
-    //   businessName: state.businessName,
-    //   contactPerson: state.contactPerson,
-    //   phone: state.phone,
-    //   email: state.email,
-    //   businessAddress: state.businessAddress,
-    //   toursActivities: state.toursActivities,
-    //   businessLicenseNumber: state.businessLicenseNumber,
-    //   bankDetails: state.bankDetails,
-    // })
-    //   .then(() => {
-    //     console.log("Data successfully saved to Firebase!");
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error saving data to Firebase:", error);
-    //   });
+  const onError = (errors) => {
+    toast({
+      variant: "destructive",
+      title: "Invalid Form Submission",
+      description: "Please check the form for errors and try again.",
+    });
+    console.error(errors);
   };
 
   return (
@@ -78,108 +60,63 @@ function SupplierRegistration() {
             <p className="text-2xl font-semibold mx-7">Supplier Registration</p>
           </CardHeader>
           <CardContent className="mx-8 my-4">
-            <div>
-              <label
-                htmlFor="supplierType"
-                className="block text-base font-semibold"
-              >
-                Supplier type
-              </label>
-              <Select
-                onValueChange={(value) =>
-                  handleSelectChange("supplierType", value)
-                }
-              >
-                <SelectTrigger id="supplierType" className="mt-2 h-16">
-                  <SelectValue placeholder="Select an option" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem value="hotels">Hotels</SelectItem>
-                    <SelectItem value="things">Things to do</SelectItem>
-                    <SelectItem value="restaurants">Restaurants</SelectItem>
-                    <SelectItem value="homes">Holiday Homes</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {[
-              {
-                id: "businessName",
-                label: "Business Name",
-                placeholder: "Type your business name",
-              },
-              {
-                id: "contactPerson",
-                label: "Contact Person",
-                placeholder: "Contact person name",
-              },
-              { id: "phone", label: "Phone", placeholder: "Phone number" },
-              { id: "email", label: "Email", placeholder: "Email address" },
-              {
-                id: "businessAddress",
-                label: "Business Address",
-                placeholder: "Business address",
-              },
-              {
-                id: "businessLicenseNumber",
-                label: "Business License Number",
-                placeholder: "License number",
-              },
-              {
-                id: "bankDetails",
-                label: "Bank Details",
-                placeholder: "Bank details",
-              },
-            ].map((input) => (
-              <div key={input.id} className="mt-6">
-                <label
-                  htmlFor={input.id}
-                  className="block text-base font-semibold"
-                >
-                  {input.label}
-                </label>
-                <Input
+            <FormWrapper
+              className="flex flex-col gap-6"
+              onSubmit={handleSubmit}
+              onError={onError}
+            >
+              <FormSelect
+                id="type"
+                options={types}
+                title="Business Type"
+                className="p-4"
+                required
+              />
+              <FormSelect
+                id="activities"
+                options={businessActivities[businessType] ?? []}
+                title="Tours/Activities"
+                className="h-12"
+                required
+              />
+              {[
+                {
+                  id: "businessName",
+                  label: "Business Name",
+                  placeholder: "Type your business name",
+                },
+                {
+                  id: "name",
+                  label: "Contact Person",
+                  placeholder: "Contact person name",
+                },
+                {
+                  id: "contactNumber",
+                  label: "Phone number",
+                  placeholder: "Phone number",
+                },
+                { id: "email", label: "Email", placeholder: "Email address" },
+                {
+                  id: "businessAddress",
+                  label: "Business Address",
+                  placeholder: "Business address",
+                },
+                {
+                  id: "license",
+                  label: "Business License Number",
+                  placeholder: "License number",
+                },
+              ].map((input) => (
+                <FormInput
                   id={input.id}
-                  type="text"
+                  title={input.label}
                   placeholder={input.placeholder}
-                  className="mt-2 h-16"
-                  value={state[input.id]}
-                  onChange={handleChange(input.id)}
+                  required
                 />
-              </div>
-            ))}
+              ))}
 
-            <div className="mt-6">
-              <label
-                htmlFor="toursActivities"
-                className="block text-base font-semibold"
-              >
-                Tours/Activities
-              </label>
-              <Select
-                onValueChange={(value) =>
-                  handleSelectChange("toursActivities", value)
-                }
-              >
-                <SelectTrigger id="toursActivities" className="mt-2 h-16">
-                  <SelectValue placeholder="Type of Tours/Activities Offered" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem value="sightseeing">Sightseeing</SelectItem>
-                    <SelectItem value="adventure">Adventure</SelectItem>
-                    <SelectItem value="culinary">Culinary Tours</SelectItem>
-                    <SelectItem value="cultural">Cultural Tours</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <Button className="p-8 text-base mt-6" onClick={handleSubmit}>
-              Submit
-            </Button>
+              <Button className="p-8 text-base">Submit</Button>
+            </FormWrapper>
           </CardContent>
         </Card>
         <div className="md:px-32 lg:px-64 mt-16">

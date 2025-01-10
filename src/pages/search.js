@@ -30,119 +30,6 @@ async function fetchDataFromRealtimeDB() {
   }
 }
 
-const CARD_DATA = [
-  {
-    id: 1,
-    image: "https://example.com/image1.jpg",
-    title: "Explore Malta’s Ancient Wonders",
-    price: 150,
-    description:
-      "From UNESCO World Heritage sites to hidden catacombs, explore Malta’s rich history with our guided tours.",
-    category: "cat-1", // Tour Operator
-    subcategory: "cat1-sub1", // Guided Walking Tours
-    location: "Valletta", // Added location
-  },
-  {
-    id: 2,
-    image: "https://example.com/image2.jpg",
-    title: "Luxury Yacht Charters",
-    price: 500,
-    description:
-      "Sail the Mediterranean in style. Enjoy breathtaking views, exclusive access to hidden coves, and VIP service.",
-    category: "cat-5", // Adventure Activities & Experiences
-    subcategory: "cat5-sub2", // Paragliding
-    location: "Sliema", // Added location
-  },
-  {
-    id: 3,
-    image: "https://example.com/image3.jpg",
-    title: "Dine by the Sea",
-    price: 500,
-    description:
-      "Taste authentic Maltese cuisine at our top seaside restaurants. From fresh seafood to local delicacies...",
-    category: "cat-4", // Dining & Culinary
-    subcategory: "cat4-sub3", // VIP/Executive Transportation
-    location: "Mosta", // Added location
-  },
-  {
-    id: 4,
-    image: "https://example.com/image4.jpg",
-    title: "Scuba Diving Adventures",
-    price: 500,
-    description:
-      "Dive into the deep blue and discover Malta’s underwater treasures. Perfect for beginners and seasoned divers.",
-    category: "cat-5", // Adventure Activities & Experiences
-    subcategory: "cat5-sub3", // Ziplining
-    location: "Gozo", // Added location
-  },
-  {
-    id: 5,
-    image: "https://example.com/image5.jpg",
-    title: "Cultural Heritage Tour",
-    price: 500,
-    description:
-      "Experience the cultural gems of Malta with expert-guided tours of museums, historical landmarks, and more.",
-    category: "cat-1", // Tour Operator
-    subcategory: "cat1-sub3", // Historical & Cultural Tours
-    location: "Valletta", // Added location
-  },
-  {
-    id: 6,
-    image: "https://example.com/image6.jpg",
-    title: "Mountain Hiking Trails",
-    price: 500,
-    description:
-      "Embark on a breathtaking hike through Malta's rugged terrain, offering panoramic views of the Mediterranean.",
-    category: "cat-5", // Adventure Activities & Experiences
-    subcategory: "cat5-sub1", // Rock Climbing
-    location: "Mellieha", // Added location
-  },
-  {
-    id: 7,
-    image: "https://example.com/image7.jpg",
-    title: "Private Wine Tasting",
-    price: 500,
-    description:
-      "Taste the finest wines from Malta's vineyards, paired with locally sourced delicacies in an exclusive setting.",
-    category: "cat-4", // Dining & Culinary
-    subcategory: "cat4-sub1", // Private Chauffeur
-    location: "St. Julian's", // Added location
-  },
-  {
-    id: 8,
-    image: "https://example.com/image8.jpg",
-    title: "Hot Air Balloon Ride",
-    price: 150,
-    description:
-      "Soar above Malta’s stunning landscapes and take in panoramic views from a private hot air balloon ride.",
-    category: "cat-5", // Adventure Activities & Experiences
-    subcategory: "cat5-sub4", // Quad Biking
-    location: "Birzebbuga", // Added location
-  },
-  {
-    id: 9,
-    image: "https://example.com/image9.jpg",
-    title: "Island-Hopping Adventures",
-    price: 500,
-    description:
-      "Explore Malta’s neighboring islands by boat, enjoying secluded beaches, charming villages, and crystal-clear waters.",
-    category: "cat-5", // Adventure Activities & Experiences
-    subcategory: "cat5-sub5", // Off-Road Jeep Safari
-    location: "Rabat", // Added location
-  },
-  {
-    id: 10,
-    image: "https://example.com/image10.jpg",
-    title: "Spa and Wellness Retreat",
-    price: 500,
-    description:
-      "Relax and rejuvenate at one of Malta's luxury spas, offering treatments inspired by Mediterranean healing traditions.",
-    category: "cat-7", // Conference & Business Meeting Venues
-    subcategory: "cat7-sub5", // Catering Services
-    location: "Mdina", // Added location
-  },
-];
-
 const chunkArray = (array, size) => {
   const result = [];
   for (let i = 0; i < array.length; i += size) {
@@ -160,11 +47,14 @@ function ExploreCategories() {
   const [filteredData, setFilteredData] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedSubcategories, setSelectedSubcategories] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
       try {
+        setIsLoading(true);
         const fetchedData = await fetchDataFromRealtimeDB();
+
         // Extract all services into a flat array
         const allServices = Object.keys(fetchedData || {}).reduce(
           (acc, categoryKey) => {
@@ -186,10 +76,13 @@ function ExploreCategories() {
         );
 
         setServices(allServices);
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
+        setIsLoading(false);
       }
     }
+
     fetchData();
   }, []);
 
@@ -329,21 +222,6 @@ function ExploreCategories() {
     });
   };
 
-  // useEffect(() => {
-  //   async function fetchData() {
-  //     try {
-  //       const fetchedData = await fetchDataFromRealtimeDB();
-  //       setData(fetchedData);
-  //     } catch (error) {
-  //       console.error("Error fetching data:", error);
-  //     }
-  //   }
-  //   fetchData();
-  // }, []);
-
-  // console.log("service card data", data);
-  // console.log("service card data", data["cat-1"]["cat1-sub4"]["02445462-a507-46aa-99ed-5e1205857bda"]);
-
   return (
     <div className="from-primary-foreground to-transparent">
       <main className="pt-16">
@@ -457,7 +335,8 @@ function ExploreCategories() {
           <div className="md:col-span-4 max-md:my-12">
             <p className="text-3xl font-bold">Results</p>
             <Separator className="my-4" />
-            {filteredData.length === 0 ? (
+
+            {!isLoading && filteredData.length === 0 ? (
               <div className="flex flex-col justify-center items-center my-40 gap-4">
                 <Lottie
                   animationData={animationData}
@@ -472,43 +351,18 @@ function ExploreCategories() {
             ) : (
               <>
                 <div className="gap-16 md:gap-4 grid grid-cols-1 md:grid-cols-2">
-                  {chunkedData[currentPage]?.map((item, index) => (
+                  {Array.from({
+                    length: isLoading ? 4 : chunkedData[currentPage]?.length,
+                  }).map((_, index) => (
                     <ServiceCard
                       key={index}
-                      className="col-span-1"
                       index={index}
-                      data={item}
+                      data={isLoading ? {} : chunkedData[currentPage][index]}
+                      loading={isLoading}
+                      className="col-span-1"
                     />
                   ))}
                 </div>
-
-                {/* <div className="gap-16 md:gap-4 grid grid-cols-1 md:grid-cols-2">
-  {Object.keys(data || {}).map((categoryKey) => {
-    // Iterate over each category (e.g., "cat-1")
-    return Object.keys(data[categoryKey] || {}).map((subCategoryKey) => {
-      // Iterate over each subcategory (e.g., "cat1-sub4")
-      const subCategoryData = data[categoryKey]?.[subCategoryKey];
-
-      // If the subcategory exists and has individual items, render them
-      return subCategoryData ? (
-        Object.keys(subCategoryData || {}).map((itemKey) => {
-          // Iterate over each service card item (e.g., "02445462-a507-46aa-99ed-5e1205857bda")
-          const item = subCategoryData[itemKey];
-
-          // Render ServiceCard for each item
-          return (
-            <ServiceCard
-              key={item.id || itemKey} // Use the ID or itemKey as the key
-              className="col-span-1"
-              index={itemKey} // Or use index if needed
-              data={item} // Pass item data to ServiceCard
-            />
-          );
-        })
-      ) : null; // If subCategoryData is undefined, don't render
-    });
-  })}
-</div> */}
 
                 <Separator className="my-4" />
                 <CPagination

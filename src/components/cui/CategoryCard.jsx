@@ -26,7 +26,7 @@ const CategoryCard = ({ data, index }) => {
           <Link
             href={{
               pathname: search,
-              query: { category: data.name },
+              query: { category: data.category },
             }}
           >
             <ArrowTopRightIcon />

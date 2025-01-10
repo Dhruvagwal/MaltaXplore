@@ -7,4 +7,4 @@ export const maltapass = "/maltapass"
 export const ratingReviews = "/rating-reviews"
 export const contactUs = "/contact-us"
 export const aboutUs = "/about-us"
-export const tourListing = "/tour-listing"
+export const tourListing = "/tour-listing/[id]";

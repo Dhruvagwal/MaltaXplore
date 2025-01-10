@@ -8,7 +8,6 @@ import {
   contactUs,
   home,
   maltapass,
-  tourListing,
   supplier,
 } from "@/data/link";
 
@@ -29,9 +28,9 @@ function Navbar() {
           <div
             className={`${
               isMobileMenuOpen ? "flex" : "hidden"
-            } md:flex flex-col md:flex-row items-center md:gap-4 gap-6 absolute md:static top-full left-0 md:bg-transparent bg-white p-4 md:p-0 z-40 w-full`}
+            } md:flex flex-col md:flex-row items-center md:gap-4 gap-6 absolute md:static top-full left-0 md:bg-transparent bg-white px-8 md:p-0 z-40 w-full`}
           >
-            <div className="flex md:flex-row flex-col items-center md:gap-4 gap-6 mx-auto">
+            <div className="flex md:flex-row flex-col items-center gap-4 mx-auto">
               <Button
                 size="sm"
                 asChild

@@ -29,7 +29,7 @@ import { ServiceCard } from "@/components/cui/ServiceCard";
 
 const PhoneFeatures = () => {
   const FeatureCard = ({ title = "", desc = "" }) => (
-    <Card className="w-[350px] text-left">
+    <Card className="w-[350px] text-left max-md:w-full">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <div className="shadow-md border rounded-full p-2">
@@ -42,13 +42,13 @@ const PhoneFeatures = () => {
     </Card>
   );
   return (
-    <div className="p-16 relative text-center bg-red-100 mt-32 cut_corner">
+    <div className="p-8 md:p-16 relative text-center bg-red-100 mt-32 cut_corner">
       <img
         src="images/curve_line.svg"
-        className="absolute z-[-1] h-full w-full object-scale-down"
+        className="md:absolute z-[-1] h-full w-full object-scale-down"
       />
-      <p className="text-5xl font-bold">Why Choose MaltaXplore?</p>
-      <div className="flex mt-16 items-center gap-8 justify-center">
+      <p className="text-4xl md:text-5xl font-bold">Why Choose MaltaXplore?</p>
+      <div className="md:flex mt-16 items-center gap-8 justify-center">
         <div className="flex items-center flex-col gap-8">
           <FeatureCard
             title="All-in-One Platform"
@@ -60,22 +60,22 @@ const PhoneFeatures = () => {
           />
           <Image
             src="/images/pool.jpg"
-            className="object-cover rounded-[2rem] relative h-64 w-64"
+            className="object-cover rounded-[2rem] relative h-64 w-full md:w-64"
             width={200}
             height={200}
           />
         </div>
-        <div>
+        <div className="max-md:flex max-md:items-center max-md:flex-col mt-8 md:mt-0">
           <img src="images/phone.png" />
           <br />
           <Button asChild size="lg" className="p-8">
             <Link href={search}> Start Exploring</Link>
           </Button>
         </div>
-        <div className="flex items-center flex-col gap-8">
+        <div className="flex items-center flex-col gap-8 mt-8 md:mt-0">
           <Image
             src="/images/malta_banner.jpg"
-            className="object-cover rounded-[2rem] relative h-64 w-64"
+            className="object-cover rounded-[2rem] relative h-64 w-full md:w-64"
             width={200}
             height={200}
           />
@@ -93,33 +93,46 @@ const PhoneFeatures = () => {
   );
 };
 
-export const TopPicks = () => {
+export const TopPicks = ({ services }) => {
   const CARD_DATA = [
     {
-      image: "",
+      id: 1,
+      image: "https://example.com/image1.jpg",
       title: "Explore Malta’s Ancient Wonders",
+      price: 150,
       description:
         "From UNESCO World Heritage sites to hidden catacombs, explore Malta’s rich history with our guided tours.",
+      category: "Cat-1", // Cultural & Heritage
     },
     {
-      image: "",
+      id: 2,
+      image: "https://example.com/image2.jpg",
       title: "Luxury Yacht Charters",
+      price: "500",
       description:
         "Sail the Mediterranean in style. Enjoy breathtaking views, exclusive access to hidden coves, and VIP service.",
+      category: "Cat-5", // Adventure Activities & Experiences
     },
     {
-      image: "",
+      id: 3,
+      image: "https://example.com/image3.jpg",
       title: "Dine by the Sea",
+      price: "500",
       description:
         "Taste authentic Maltese cuisine at our top seaside restaurants. From fresh seafood to local delicacies...",
+      category: "Cat-4", // Dining & Culinary
     },
     {
-      image: "",
+      id: 4,
+      image: "https://example.com/image4.jpg",
       title: "Scuba Diving Adventures",
+      price: "500",
       description:
         "Dive into the deep blue and discover Malta’s underwater treasures. Perfect for beginners and seasoned divers.",
+      category: "Cat-5", // Adventure Activities & Experiences
     },
   ];
+
   return (
     <div className="my-48 px-9 md:px-32">
       <div className="flex flex-col md:flex-row lg:gap-64 justify-between">
@@ -138,22 +151,22 @@ export const TopPicks = () => {
         className="w-full mt-16"
       >
         <CarouselContent className="max-md:mr-10">
-          {CARD_DATA.map((item, index) => (
+          {services?.map((item, index) => (
             <CarouselItem index={index} className="md:basis-1/2 lg:basis-1/3">
               <ServiceCard data={item} index={index} />
             </CarouselItem>
           ))}
 
           <CarouselItem
-            index={CARD_DATA.length}
+            index={services?.length}
             className="md:basis-1/2 lg:basis-1/3"
           />
           <CarouselItem
-            index={CARD_DATA.length + 1}
+            index={services?.length + 1}
             className="md:basis-1/2 lg:basis-1/3"
           />
         </CarouselContent>
-        <CarouselProgress length={CARD_DATA.length} />
+        <CarouselProgress length={services?.length} />
         <CarouselPrevious />
         <CarouselNext />
       </Carousel>
@@ -162,23 +175,41 @@ export const TopPicks = () => {
 };
 const CCategories = () => {
   const CATEGORIES = [
-    { desc: "Lorem Ipsum Dolor simit", name: "Tours & Excursions", image: "" },
-    { desc: "Lorem Ipsum Dolor simit", name: "Restaurants & Cafés", image: "" },
+    {
+      desc: "Lorem Ipsum Dolor simit",
+      name: "Tours & Excursions",
+      image: "",
+      category: "cat-1",
+    },
+    {
+      desc: "Lorem Ipsum Dolor simit",
+      name: "Restaurants & Cafés",
+      image: "",
+      category: "cat-2",
+    },
     {
       desc: "Lorem Ipsum Dolor simit",
       name: "Private Drivers & Airport Transfers",
       image: "",
+      category: "cat-3",
     },
     {
       desc: "Lorem Ipsum Dolor simit",
       name: "Adventure Activities",
       image: "",
+      category: "cat-4",
     },
-    { desc: "Lorem Ipsum Dolor simit", name: "Wellness & Spa", image: "" },
+    {
+      desc: "Lorem Ipsum Dolor simit",
+      name: "Wellness & Spa",
+      image: "",
+      category: "cat-5",
+    },
     {
       desc: "Lorem Ipsum Dolor simit",
       name: "Shopping & Souvenirs",
       image: "",
+      category: "cat-6",
     },
   ];
 
@@ -203,10 +234,10 @@ const CCategories = () => {
 
 const Iteneray = () => {
   return (
-    <div className="my-48 px-32">
-      <div className="flex lg:gap-64 justify-between">
+    <div className="my-48 px-8 md:px-32">
+      <div className="flex flex-col md:flex-row gap-8 lg:gap-64 justify-between max-md:px-1">
         <p className="text-5xl font-bold">Create Your Own Perfect Itinerary</p>
-        <p className="text-xl text-right">
+        <p className="text-xl md:text-right">
           Customize your trip based on what you love. Whether you’re an
           adventure-seeker, a foodie, or a culture enthusiast, we’ll help you
           craft the perfect experience.
@@ -215,25 +246,29 @@ const Iteneray = () => {
       <div className="relative mt-16">
         <Image
           src="/images/iteneray_back.svg"
-          className="w-full"
+          className="w-full max-md:hidden"
           width={2000}
           height={2000}
         />
 
-        <div className="absolute top-0 left-0 w-full p-16 pr-0">
-          <div className="flex w-full justify-between">
-            <p className="text-5xl shrink-0 font-semibold leading-[1.5] text-white">
+        <div className="md:absolute top-0 left-0 w-full p-10 md:p-16 md:pr-0 max-md:bg-[#E03737] max-md:rounded-md">
+          <div className="flex flex-col md:flex-row w-full justify-between">
+            <p className="text-3xl md:text-5xl shrink-0 font-semibold leading-[1.5] text-white">
               Based on your preferences,
               <br /> we’ll suggest experiences you’ll <br />
               love, from sightseeing tours <br />
               to gourmet restaurants.
             </p>
-            <p className="text-6xl mt-[-4rem] shrink-0 text-right font-bold leading-[1.5]">
+            <p className="text-4xl md:text-6xl md:mt-[-4rem] shrink-0 md:text-right font-bold leading-[1.5]">
               Don’t know <br />
               where to start?{" "}
             </p>
           </div>
-          <Button variant="secondary" className="p-8 mt-32 px-16" size="lg">
+          <Button
+            variant="secondary"
+            className="p-8 mt-12 md:mt-32 md:px-16 max-md:w-full"
+            size="lg"
+          >
             Build My Itinerary
           </Button>
         </div>
@@ -276,7 +311,9 @@ const Events = () => {
   return (
     <div className="px-8 md:px-32 my-48 relative">
       <div className="text-center">
-        <p className="text-4xl md:text-5xl font-bold">What’s Happening in Malta Today?</p>
+        <p className="text-4xl md:text-5xl font-bold">
+          What’s Happening in Malta Today?
+        </p>
         <br />
         <p className="text-xl md:text-2xl text-muted-foreground">
           Stay up to date with all the daily events, festivals, and activities
@@ -307,24 +344,24 @@ const Events = () => {
 
 const MaltaPass = () => {
   return (
-    <div className="my-48 relative px-0">
+    <div className="my-48 relative px-8 md:px-0">
       <Image
         src="/images/maltapass.svg"
-        className="w-full"
+        className="w-full hidden md:block"
         width={1000}
         height={1000}
       />
-      <div className="absolute top-20 right-0 p-32 w-[50%] text-white">
-        <p className="text-5xl leading-[1.5] font-bold">
+      <div className="md:absolute top-0 md:top-20 right-0 p-10 md:p-32 w-[100%] md:w-[50%] text-white max-md:bg-[#E03737] max-md:rounded-md">
+        <p className="text-3xl md:text-5xl leading-[1.5] font-bold">
           Maltapass – Explore <br />
           More, Pay Less
         </p>
         <br />
-        <p className="text-3xl">
+        <p className="text-2xl md:text-3xl">
           Introducing Maltapass – Exclusive Discounts for Your Stay
         </p>
         <br />
-        <p className="text-xl">
+        <p className="text-lg md:text-xl">
           Unlock free discounts on top attractions, dining, and more with
           Maltapass. Available for 1-day or 1-week, it’s the perfect way to save
           while you explore.
@@ -402,41 +439,93 @@ const MadeSimple = () => {
   );
 };
 
+import { get, ref } from "firebase/database";
+import { db } from "@/firebase/firebaseConfig";
+import { useState, useEffect } from "react";
+async function fetchDataFromRealtimeDB() {
+  try {
+    const snapshot = await get(ref(db, "services"));
+    if (snapshot.exists()) {
+      const data = snapshot.val();
+      return data;
+    } else {
+      console.log("No data available.");
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching Realtime DB data:", error);
+    return [];
+  }
+}
+
 export default function Home() {
+  const [services, setServices] = useState([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const fetchedData = await fetchDataFromRealtimeDB();
+        // Extract all services into a flat array
+        const allServices = Object.keys(fetchedData || {}).reduce(
+          (acc, categoryKey) => {
+            const subCategories = fetchedData[categoryKey];
+            if (subCategories) {
+              Object.keys(subCategories || {}).forEach((subCategoryKey) => {
+                const subCategoryData = subCategories[subCategoryKey];
+                if (subCategoryData) {
+                  Object.keys(subCategoryData || {}).forEach((itemKey) => {
+                    const item = subCategoryData[itemKey];
+                    if (item) acc.push(item); // Add the item to the flat array
+                  });
+                }
+              });
+            }
+            return acc;
+          },
+          []
+        );
+
+        setServices(allServices);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+    fetchData();
+  }, []);
   return (
     <div>
       <div className="bg-gradient-to-br from-primary-foreground to-transparent">
         {/* <Navbar /> */}
-        <main className="relative pt-16">
-          <div className="px-32">
-            <div className="relative">
+        <main className="lg:relative pt-16">
+          <div className="lg:px-32 max-lg:flex max-lg:flex-col">
+            <div className="lg:relative max-lg:order-2">
               <Image
-                className="w-full"
+                className="w-full max-lg:hidden"
                 src={"images/Union.svg"}
                 height={1000}
                 width={1000}
               />
-              <div className="absolute w-full right-5 top-5">
-                <div className="flex items-end justify-end w-full h-[70vh] gap-6">
+              <div className="lg:absolute w-full right-5 top-5 space-y-8">
+                <div className="lg:flex lg:items-end lg:justify-end w-full h-full lg:h-[70vh] gap-6 max-lg:space-y-4 max-lg:px-8">
                   <Image
                     src="/images/malta_banner.jpg"
-                    className="object-cover rounded-[2rem] relative h-40 w-40"
+                    className="object-cover rounded-[2rem] lg:relative h-auto lg:h-40 w-full lg:w-40"
                     width={200}
                     height={200}
                   />
                   <Image
                     src="/images/malta_hero.jpg"
-                    className="object-cover h-[41vh] w-[15vw] rounded-[2rem]"
+                    className="object-cover h-[41vh] w-full lg:w-[15vw] rounded-[2rem] max-lg:hidden"
                     width={200}
                     height={200}
                   />
                   <Weather />
                 </div>
-                <div className="grid grid-cols-2 m-6 px-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 m-6 px-4">
                   <div className="mb-12 pb-8">
                     <Image
                       src="/images/gozo.jpg"
-                      className="w-full rounded-3xl object-cover h-[68vh]"
+                      className="w-full rounded-3xl object-cover h-[400px] lg:h-[68vh]"
                       width={2000}
                       height={2000}
                     />
@@ -450,14 +539,14 @@ export default function Home() {
                   </div>
                   <Image
                     src="/images/lady.png"
-                    className="w-full object-cover relative top-[-8rem] ml-11 h-full"
+                    className="w-full object-cover lg:relative top-[-8rem] ml-11 h-full max-lg:hidden"
                     width={200}
                     height={200}
                   />
                 </div>
               </div>
             </div>
-            <div className="top-0 flex absolute pt-32">
+            <div className="lg:top-0 flex lg:absolute lg:pt-32 max-lg:px-16 max-lg:my-20 max-lg:order-1">
               <div>
                 <p className="font-semibold text-xl text-primary">
                   Discover Malta In One Place
@@ -483,11 +572,11 @@ export default function Home() {
           </div>
 
           {/* Categories Search */}
-          <Categories className="mt-16" />
+          <Categories className="lg:my-16 max-md:w-[80%]" />
           {/* Phone Features */}
           <PhoneFeatures />
           {/* Top Picks */}
-          <TopPicks />
+          <TopPicks services={services} />
           {/* Categories */}
           <CCategories />
           {/* Itenary */}

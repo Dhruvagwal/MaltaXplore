@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -19,9 +19,35 @@ import {
   ChevronRight,
   Menu,
   X,
+  Check,
+  Minus,
+  User,
+  Clock5,
 } from "lucide-react";
 import Reviews from "@/components/cui/review";
-import { TopPicks } from "./index";
+import { TopPicks } from ".././index";
+import { useRouter } from "next/router";
+import { Separator } from "@/components/ui/separator";
+import ReviewsPage from "@/components/cui/reviews-page";
+import { get, ref } from "firebase/database";
+import { db } from "@/firebase/firebaseConfig";
+
+async function fetchDataFromRealtimeDB() {
+  try {
+    const snapshot = await get(ref(db, "services"));
+    if (snapshot.exists()) {
+      const data = snapshot.val();
+      return data;
+    } else {
+      console.log("No data available.");
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching Realtime DB data:", error);
+    return [];
+  }
+}
+
 const reviews = [
   {
     id: 1,
@@ -52,12 +78,85 @@ const reviews = [
   },
 ];
 
+const CARD_DATA = [
+  {
+    id: 1,
+    image: "",
+    title: "Explore Malta’s Ancient Wonders",
+    description:
+      "From UNESCO World Heritage sites to hidden catacombs, explore Malta’s rich history with our guided tours.",
+  },
+  {
+    id: 2,
+    image: "",
+    title: "Luxury Yacht Charters",
+    description:
+      "Sail the Mediterranean in style. Enjoy breathtaking views, exclusive access to hidden coves, and VIP service.",
+  },
+  {
+    id: 3,
+    image: "",
+    title: "Dine by the Sea",
+    description:
+      "Taste authentic Maltese cuisine at our top seaside restaurants. From fresh seafood to local delicacies...",
+  },
+  {
+    id: 4,
+    image: "",
+    title: "Scuba Diving Adventures",
+    description:
+      "Dive into the deep blue and discover Malta’s underwater treasures. Perfect for beginners and seasoned divers.",
+  },
+];
+
 function TourismPage() {
+  const router = useRouter();
+  const { id } = router.query;
+  const [services, setServices] = useState([]);
+
   const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSignupOpen, setIsSignupOpen] = useState(false);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const fetchedData = await fetchDataFromRealtimeDB();
+        // Extract all services into a flat array
+        const allServices = Object.keys(fetchedData || {}).reduce(
+          (acc, categoryKey) => {
+            const subCategories = fetchedData[categoryKey];
+            if (subCategories) {
+              Object.keys(subCategories || {}).forEach((subCategoryKey) => {
+                const subCategoryData = subCategories[subCategoryKey];
+                if (subCategoryData) {
+                  Object.keys(subCategoryData || {}).forEach((itemKey) => {
+                    const item = subCategoryData[itemKey];
+                    if (item) acc.push(item); // Add the item to the flat array
+                  });
+                }
+              });
+            }
+            return acc;
+          },
+          []
+        );
+
+        setServices(allServices);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+    fetchData();
+  }, []);
+
+  // const tourData = services.find((service) => {
+  //   return service.id === parseInt(id);
+  // });
+
+  const tourData = services[0];
 
   return (
     <main className="min-h-screen bg-white">
@@ -65,13 +164,13 @@ function TourismPage() {
       {/* <div className="pt-16 md:pt-24 container mx-auto px-4"> */}
       <div className="md:pt-24 mx-8 md:mx-32 md:px-4">
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-6 md:mb-8">
-          Explore Malta's Ancient Wonders
+          {tourData?.title}{" "}
         </h1>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-3 md:gap-4 mb-4 md:mb-6">
           {/* Large main image */}
           <div className="md:col-span-2 relative group overflow-hidden rounded-2xl h-full">
             <img
-              src={"./hero-1.jpg"}
+              src={"/hero-1.jpg"}
               alt="Malta Ancient Ruins"
               className="w-full h-[300px] sm:h-[350px] md:h-full object-cover"
             />
@@ -81,7 +180,7 @@ function TourismPage() {
           {/* Right side images */}
           <div className="relative group overflow-hidden rounded-2xl">
             <img
-              src={"./hero-2.png"}
+              src={"/hero-2.png"}
               alt="Malta City"
               className="w-full h-[140px] sm:h-[165px] md:h-full object-cover"
             />
@@ -90,7 +189,7 @@ function TourismPage() {
           <div className="grid grid-rows-2 gap-3 md:gap-4">
             <div className="relative group overflow-hidden rounded-2xl">
               <img
-                src={"./hero-3.png"}
+                src={"/hero-3.png"}
                 alt="Malta Coast"
                 className="w-full h-[140px] sm:h-[165px] md:h-full object-cover"
               />
@@ -98,7 +197,7 @@ function TourismPage() {
             </div>
             <div className="relative group overflow-hidden rounded-2xl">
               <img
-                src={"./hero-4.jpg"}
+                src={"/hero-4.jpg"}
                 alt="Malta Architecture"
                 className="w-full h-[140px] sm:h-[165px] md:h-full object-cover"
               />
@@ -123,7 +222,8 @@ function TourismPage() {
             <div className="flex items-center gap-2 text-sm sm:text-base text-gray-600">
               <MapPin className="w-4 h-4" />
               <span className="line-clamp-1">
-                Dar Merhba Bik, 130, Triq Birbal, BZN 1708, Malta
+                {/* Dar Merhba Bik, 130, Triq Birbal, BZN 1708, Malta */}
+                {tourData?.location}
               </span>
             </div>
           </div>
@@ -143,55 +243,140 @@ function TourismPage() {
       <section className="mx-8 md:mx-32 md:px-4 py-12">
         <div className="grid lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
-            <h2 className="text-3xl font-bold mb-6">About Destination</h2>
-            <div className="prose prose-lg max-w-none">
-              <p>
-                Discover the timeless beauty and historical depth of Malta, a
-                Mediterranean gem teeming with ancient marvels and captivating
-                stories. From the awe-inspiring megalithic temples that predate
-                the Egyptian pyramids, to the storied fortresses that have
-                defended Malta for centuries, this island nation offers a
-                journey through time like no other.
-              </p>
-              <div className="mt-8 space-y-6">
-                <div>
-                  <h3 className="text-xl font-semibold mb-2">
-                    Megalithic Temples:
-                  </h3>
-                  <p>
-                    Visit the Ġgantija Temples on Gozo, one of the world's
-                    oldest freestanding structures, recognized as a UNESCO World
-                    Heritage site.
-                  </p>
+            <div>
+              <h2 className="text-3xl font-bold">About {tourData?.title}</h2>
+
+              {tourData?.features?.map((f) => (
+                <div className="grid grid-cols-2 md:grid-cols-4 my-4 py-8 gap-4 bg-primary-foreground px-4">
+                  <div className="flex gap-2">
+                    <Clock5 className="text-[#e03837]" />
+                    <p>{f}</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-xl font-semibold mb-2">
-                    Mdina - The Silent City:
-                  </h3>
-                  <p>
-                    Explore this ancient walled city, where quiet, winding
-                    streets and medieval architecture transport you back in
-                    time.
-                  </p>
+              ))}
+              {/* <div className="grid grid-cols-2 md:grid-cols-4 my-4 py-8 gap-4 bg-primary-foreground px-4">
+                <div className="flex gap-2">
+                  <Clock5 className="text-[#e03837]" />
+                  <p>Nov 16 - 20</p>
                 </div>
-                <div>
-                  <h3 className="text-xl font-semibold mb-2">
-                    Stunning Fortifications:
-                  </h3>
-                  <p>
-                    Tour the iconic fortresses of Valletta, including the
-                    Grandmaster's Palace and Fort St. Elmo, testaments to
-                    Malta's storied past.
-                  </p>
+                <div className="flex gap-2">
+                  {" "}
+                  <Clock5 className="text-[#e03837]" />
+                  <p>10 Person</p>
+                </div>
+                <div className="flex gap-2">
+                  {" "}
+                  <Clock5 className="text-[#e03837]" />
+                  <p>Free Wifi</p>
+                </div>
+                <div className="flex gap-2">
+                  {" "}
+                  <Clock5 className="text-[#e03837]" />
+                  <p>Pickup</p>
+                </div>
+              </div> */}
+              <div className="prose prose-lg max-w-none">
+                <p>
+                  {/* Discover the timeless beauty and historical depth of Malta, a
+                  Mediterranean gem teeming with ancient marvels and captivating
+                  stories. From the awe-inspiring megalithic temples that
+                  predate the Egyptian pyramids, to the storied fortresses that
+                  have defended Malta for centuries, this island nation offers a
+                  journey through time like no other. */}
+                  {tourData?.location}
+                </p>
+                <div className="mt-8 space-y-6">
+                  <div>
+                    <h3 className="text-xl font-semibold mb-2">
+                      Megalithic Temples:
+                    </h3>
+                    <p>
+                      Visit the Ġgantija Temples on Gozo, one of the world's
+                      oldest freestanding structures, recognized as a UNESCO
+                      World Heritage site.
+                    </p>
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold mb-2">
+                      Mdina - The Silent City:
+                    </h3>
+                    <p>
+                      Explore this ancient walled city, where quiet, winding
+                      streets and medieval architecture transport you back in
+                      time.
+                    </p>
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold mb-2">
+                      Stunning Fortifications:
+                    </h3>
+                    <p>
+                      Tour the iconic fortresses of Valletta, including the
+                      Grandmaster's Palace and Fort St. Elmo, testaments to
+                      Malta's storied past.
+                    </p>
+                  </div>
                 </div>
               </div>
+            </div>
+
+            <Separator className="my-10" />
+
+            <div>
+              <h2 className="text-3xl font-bold text-gray-900 mb-8">
+                Special Benefit
+              </h2>
+              <div className="space-y-4">
+                {tourData?.specialBenefits?.map((benefit) => (
+                  <div className="flex items-center gap-3">
+                    <Check className="h-5 w-6 md:w-5 bg-green-500 text-white rounded-full p-1" />{" "}
+                    <span className="text-gray-600">{benefit}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <Separator className="my-10" />
+
+            <div>
+              <h2 className="text-3xl font-bold text-gray-900 mb-8">
+                What Includes/Exclude
+              </h2>
+              <div className="flex flex-col md:flex-row gap-16">
+                <div className="space-y-4">
+                  {tourData?.includes
+                    ?.filter((item) => item.isIncluded)
+                    .map((item) => (
+                      <div className="flex items-center gap-3" key={item.id}>
+                        <Check className="h-5 w-5 bg-green-500 text-white rounded-full p-1" />
+                        <span className="text-gray-600">{item.text}</span>
+                      </div>
+                    ))}
+                </div>
+                <div className="space-y-4">
+                  {tourData?.includes
+                    ?.filter((item) => !item.isIncluded)
+                    .map((item) => (
+                      <div className="flex items-center gap-3" key={item.id}>
+                        <Minus className="h-5 w-5 bg-red-500 text-white rounded-full p-1" />
+                        <span className="text-gray-600">{item.text}</span>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            </div>
+
+            <Separator className="my-10" />
+
+            <div>
+              <ReviewsPage />
             </div>
           </div>
 
           <div>
             <Card className="sticky top-24">
               <CardHeader className="bg-[#E5484D] text-white rounded-t-lg">
-                <CardTitle className="text-3xl">€550.00</CardTitle>
+                <CardTitle className="text-3xl">${tourData?.price}</CardTitle>
                 <p className="text-white/90">per person</p>
               </CardHeader>
               <CardContent className="p-6 space-y-6">
@@ -264,7 +449,7 @@ function TourismPage() {
                   <div className="flex justify-between mb-2">
                     <span>Total</span>
                     <span className="font-bold">
-                      €{550 * (adults + children * 0.5)}.00
+                      €{tourData?.price * (adults + children * 0.5)}.00
                     </span>
                   </div>
                   <Button className="w-full bg-[#E5484D] hover:bg-[#E5484D]/90 text-white transition-all duration-300 transform hover:scale-[1.02]">
@@ -291,7 +476,7 @@ function TourismPage() {
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
-            {["./g1.png", "./g2.png", "./g3.png"].map((image, index) => (
+            {["/g1.png", "/g2.png", "/g3.png"].map((image, index) => (
               <div
                 key={index}
                 className="relative group overflow-hidden rounded-2xl cursor-pointer"
@@ -308,7 +493,7 @@ function TourismPage() {
 
           {/* Last two images in full width */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-            {["./g4.png", "./g5.png"].map((image, index) => (
+            {["/g4.png", "/g5.png"].map((image, index) => (
               <div
                 key={index}
                 className="relative group overflow-hidden rounded-2xl cursor-pointer"
@@ -326,15 +511,15 @@ function TourismPage() {
       </section>
 
       {/* Reviews Section */}
-      <Reviews
+      {/* <Reviews
         heading={"What Our Guests Are Saying"}
         title="Tour Experiences"
         subtitle="Hear what our guests have to say about their unforgettable Malta tours"
         reviews={reviews}
-      />
+      /> */}
 
       {/* Top Picks */}
-      <TopPicks />
+      <TopPicks services={services} />
     </main>
   );
 }

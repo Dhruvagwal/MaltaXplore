@@ -197,7 +197,7 @@ const Aboutus = () => {
             </div>
 
             {/* Overlay Title */}
-            <div className="absolute left-1/2 -translate-x-1/2 top-0 bg-white px-12 md:mt-[-2rem] py-6 rounded-2xl md:rounded-b-3xl shadow-md">
+            <div className="absolute left-1/2 -translate-x-1/2 top-0 px-12 md:mt-[-2rem] py-11 rounded-2xl">
               <h2 className="text-2xl md:text-4xl font-bold whitespace-nowrap">
                 We are on a mission
               </h2>

@@ -81,14 +81,22 @@ const useCustomForm = ({ defaultValues = {} }) => {
     />
   );
 
-  const FormCheckbox = ({ title, id }) => (
+  const FormCheckbox = ({ title, id, onChange }) => (
     <FormField
       control={control}
       name={id}
       render={({ field }) => (
         <FormItem className="inline-flex items-center gap-4">
           <FormControl>
-            <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+          <Checkbox
+            checked={field.value}
+            onCheckedChange={(value) => {
+              field.onChange(value); 
+              if (onChange) {
+                onChange(value); 
+              }
+            }}
+          />
           </FormControl>
           <FormLabel>{title}</FormLabel>
           <FormMessage />
@@ -222,19 +230,18 @@ const useCustomForm = ({ defaultValues = {} }) => {
                 value={field.value}
                 onValueChange={field.onChange}
               />
-                <CommandList>
-              
-                  <CommandGroup heading="Locations">
-                    {options.map((option) => (
-                      <CommandItem
-                        key={option.value}
-                        onSelect={() => field.onChange(option.value)}
-                      >
-                        {option.label}
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                </CommandList>
+              <CommandList>
+                <CommandGroup heading="Locations">
+                  {options.map((option) => (
+                    <CommandItem
+                      key={option.value}
+                      onSelect={() => field.onChange(option.value)}
+                    >
+                      {option.label}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
             </Command>
           </FormControl>
           <FormMessage />

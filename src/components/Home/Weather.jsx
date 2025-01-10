@@ -3,7 +3,6 @@ import apiKeys from "./apiKeys";
 import Clock from "react-live-clock";
 import Forcast from "./forecast";
 import ReactAnimatedWeather from "react-animated-weather";
-
 const dateBuilder = (d) => {
   let months = [
     "January",
@@ -75,6 +74,45 @@ class Weather extends React.Component {
       `${apiKeys.base}weather?lat=${lat}&lon=${lon}&units=metric&APPID=${apiKeys.key}`
     );
     const data = await api_call.json();
+
+    const oneCallApi = await fetch(
+      `https://api.weatherapi.com/v1/forecast.json?key=80b8bc51de824911bc295834250301&q=${lat},${lon}&hours=48`
+    );
+    const oneCallData = await oneCallApi.json();
+    
+    const timezoneOffset = oneCallData.location.tz_id;
+
+    const currentTime = new Date().toLocaleString("en-US", { timeZone: timezoneOffset });
+    const currentHour = new Date(currentTime).getHours(); 
+  
+    const hourlyData = oneCallData.forecast.forecastday[0].hour;
+      
+    const nextFourHoursData = hourlyData.filter((hour) => {
+      const hourTime = new Date(hour.time).getHours();
+      return hourTime >= currentHour && hourTime < currentHour + 4;
+    });
+  
+  
+    const nextFourHoursTemp = nextFourHoursData.map((hour) => {
+      const date = new Date(hour.time);
+      
+      let hour12 = date.getHours();
+      const minutes = date.getMinutes();
+      
+      const ampm = hour12 >= 12 ? 'PM' : 'AM';
+      
+      hour12 = hour12 % 12;
+      hour12 = hour12 ? hour12 : 12; 
+      
+      const formattedTime = `${hour12.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+    
+      return {
+        time: formattedTime, 
+        temperature: Math.round(hour.temp_c), 
+        conditionIcon: hour.condition.icon,
+      };
+    });  
+  
     this.setState({
       lat: lat,
       lon: lon,
@@ -84,6 +122,7 @@ class Weather extends React.Component {
       humidity: data.main.humidity,
       main: data.weather[0].main,
       country: data.sys.country,
+      hourlyWeather: nextFourHoursTemp,
       // sunrise: this.getTimeFromUnixTimeStamp(data.sys.sunrise),
 
       // sunset: this.getTimeFromUnixTimeStamp(data.sys.sunset),
@@ -120,9 +159,10 @@ class Weather extends React.Component {
         this.setState({ icon: "CLEAR_DAY" });
     }
   };
+
   render() {
     return (
-      <div className="relative bg-red-100 rounded-[3rem] w-[32vw] h-full p-4 ">
+      <div className="lg:relative bg-red-100 rounded-[3rem] lg:w-[32vw] h-full p-8 lg:p-4 max-lg:space-y-8">
         <div className="bg-red-400 items-center text-white flex justify-between p-4 rounded-2xl">
           <span className="text-xl">
             {this.state.city}, {this.state.country}
@@ -130,8 +170,20 @@ class Weather extends React.Component {
           <div className="">{dateBuilder(new Date())}</div>
         </div>
         <Forcast data={this.state} />
-        <div className="bg-gradient-to-r from-black to-green-800 h-[30vh] rounded-3xl mt-[-1rem] text-white p-4">
+        {/* <div className="bg-gradient-to-r from-black to-green-800 h-[30vh] rounded-3xl mt-[-1rem] text-white p-4">
           Today
+        </div> */}
+        <div className="bg-gradient-to-r from-black to-green-800 h-[26vh] rounded-3xl mt-[-1rem] text-white p-4">
+          <h2 className="text-xl font-md pl-4">Today</h2>
+          <div className="grid grid-cols-4">
+            {this.state.hourlyWeather?.map((hour, index) => (
+              <div key={index} className="flex flex-col items-center gap-2 py-8 lg:py-4">
+                <p className="font-thin">{hour.time}</p>
+                <img src={`https:${hour.conditionIcon}`} alt="" className="w-10 h-10"/>
+                <p className="text-lg">{Math.round(hour.temperature)}°C</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     );

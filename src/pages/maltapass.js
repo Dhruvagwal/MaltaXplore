@@ -44,8 +44,8 @@ function maltapass() {
     <div className="min-h-screen flex flex-col">
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="relative bg-[#E5484D] max-md:px-8 grid md:grid-cols-2 gap-28 mx-32 items-center">
-          <div className="text-white space-y-6 py-32 relative z-10 md:pl-24 ">
+        <section className="relative bg-[#E5484D] max-md:px-0 grid md:grid-cols-2 md:gap-28 mx-8 md:mx-32 items-center max-md:rounded-md">
+          <div className="text-white space-y-6 py-32 relative z-10 md:pl-24 max-md:px-8">
             <span className="text-sm font-medium">MaltaPass</span>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
               Unlock the Best of Malta with One Pass
@@ -62,7 +62,7 @@ function maltapass() {
               height={1000}
               src="/images/metapasshero.svg"
               alt="Malta Harbor"
-              className="absolute right-0 top-0 inset-0 w-full h-full object-cover"
+              className="md:absolute right-0 top-0 inset-0 w-full h-full object-cover max-md:rounded-b-md"
             />
             <div className="absolute right-4 top-4 md:righgit commit -am starter
             cls
@@ -76,36 +76,36 @@ function maltapass() {
         {/* What is MaltaPass Section */}
         <section className="py-16 md:py-24">
           {/* <div className="container mx-auto px-4"> */}
-          <div className="mx-auto md:mx-32 px-4">
+          <div className="mx-auto md:mx-32 px-8">
             <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-md:space-y-4 place-items-center">
                 <img
                   src="https://s3-alpha-sig.figma.com/img/9e8e/459f/547f90de8498547915d5e813462b4486?Expires=1735516800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=N57Aghv5C6zeRw~g-VHaFspsDxxeB773EHl8rwVa0ksRzrXyNE8TQzSufCb2u9pNxiPm9PD4jeSgjLDHOzxl9ieCkAWaqgtD4-114LrSdunFjba4IQ3gOcLAdBGPsV4yaNe8ouRsGJVeUi~nf0me7dr6oKvLhoY2Z105GZ1nLjY1VmIcea8122THbkmZSIXjvsh-cDgQDDfHRyytwkRqHCd5Wj2PaYVKipWJ9Lb0kuYFNEAW~i6dPtsVU1TBOoU6aXnx-nN5h6Onh~cOO24nSgy6UUV7wa0AmjSpURCa-n91lcMvXrKKabFxR00qncok~f8Mi5aS7~i-qApvIc~zHg__"
                   width={300}
                   height={200}
                   alt="Malta Landscape"
-                  className="rounded-lg col-span-2 md:col-span-1 md:mt-3"
+                  className="rounded-lg md:col-span-1 md:mt-3 max-md:w-full"
                 />
                 <img
                   src="https://s3-alpha-sig.figma.com/img/1299/b1b3/1f15317fa9a9af9a70f739a3d67e707b?Expires=1735516800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=oh6LqwMB~IiP4eB4eFnqfE-sj4iSxCB9qmXayH0u0WMidCIs7beDyOEfPkDcZ1HVTOUe3-pV8D8GJfPTbcqdgRN6mcVqBtGhqVeGS5k-6pAkh250xlS8Kjg5Ds-0TTs1Cu4lYWaDwdU-VdHPKC7dkqXAoyUGQweCbRv1gFBtgFlmx0vJjbkuayEwNq0yr035uu5VFuEkV3PZCeMVtLTa95699V93TAIF7Zbxh~f~2nSbKJkDjSbf8FmV18zWeuP8nH1rj8PZhj13lTL5wzAtnE0Bwc5YCXuR4FLJuIQJ~VwIksuouiSE33bGFCNnv5QVgLUZCLebr1T4FiViBrDEIA__"
                   width={300}
                   height={200}
                   alt="Malta Architecture"
-                  className="rounded-lg md:mt-10"
+                  className="rounded-lg md:mt-10 max-md:w-full"
                 />
                 <img
                   src="https://s3-alpha-sig.figma.com/img/1299/b1b3/1f15317fa9a9af9a70f739a3d67e707b?Expires=1735516800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=oh6LqwMB~IiP4eB4eFnqfE-sj4iSxCB9qmXayH0u0WMidCIs7beDyOEfPkDcZ1HVTOUe3-pV8D8GJfPTbcqdgRN6mcVqBtGhqVeGS5k-6pAkh250xlS8Kjg5Ds-0TTs1Cu4lYWaDwdU-VdHPKC7dkqXAoyUGQweCbRv1gFBtgFlmx0vJjbkuayEwNq0yr035uu5VFuEkV3PZCeMVtLTa95699V93TAIF7Zbxh~f~2nSbKJkDjSbf8FmV18zWeuP8nH1rj8PZhj13lTL5wzAtnE0Bwc5YCXuR4FLJuIQJ~VwIksuouiSE33bGFCNnv5QVgLUZCLebr1T4FiViBrDEIA__"
                   width={300}
                   height={200}
                   alt="Malta Architecture"
-                  className="rounded-lg"
+                  className="rounded-lg max-md:w-full"
                 />
                 <img
                   src="https://s3-alpha-sig.figma.com/img/77c6/514f/151e6f6aa8d8c03200b9ae774f496d33?Expires=1735516800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=KbrTsbyb-jL-vfbgO78M9Z0rQptaGLQHq-giNZcayKaUANN~RfEpEMTqcOsPkRUPMWyqs6j0II6mXlGB3HI5uX0fZhFwitUXT5AW0UCIjdlCSi~j0CywhM3n4QUxO0kf1YwR~2WhT-TVvU3ZCZfGDDerMRn5QPu9nxAiFJUWZACVzrrDNGgtep17cKUL6RHdlb3ubjbo6~sSqELAzd-rk7dTUJckSt1jappzsgMHkkUR9jyihlL~eqsCqc7BmOYNHl7eoQqlKvlSQju-z4e7Njc5TwJ8qr7T8EpT6OayHzJkiz2EP8pVseRKfpNhMC8S8-k0X1pjYAYpv8cuQgB2aQ__"
                   width={300}
                   height={200}
                   alt="Malta Coastline"
-                  className="rounded-lg"
+                  className="rounded-lg max-md:w-full"
                 />
               </div>
               <div className="max-md:mx-8 space-y-8">

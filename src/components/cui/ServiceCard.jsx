@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Card, CardContent } from "../ui/card";
-import { DotFilledIcon } from "@radix-ui/react-icons";
+import { DotFilledIcon, PlusIcon } from "@radix-ui/react-icons";
 import { Button } from "../ui/button";
 import { tourListing } from "@/data/link";
 
@@ -27,7 +27,9 @@ export const ServiceCard = ({ index, data, className = "" }) => {
           </p>
           <span className="">
             Starting at:{" "}
-            <span className="text-primary font-bold text-base">$500</span>
+            <span className="text-primary font-bold text-base">
+              ${data.price}
+            </span>
           </span>
         </div>
         <br />
@@ -35,10 +37,20 @@ export const ServiceCard = ({ index, data, className = "" }) => {
           {data.description}
         </p>
         <br />
-
-        <Button asChild className="w-full">
-          <Link href={tourListing}>Book Now</Link>
-        </Button>
+        <div className="flex flex-col md:flex-row justify-center items-center gap-4 w-full">
+          <Button asChild className="w-full md:w-1/2">
+            <Link href={`${tourListing.replace("[id]", data.id)}`}>
+              Book Now
+            </Link>
+          </Button>
+          <Button
+            variant="outline"
+            className="w-full md:w-1/2 gap-1  text-muted-foreground"
+          >
+            <PlusIcon />
+            Add to My Itenary
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );

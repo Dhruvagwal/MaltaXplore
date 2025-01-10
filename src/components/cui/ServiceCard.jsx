@@ -63,7 +63,7 @@ export const ServiceCard = ({ index, data, className = "", loading }) => {
         )}
         <br />
         <div className="flex flex-col md:flex-row justify-center items-center gap-4 w-full">
-          <Button asChild className="w-full md:w-1/2">
+          <Button asChild className="w-full">
             {loading ? (
               <Skeleton className="w-[200px] h-[40px]" />
             ) : (
@@ -72,7 +72,7 @@ export const ServiceCard = ({ index, data, className = "", loading }) => {
               </Link>
             )}
           </Button>
-          <Button
+          {/* <Button
             variant="outline"
             className="w-full md:w-1/2 gap-1 text-muted-foreground"
           >
@@ -84,7 +84,7 @@ export const ServiceCard = ({ index, data, className = "", loading }) => {
                 Add to My Itinerary
               </>
             )}
-          </Button>
+          </Button> */}
         </div>
       </CardContent>
     </Card>

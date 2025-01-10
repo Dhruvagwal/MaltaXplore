@@ -31,7 +31,6 @@ const ContactForm = () => {
     try {
       await writeData(`/contacts/${v4()}`, data);
       toast({
-        variant: "success",
         title: "Form Submitted",
         description: "Thank you for contacting us!",
       });

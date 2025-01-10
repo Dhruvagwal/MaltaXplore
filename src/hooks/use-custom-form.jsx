@@ -27,7 +27,7 @@ import { cn } from "@/lib/utils";
 import { Slider } from "@/components/ui/slider";
 import { Command, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 
-const useCustomForm = ({ defaultValues = {} }) => {  
+const useCustomForm = ({ schema, defaultValues = {} }) => {  
   const form = useForm({
     defaultValues,
     mode: "onChange",

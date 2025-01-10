@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { db as rdb, storage } from "../firebase/firebaseConfig";
+import { db as rdb, storage, auth } from "../firebase/firebaseConfig";
 import { child, get, ref, set, update, onValue } from "firebase/database";
 import {
   deleteObject,
@@ -148,6 +148,36 @@ const useFirebase = (params = {}) => {
     );
   };
 
+  const getUserInfo = async () => {
+    return new Promise((resolve, reject) => {
+      auth.onAuthStateChanged(async (user) => {
+        resolve(user);
+      });
+    });
+  };
+
+  const popupsignin = (provider) => {
+    return signInWithPopup(auth, provider)
+      .then(async (result) => {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        // const credential = GoogleAuthProvider.credentialFromResult(result);
+        // const token = credential.accessToken;
+        // The signed-in user info.
+        return { state: 200, ...result };
+        // ...
+      })
+      .catch((error) => {
+        // Handle Errors here.
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // The email of the user's account used.
+        // const email = error.customData.email;
+        // The AuthCredential type that was used.
+        // const credential = GoogleAuthProvider.credentialFromError(error);
+        // ...
+        return { state: errorCode, errorCode, errorMessage };
+      });
+  };
   // Reactively fetch data
   useEffect(() => {
     async function fetchData() {
@@ -169,6 +199,11 @@ const useFirebase = (params = {}) => {
     if (toRead && condition) fetchData();
   }, dependencies);
 
+  const googleSignIn = () => {
+    const provider = new GoogleAuthProvider();
+    return popupsignin(provider);
+  };
+
   return {
     crud: {
       readData,
@@ -177,7 +212,10 @@ const useFirebase = (params = {}) => {
       deleteFile,
       syncUpload,
     },
-
+    auth: {
+      googleSignIn,
+      getUserInfo,
+    },
     loading: loadingCount > 0,
   };
 };

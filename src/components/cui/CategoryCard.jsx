@@ -14,8 +14,8 @@ const CategoryCard = ({ data, index }) => {
           <Image
             height={400}
             width={400}
-            className=" w-full group-hover:scale-125 transition-all ease-in-out"
-            src={`https://picsum.photos/500/400?random=${index}`}
+            className=" w-full group-hover:scale-125 transition-all ease-in-out object-cover"
+            src={data.image}
           />
         </div>
         <Button

@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Card, CardContent } from "../ui/card";
@@ -5,8 +6,72 @@ import { DotFilledIcon, PlusIcon } from "@radix-ui/react-icons";
 import { Button } from "../ui/button";
 import { tourListing } from "@/data/link";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useAuthState } from "@/context/ueAuthContext";
+import useFirebase from "@/hooks/use-firebase";
+import { Heart } from "lucide-react";
 
 export const ServiceCard = ({ index, data, className = "", loading }) => {
+  const { user } = useAuthState();
+  const {
+    crud: { updateData },
+  } = useFirebase();
+  const [isLiked, setIsLiked] = useState(false);
+
+  useEffect(() => {
+    if (data && user?.uid) {
+      const likes = data.likes || [];
+      setIsLiked(likes.includes(user.uid));
+    }
+  }, [data, user]);
+
+  const handleLikesbutton = async () => {
+    if (data && user?.uid) {
+      const likes = data.likes || [];
+
+      const updatedLikes = likes.includes(user.uid)
+        ? likes
+        : [...likes, user.uid];
+
+      const finalData = {
+        ...data,
+        likes: updatedLikes,
+      };
+      try {
+        await updateData({
+          [`/services/${data?.mainCategory}/${data?.subCategory}/${data.id}`]:
+            finalData,
+        });
+        setIsLiked(true);
+        console.log("Data updated successfully!");
+      } catch (error) {
+        console.error("Error updating data:", error);
+      }
+    }
+  };
+
+  const handleUnlikesbutton = async () => {
+    if (data && user?.uid) {
+      const likes = data.likes || [];
+
+      const updatedLikes = likes.filter((uid) => uid !== user.uid);
+
+      const finalData = {
+        ...data,
+        likes: updatedLikes,
+      };
+      try {
+        await updateData({
+          [`/services/${data?.mainCategory}/${data?.subCategory}/${data.id}`]:
+            finalData,
+        });
+        setIsLiked(false);
+        console.log("Data updated successfully!");
+      } catch (error) {
+        console.error("Error updating data:", error);
+      }
+    }
+  };
+
   return (
     <Card className={className}>
       <div className="relative">
@@ -20,6 +85,20 @@ export const ServiceCard = ({ index, data, className = "", loading }) => {
             src={`https://picsum.photos/500/400?random=${index}`}
           />
         )}
+        <div className="absolute z-10 top-4 right-4 cursor-pointer transition-transform duration-200 transform hover:scale-110">
+          {!isLiked ? (
+            <Heart
+              className="w-4 h-4 sm:w-5 sm:h-5"
+              onClick={handleLikesbutton}
+            />
+          ) : (
+            <img
+              src="/heart.png"
+              className="w-4 h-4 sm:w-5 sm:h-5"
+              onClick={handleUnlikesbutton}
+            />
+          )}
+        </div>
         <div className="backdrop-blur-sm bg-white bottom-4 right-4 rounded-full p-2 px-4 absolute z-10 flex items-center text-xs">
           {loading ? (
             <Skeleton className="w-[100px] h-[20px]" />
@@ -72,19 +151,6 @@ export const ServiceCard = ({ index, data, className = "", loading }) => {
               </Link>
             )}
           </Button>
-          {/* <Button
-            variant="outline"
-            className="w-full md:w-1/2 gap-1 text-muted-foreground"
-          >
-            {loading ? (
-              <Skeleton className="w-[100px] h-[20px]" />
-            ) : (
-              <>
-                <PlusIcon />
-                Add to My Itinerary
-              </>
-            )}
-          </Button> */}
         </div>
       </CardContent>
     </Card>

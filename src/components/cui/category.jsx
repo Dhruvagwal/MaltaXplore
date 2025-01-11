@@ -11,7 +11,7 @@ import Link from "next/link";
 import { Button } from "../ui/button";
 import { useState, useEffect } from "react";
 import { categories } from "@/data/data";
-import { DatePicker } from "../ui/datepicker";
+import { DatePicker } from "@/components/ui/datepicker";
 import { Input } from "@/components/ui/input";
 import { search } from "@/data/link";
 import { cn } from "@/lib/utils";

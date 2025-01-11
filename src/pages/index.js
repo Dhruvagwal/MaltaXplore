@@ -69,7 +69,11 @@ const PhoneFeatures = () => {
           />
         </div>
         <div className="max-md:flex max-md:items-center max-md:flex-col mt-8 md:mt-0">
-          <img src="images/phone.png" />
+          <Image
+            src="/images/iphone.png"
+            width={300}
+            height={600}
+          />
           <br />
           <Button asChild size="lg" className="p-8">
             <Link href={search}> Start Exploring</Link>

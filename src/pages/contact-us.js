@@ -2,14 +2,9 @@
 
 import React from "react";
 import Banner from "@/components/cui/banner";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { MapPin, Mail, Phone } from "lucide-react";
 import ChatSection from "@/components/cui/ChatSection";
 import Faq from "@/components/cui/faq";
-import ContactForm from "@/components/cui/ContactForm";
+import ContactForm from "@/components/cui/contactForm";
 
 const faqData = [
   {

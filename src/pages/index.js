@@ -97,8 +97,6 @@ const PhoneFeatures = () => {
 };
 
 export const TopPicks = ({ services, loading }) => {
-  console.log("top picks", services);
-
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {

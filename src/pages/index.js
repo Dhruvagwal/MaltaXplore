@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import Weather from "@/components/Home/Weather";
 import { Button } from "@/components/ui/button";
 import { CodeSandboxLogoIcon, DotFilledIcon } from "@radix-ui/react-icons";
@@ -27,6 +28,7 @@ import CategoryCard from "@/components/cui/CategoryCard";
 import { Categories } from "@/components/cui/category";
 import { ServiceCard } from "@/components/cui/ServiceCard";
 import { Skeleton } from "@/components/ui/skeleton";
+import useFirebase from "@/hooks/use-firebase";
 
 const PhoneFeatures = () => {
   const FeatureCard = ({ title = "", desc = "" }) => (
@@ -95,6 +97,8 @@ const PhoneFeatures = () => {
 };
 
 export const TopPicks = ({ services, loading }) => {
+  console.log("top picks", services);
+
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -424,61 +428,31 @@ const MadeSimple = () => {
   );
 };
 
-import { get, ref } from "firebase/database";
-import { db } from "@/firebase/firebaseConfig";
-import { useState, useEffect } from "react";
-async function fetchDataFromRealtimeDB() {
-  try {
-    const snapshot = await get(ref(db, "services"));
-    if (snapshot.exists()) {
-      const data = snapshot.val();
-      return data;
-    } else {
-      console.log("No data available.");
-      return [];
-    }
-  } catch (error) {
-    console.error("Error fetching Realtime DB data:", error);
-    return [];
-  }
-}
-
 export default function Home() {
-  const [services, setServices] = useState([]);
+  const {
+    crud: { readData },
+  } = useFirebase();
+  const [services, setServices] = useState();
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        setIsLoading(true);
-        const fetchedData = await fetchDataFromRealtimeDB();
-        // Extract all services into a flat array
-        const allServices = Object.keys(fetchedData || {}).reduce(
-          (acc, categoryKey) => {
-            const subCategories = fetchedData[categoryKey];
-            if (subCategories) {
-              Object.keys(subCategories || {}).forEach((subCategoryKey) => {
-                const subCategoryData = subCategories[subCategoryKey];
-                if (subCategoryData) {
-                  Object.keys(subCategoryData || {}).forEach((itemKey) => {
-                    const item = subCategoryData[itemKey];
-                    if (item) acc.push(item);
-                  });
-                }
-              });
-            }
-            return acc;
-          },
-          []
-        );
+  const fetchData = async () => {
+    try {
+      setIsLoading(true);
+      const fetchedData = await readData("services");
 
-        setServices(allServices);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setIsLoading(false);
-      }
+      const allServices = Object.values(fetchedData || {}).flatMap((category) =>
+        Object.values(category || {}).flatMap((subCategory) =>
+          Object.values(subCategory || {}).filter(Boolean)
+        )
+      );
+      setServices(allServices);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setIsLoading(false);
     }
+  };
+  useEffect(() => {
     fetchData();
   }, []);
 

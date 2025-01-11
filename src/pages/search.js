@@ -103,6 +103,19 @@ function search() {
   }, []);
 
   useEffect(() => {
+    if (currentPage >= chunkedData.length) {
+      // If the page is out of range, set the last page
+      handlePageChange(chunkedData.length - 1);
+    }
+  }, [currentPage, chunkedData.length]);
+  const handlePageChange = (page) => {
+    router.push({
+      pathname: router.pathname,
+      query: { ...router.query, page: page.toString() },
+    });
+  };
+
+  useEffect(() => {
     if (!range) return;
     setValue("min", range[0]);
     setValue("max", range[1]);
@@ -128,21 +141,9 @@ function search() {
     }
   }, [category, services]);
 
-  useEffect(() => {
-    if (currentPage >= chunkedData.length) {
-      // If the page is out of range, set the last page
-      handlePageChange(chunkedData.length - 1);
-    }
-  }, [currentPage, chunkedData.length]);
-
-  const handlePageChange = (page) => {
-    router.push({
-      pathname: router.pathname,
-      query: { ...router.query, page: page.toString() },
-    });
+  const onSubmit = (data) => {
+    console.log(data);
   };
-
-  const onSubmit = () => {};
   const onError = () => {};
 
   //apply button
@@ -227,7 +228,9 @@ function search() {
             <Categories />
           </div>
         </Banner>
+
         <div className="px-8 md:px-32 grid grid-cols-1 gap-8 md:grid-cols-6 py-16 mt-16">
+          {/* Filter */}
           <div className="md:col-span-2 flex flex-col gap-6">
             <p className="text-3xl font-bold">Filter Your Needs</p>
             <div className="border p-4 rounded-lg">
@@ -240,28 +243,17 @@ function search() {
                   <p className="font-bold text-xl">Select Service</p>
                   <Separator />
                   {Object.keys(categories).map((key) => (
-                    <FormCheckbox
-                      id={key}
-                      title={categories[key].name}
-                      onChange={(isChecked) =>
-                        handleCategoryChange(key, isChecked)
-                      }
-                    />
+                    <FormCheckbox id={key} title={categories[key].name} />
                   ))}
                 </div>
 
                 <div className="flex bg-primary-foreground p-4 rounded-lg flex-col gap-4">
-                  {" "}
                   <p className="font-bold text-xl">Select Type</p>
                   <Separator />
                   {selectedCategories.length > 0 && (
                     <div className=" flex flex-col gap-4">
-                      {" "}
                       {selectedCategories.map((categoryKey) => (
                         <div key={categoryKey} className="flex flex-col gap-4">
-                          {/* <p className="font-semibold text-lg">
-                      {categories[categoryKey].name} Subcategories
-                    </p> */}
                           {Object.keys(
                             categories[categoryKey].subcategories
                           ).map((subKey) => (
@@ -270,13 +262,6 @@ function search() {
                               id={subKey}
                               title={
                                 categories[categoryKey].subcategories[subKey]
-                              }
-                              onChange={(isChecked) =>
-                                handleSubcategoryChange(
-                                  categoryKey,
-                                  subKey,
-                                  isChecked
-                                )
                               }
                             />
                           ))}
@@ -301,7 +286,7 @@ function search() {
                   <p className="font-bold text-xl">Filter Price</p>
                   <Separator />
                   <FormSlider id="range" min={10} max={500} />
-                  {/* <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-4">
                     <FormInput
                       className={"bg-white"}
                       placeholder="Minimum"
@@ -315,8 +300,9 @@ function search() {
                       type="number"
                       id="max"
                     />
-                  </div> */}
+                  </div>
                 </div>
+                <Button type="submit">Filter</Button>
               </FormWrapper>
             </div>
           </div>

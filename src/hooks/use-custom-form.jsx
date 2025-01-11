@@ -173,19 +173,18 @@ const useCustomForm = ({ schema, defaultValues = {} }) => {
                 value={field.value}
                 onValueChange={field.onChange}
               />
-                <CommandList>
-              
-                  <CommandGroup heading="Locations">
-                    {options.map((option) => (
-                      <CommandItem
-                        key={option.value}
-                        onSelect={() => field.onChange(option.value)}
-                      >
-                        {option.label}
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                </CommandList>
+              <CommandList>
+                <CommandGroup heading="Locations">
+                  {options.map((option) => (
+                    <CommandItem
+                      key={option.value}
+                      onSelect={() => field.onChange(option.value)}
+                    >
+                      {option.label}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
             </Command>
           </FormControl>
           <FormMessage />
@@ -211,18 +210,26 @@ const useCustomForm = ({ schema, defaultValues = {} }) => {
     />
   );
 
-  const FormCheckbox = ({ title, id }) => (
+
+  const FormCheckbox = ({ title, id, onChange }) => (
     <FormField
       control={control}
       name={id}
       render={({ field }) => (
-        <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+        <FormItem className="inline-flex items-center gap-4">
           <FormControl>
-            <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+          <Checkbox
+            checked={field.value}
+            onCheckedChange={(value) => {
+              field.onChange(value); 
+              if (onChange) {
+                onChange(value); 
+              }
+            }}
+          />
           </FormControl>
-          <div className="space-y-1 leading-none">
-            <FormLabel>{title}</FormLabel>
-          </div>
+          <FormLabel>{title}</FormLabel>
+          <FormMessage />
         </FormItem>
       )}
     />

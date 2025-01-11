@@ -1,22 +1,34 @@
-import React, { useState, useEffect } from "react";
-import { useRouter } from "next/router";
-import Lottie from "lottie-react";
-
-import { categories, maltaLocations } from "@/data/data";
-
-import useFirebase from "@/hooks/use-firebase";
-import useCustomForm from "@/hooks/use-custom-form";
-
-import CPagination from "@/components/ui/CPagniation";
-import { Button } from "@/components/ui/button";
-import { CommentRatings } from "@/components/ui/rating";
-import { Separator } from "@/components/ui/separator";
-
 import Banner from "@/components/cui/banner";
 import { Categories } from "@/components/cui/category";
 import { ServiceCard } from "@/components/cui/ServiceCard";
-
+import { Button } from "@/components/ui/button";
+import { CommentRatings } from "@/components/ui/rating";
+import { Separator } from "@/components/ui/separator";
+import { categories, maltaLocations } from "@/data/data";
+import useCustomForm from "@/hooks/use-custom-form";
+import React, { useState, useEffect } from "react";
+import CPagination from "@/components/ui/CPagniation";
+import { useRouter } from "next/router";
+import Lottie from "lottie-react";
 import animationData from "../../public/empty.json";
+import { get, ref } from "firebase/database";
+import { db } from "@/firebase/firebaseConfig";
+
+async function fetchDataFromRealtimeDB() {
+  try {
+    const snapshot = await get(ref(db, "services"));
+    if (snapshot.exists()) {
+      const data = snapshot.val();
+      return data;
+    } else {
+      console.log("No data available.");
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching Realtime DB data:", error);
+    return [];
+  }
+}
 
 const chunkArray = (array, size) => {
   const result = [];
@@ -27,49 +39,21 @@ const chunkArray = (array, size) => {
 };
 const SIZE = 6;
 
-function search() {
-  const {
-    crud: { readData },
-  } = useFirebase();
-
+function ExploreCategories() {
   const router = useRouter();
   const { query } = router;
   const { date, category, guest } = query;
-
   const [services, setServices] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedSubcategories, setSelectedSubcategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const {
-    FormCheckbox,
-    FormWrapper,
-    FormSlider,
-    FormInput,
-    watch,
-    setValue,
-    FormCommand,
-  } = useCustomForm({});
-
-  const range = watch("range");
-  const min = watch("min");
-  const max = watch("max");
-
-  // Get the current page from the query parameter or default to 0
-  const currentPage =
-    isNaN(parseInt(query.page, 10)) || parseInt(query.page, 10) < 0
-      ? 0
-      : parseInt(query.page, 10);
-
-  // Split the data into chunks (4 items per page)
-  const chunkedData = chunkArray(filteredData, SIZE);
-
   useEffect(() => {
     async function fetchData() {
       try {
         setIsLoading(true);
-        const fetchedData = await readData("services");
+        const fetchedData = await fetchDataFromRealtimeDB();
 
         // Extract all services into a flat array
         const allServices = Object.keys(fetchedData || {}).reduce(
@@ -102,6 +86,23 @@ function search() {
     fetchData();
   }, []);
 
+  const {
+    FormCheckbox,
+    FormWrapper,
+    FormSlider,
+    FormInput,
+    watch,
+    setValue,
+    FormCommand,
+  } = useCustomForm({});
+
+  const onSubmit = () => {};
+  const onError = () => {};
+
+  const range = watch("range");
+  const min = watch("min");
+  const max = watch("max");
+
   useEffect(() => {
     if (!range) return;
     setValue("min", range[0]);
@@ -120,20 +121,34 @@ function search() {
   }, [category, services]);
 
   useEffect(() => {
-    if (category) {
-      const filtered = services.filter(
-        (service) => service.category?.toLowerCase() === category.toLowerCase()
-      );
+    if (services.length > 0) {
+      let filtered = services;
+
+      if (category) {
+        filtered = filtered.filter(
+          (service) =>
+            service.category?.toLowerCase() === category.toLowerCase()
+        );
+      }
+
+      if (guest) {
+        filtered = filtered.filter(
+          (service) => service?.maxGroupSize >= guest
+        );
+      }
+
       setFilteredData(filtered.length > 0 ? filtered : []);
     }
-  }, [category, services]);
+  }, [category, guest, services]);
 
-  useEffect(() => {
-    if (currentPage >= chunkedData.length) {
-      // If the page is out of range, set the last page
-      handlePageChange(chunkedData.length - 1);
-    }
-  }, [currentPage, chunkedData.length]);
+  // Get the current page from the query parameter or default to 0
+  const currentPage =
+    isNaN(parseInt(query.page, 10)) || parseInt(query.page, 10) < 0
+      ? 0
+      : parseInt(query.page, 10);
+
+  // Split the data into chunks (4 items per page)
+  const chunkedData = chunkArray(filteredData, SIZE);
 
   const handlePageChange = (page) => {
     router.push({
@@ -142,8 +157,12 @@ function search() {
     });
   };
 
-  const onSubmit = () => {};
-  const onError = () => {};
+  useEffect(() => {
+    if (currentPage >= chunkedData.length) {
+      // If the page is out of range, set the last page
+      handlePageChange(chunkedData.length - 1);
+    }
+  }, [currentPage, chunkedData.length]);
 
   //apply button
   const handleApplyFilterButton = async () => {
@@ -154,7 +173,7 @@ function search() {
       filtered = filtered.filter((service) =>
         selectedCategories.some(
           (category) =>
-            service.category?.toLowerCase() === category.toLowerCase()
+            service.mainCategory?.toLowerCase() === category.toLowerCase()
         )
       );
     }
@@ -182,7 +201,7 @@ function search() {
     if (selectedLocation) {
       filtered = filtered.filter(
         (service) =>
-          service.location.toLowerCase() === selectedLocation.toLowerCase()
+          service?.location?.toLowerCase() === selectedLocation.toLowerCase()
       );
     }
 
@@ -260,8 +279,8 @@ function search() {
                       {selectedCategories.map((categoryKey) => (
                         <div key={categoryKey} className="flex flex-col gap-4">
                           {/* <p className="font-semibold text-lg">
-                      {categories[categoryKey].name} Subcategories
-                    </p> */}
+                            {categories[categoryKey].name} Subcategories
+                          </p> */}
                           {Object.keys(
                             categories[categoryKey].subcategories
                           ).map((subKey) => (
@@ -296,12 +315,11 @@ function search() {
                     />
                   ))}
                 </div>
-
                 <div className="flex bg-primary-foreground p-4 rounded-lg flex-col gap-4">
                   <p className="font-bold text-xl">Filter Price</p>
                   <Separator />
                   <FormSlider id="range" min={10} max={500} />
-                  {/* <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-4">
                     <FormInput
                       className={"bg-white"}
                       placeholder="Minimum"
@@ -315,8 +333,14 @@ function search() {
                       type="number"
                       id="max"
                     />
-                  </div> */}
+                  </div>
                 </div>
+                <div className="flex bg-primary-foreground p-4 rounded-lg flex-col gap-4">
+                  <p className="font-bold text-xl">Select Location</p>
+                  <Separator />
+                  <FormCommand id="location" options={maltaLocations} />
+                </div>
+                <Button onClick={handleApplyFilterButton}>Apply Filter</Button>
               </FormWrapper>
             </div>
           </div>
@@ -367,4 +391,4 @@ function search() {
   );
 }
 
-export default search;
+export default ExploreCategories;

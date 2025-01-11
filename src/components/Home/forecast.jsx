@@ -34,14 +34,14 @@ function Forcast(props) {
   }, []);
 
   return (
-    <div className="p-6 bg-red-400 mt-2 rounded-3xl">
+    <div className="p-6 h-full flex flex-col justify-center bg-red-500 mt-2 rounded-3xl">
       <ul>
         {typeof weather.main != "undefined" ? (
           <div className="text-white">
             <div className="flex justify-evenly">
               <img
-                className="object-cover bg-white border rounded-full h-11 md:h-16"
-                src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}.png`}
+                className="object-cover rounded-full h-11 md:h-16"
+                src={props.data?.hourlyWeather?.[0]?.conditionIcon}
               />
               <p className="flex text-5xl md:text-7xl">
                 {props.data.temperatureC}°<span>C</span>

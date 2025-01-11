@@ -1,4 +1,4 @@
-import Section from "@/components/ui/section";
+import Section from "@/components/ui/Section";
 
 import { LinkedinIcon, TwitterIcon, InstagramIcon } from "lucide-react";
 import Banner from "@/components/cui/banner";

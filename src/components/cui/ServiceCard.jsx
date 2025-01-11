@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useAuthState } from "@/context/ueAuthContext";
 import useFirebase from "@/hooks/use-firebase";
 import { Heart } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export const ServiceCard = ({ index, data, className = "", loading }) => {
   const { user } = useAuthState();
@@ -86,18 +87,15 @@ export const ServiceCard = ({ index, data, className = "", loading }) => {
           />
         )}
         <div className="absolute z-10 top-4 right-4 cursor-pointer transition-transform duration-200 transform hover:scale-110">
-          {!isLiked ? (
-            <Heart
-              className="w-4 h-4 sm:w-5 sm:h-5"
-              onClick={handleLikesbutton}
-            />
-          ) : (
-            <img
-              src="/heart.png"
-              className="w-4 h-4 sm:w-5 sm:h-5"
-              onClick={handleUnlikesbutton}
-            />
-          )}
+          <Button
+            variant="outline"
+            className={cn("rounded-full w-10 h-10 p-0", )}
+            onClick={() =>
+              !isLiked ? handleLikesbutton() : handleUnlikesbutton()
+            }
+          >
+            <Heart className={cn(isLiked && "fill-primary text-primary")}/>
+          </Button>
         </div>
         <div className="backdrop-blur-sm bg-white bottom-4 right-4 rounded-full p-2 px-4 absolute z-10 flex items-center text-xs">
           {loading ? (

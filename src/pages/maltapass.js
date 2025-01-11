@@ -64,9 +64,9 @@ function maltapass() {
               alt="Malta Harbor"
               className="md:absolute right-0 top-0 inset-0 w-full h-full object-cover max-md:rounded-b-md"
             />
-            <div className="absolute right-4 top-4 md:righgit commit -am starter
-            cls
-            git pust-[85%] md:top-[25%] w-[150px] h-[150px] md:w-[180px] md:h-[180px] bg-white rounded-full flex flex-col items-center justify-center text-[#E5484D] font-bold">
+            <div
+              className="absolute right-4 top-4 md:right-[85%] md:top-[25%] w-[150px] h-[150px] md:w-[180px] md:h-[180px] bg-white rounded-full flex flex-col items-center justify-center text-[#E5484D] font-bold"
+            >
               <div className="text-5xl md:text-7xl">30%</div>
               <div className="text-sm">UP TO OFF</div>
             </div>

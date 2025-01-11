@@ -469,7 +469,7 @@ export default function Home() {
                 height={1000}
                 width={1000}
               />
-              <div className="lg:absolute w-full right-10 top-20 space-y-8">
+              <div className="lg:absolute w-full right-10 top-8 space-y-8">
                 <div className="lg:flex lg:items-end lg:justify-end w-full h-full lg:h-[70vh] gap-6 max-lg:space-y-4 max-lg:px-8">
                   <Image
                     src="/images/malta_banner.jpg"
@@ -479,7 +479,7 @@ export default function Home() {
                   />
                   <Image
                     src="/images/malta_hero.jpg"
-                    className="object-cover h-[48vh] lg:relative w-full lg:w-[15vw] rounded-[2rem] max-lg:hidden top-3"
+                    className="object-cover h-[40vh] lg:relative w-full lg:w-[15vw] rounded-[2rem] max-lg:hidden top-3"
                     width={200}
                     height={200}
                   />
@@ -489,12 +489,12 @@ export default function Home() {
                   <div className="mb-12 pb-8">
                     <Image
                       src="/images/gozo.jpg"
-                      className="w-full rounded-3xl lg:relative object-cover h-[400px] lg:h-[68vh] top-10 left-4"
+                      className="w-full p-2 ml-5 rounded-[3.5rem] lg:relative object-cover h-[400px] lg:h-[65vh] top-12 left-0"
                       width={2000}
                       height={2000}
                     />
                     <Button
-                      className="relative text-white bottom-4 left-4 text-xl"
+                      className="relative text-white bottom-4 left-12 text-2xl"
                       variant="link"
                       asChild
                     >

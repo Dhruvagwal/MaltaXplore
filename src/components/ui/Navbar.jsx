@@ -13,7 +13,7 @@ function Navbar() {
   const {
     auth: { googleSignIn },
   } = useFirebase();
-  const { auth } = useAuthState();
+  const { auth, user } = useAuthState();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
@@ -85,7 +85,7 @@ function Navbar() {
               className="w-full md:w-auto"
               onClick={() => {}}
             >
-              <Link href="#">Dashboard</Link>
+              <Link href="/dashboard">Dashboard</Link>
             </Button>
           ) : (
             <Button

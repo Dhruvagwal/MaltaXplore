@@ -8,15 +8,12 @@ import useCustomForm from "@/hooks/use-custom-form";
 import { useToast } from "@/hooks/use-toast";
 import { contactDetailsSchema } from "@/lib/schema";
 import { useContactDetails } from "@/context/contactDetailsContext";
+import { useBooking } from "@/context/bookingContext";
 
 const ContactDetailsPage = ({ nextStep }) => {
   const { toast } = useToast();
-  const {     
-    setFname,
-    setLname,
-    setEmail,
-    setPhone,
-    } = useContactDetails();
+  const { addContact } = useContactDetails();
+  const { adults, child, totalPrice, date } = useBooking();
 
   const {
     FormWrapper,
@@ -28,13 +25,28 @@ const ContactDetailsPage = ({ nextStep }) => {
     schema: contactDetailsSchema,
   });
 
+
   const handleSubmit = (data) => {    
-    setFname(data.fname),
-    setLname(data.lname),
-    setEmail(data.email),
-    setPhone(data.phone),
+    const personArray = Object.keys(data).reduce((acc, key, index) => {
+      const personIndex = key.match(/\d+/)[0]; 
+      const personData = {
+        fname: data[`fname${personIndex}`],
+        lname: data[`lname${personIndex}`],
+        email: data[`email${personIndex}`],
+        phone: data[`phone${personIndex}`],
+      };
+      if (!acc[personIndex]) acc[personIndex] = personData;
+      return acc;
+    }, []);
+  
+    personArray.forEach((person) => {
+      addContact(person); 
+    });
+  
     nextStep();
   };
+  
+
   const onError = (errors) => {
     toast({
       variant: "destructive",
@@ -43,6 +55,8 @@ const ContactDetailsPage = ({ nextStep }) => {
     });
     console.error(errors);
   };
+
+  const totalForms = adults + child;
 
   return (
     <div>
@@ -60,57 +74,58 @@ const ContactDetailsPage = ({ nextStep }) => {
           onSubmit={handleSubmit}
           onError={onError}
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {[
-              {
-                id: "fname",
-                label: "First Name",
-                placeholder: "Type your first name",
-                type: "text",
-              },
-              {
-                id: "lname",
-                label: "Last Name",
-                placeholder: "Type your last name",
-                type: "text",
-              },
-            ].map((input) => (
-              <FormInput
-                id={input.id}
-                title={input.label}
-                placeholder={input.placeholder}
-                required
-                className="h-12"
-              />
-            ))}
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {[
-              {
-                id: "email",
-                label: "Email",
-                placeholder: "Type your email",
-                type: "text",
-              },
-              {
-                id: "phone",
-                label: "Phone Number",
-                placeholder: "Enter phone number",
-                type: "number",
-              },
-            ].map((input) => (
-              <div key={input.id} className="">
-                <FormInput
-                  id={input.id}
-                  title={input.label}
-                  placeholder={input.placeholder}
-                  required
-                  className="h-12"
-                />
+          {[...Array(totalForms)].map((_, index) => (
+            <div key={index} className="border p-4 rounded-md mb-4 space-y-2">
+              <p className="text-lg font-semibold py-2">Person {index + 1}</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[
+                  {
+                    id: `fname${index}`,
+                    label: "First Name",
+                    placeholder: "Type first name",
+                  },
+                  {
+                    id: `lname${index}`,
+                    label: "Last Name",
+                    placeholder: "Type last name",
+                  },
+                ].map((input) => (
+                  <FormInput
+                    key={input.id}
+                    id={input.id}
+                    title={input.label}
+                    placeholder={input.placeholder}
+                    required
+                    className="h-12"
+                  />
+                ))}
               </div>
-            ))}
-          </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[
+                  {
+                    id: `email${index}`,
+                    label: "Email",
+                    placeholder: "Type email",
+                  },
+                  {
+                    id: `phone${index}`,
+                    label: "Phone Number",
+                    placeholder: "Enter phone number",
+                  },
+                ].map((input) => (
+                  <FormInput
+                    key={input.id}
+                    id={input.id}
+                    title={input.label}
+                    placeholder={input.placeholder}
+                    required
+                    className="h-12"
+                  />
+                ))}
+              </div>
+            </div>
+          ))}
 
           {/* <div className="w-1/2 mt-4">
               <Label htmlFor="phone" className="text-base font-medium">

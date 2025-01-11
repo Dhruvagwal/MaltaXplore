@@ -35,6 +35,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { contactUs, booking } from "@/data/link";
 import Link from "next/link";
 import { useBooking } from "@/context/bookingContext";
+import { useAuthState } from "@/context/ueAuthContext";
+import useFirebase from "@/hooks/use-firebase";
+import { DatePicker } from "@/components/ui/datepicker";
 
 async function fetchDataFromRealtimeDB() {
   try {
@@ -85,6 +88,12 @@ const reviews = [
 function TourismPage() {
   const router = useRouter();
   const { id } = router.query;
+
+  const {
+    crud: { updateData },
+    auth: { googleSignIn },
+  } = useFirebase();
+  const { auth, user } = useAuthState();
   const [services, setServices] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -137,12 +146,99 @@ function TourismPage() {
   }, [id]);
 
   const tourData = services.find((service) => service.id === id);
+  console.log("tourData", tourData);
+
   useEffect(() => {
     if (tourData?.price) {
       const calculatedPrice = tourData.price * (adults + child * 0.5);
       setTotalPrice(calculatedPrice);
     }
   }, [tourData, adults, child]);
+
+  const HandleBookNowButton = () => {
+    const selectedDate = new Date(date);
+    const currentDate = new Date();
+
+    selectedDate.setHours(0, 0, 0, 0);
+    currentDate.setHours(0, 0, 0, 0);
+
+    if (isNaN(selectedDate.getTime())) {
+      return;
+    }
+
+    if (selectedDate < currentDate) {
+      return;
+    }
+    if (auth) {
+      router.push(`${booking.replace("[id]", id)}`);
+    } else {
+      googleSignIn();
+    }
+  };
+
+  const handleDateChange = (selectedDate) => {
+    const formattedDate = new Date(selectedDate).toDateString();
+    setDate(formattedDate);
+  };
+
+  const [isLiked, setIsLiked] = useState(false);
+
+  useEffect(() => {
+    if (tourData && user?.uid) {
+      const likes = tourData.likes || [];
+      setIsLiked(likes.includes(user.uid));
+    }
+  }, [tourData, user, services]);
+
+  const handleLikesbutton = async () => {
+    if (tourData && user?.uid) {
+      const likes = tourData.likes || [];
+
+      const updatedLikes = likes.includes(user.uid)
+        ? likes
+        : [...likes, user.uid];
+
+      const finalData = {
+        ...tourData,
+        likes: updatedLikes,
+      };
+
+      try {
+        await updateData({
+          [`/services/${tourData?.mainCategory}/${tourData?.subCategory}/${tourData.id}`]:
+            finalData,
+        });
+        setIsLiked(true);
+        console.log("Data updated successfully!");
+      } catch (error) {
+        console.error("Error updating data:", error);
+      }
+    }
+  };
+
+  const handleUnlikesbutton = async () => {
+    if (tourData && user?.uid) {
+      const likes = tourData.likes || [];
+
+      const updatedLikes = likes.filter((uid) => uid !== user.uid);
+
+      const finalData = {
+        ...tourData,
+        likes: updatedLikes,
+      };
+
+      try {
+        await updateData({
+          [`/services/${tourData?.mainCategory}/${tourData?.subCategory}/${tourData.id}`]:
+            finalData,
+        });
+        setIsLiked(false);
+        console.log("Data updated successfully!");
+      } catch (error) {
+        console.error("Error updating data:", error);
+      }
+    }
+  };
 
   return (
     <main className="min-h-screen bg-white">
@@ -260,7 +356,18 @@ function TourismPage() {
             ) : (
               <>
                 <button className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center bg-[#FFE4E5] text-[#E5484D] transition-all duration-300">
-                  <Heart className="w-4 h-4 sm:w-5 sm:h-5" />
+                  {!isLiked ? (
+                    <Heart
+                      className="w-4 h-4 sm:w-5 sm:h-5"
+                      onClick={handleLikesbutton}
+                    />
+                  ) : (
+                    <img
+                      src="/heart.png"
+                      className="w-4 h-4 sm:w-5 sm:h-5"
+                      onClick={handleUnlikesbutton}
+                    />
+                  )}
                 </button>
                 <button className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center bg-[#FFE4E5] text-[#E5484D] transition-all duration-300">
                   <Share2 className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -511,25 +618,7 @@ function TourismPage() {
                     {isLoading ? (
                       <Skeleton className="h-10 w-full" />
                     ) : (
-                      <Select
-                        defaultValue="nov-4"
-                        onValueChange={(value) => setDate(value)}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select date" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="nov-4">
-                            November 4, 2024
-                          </SelectItem>
-                          <SelectItem value="nov-5">
-                            November 5, 2024
-                          </SelectItem>
-                          <SelectItem value="nov-6">
-                            November 6, 2024
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <DatePicker date={date} setDate={handleDateChange} />
                     )}
                   </div>
 
@@ -624,10 +713,11 @@ function TourismPage() {
                   {isLoading ? (
                     <Skeleton className="h-12 w-full rounded-lg" />
                   ) : (
-                    <Button className="w-full bg-[#E5484D] hover:bg-[#E5484D]/90 text-white transition-all duration-300 transform hover:scale-[1.02]">
-                      <Link href={`${booking.replace("[id]", id)}`}>
-                        Book Now
-                      </Link>
+                    <Button
+                      className="w-full bg-[#E5484D] hover:bg-[#E5484D]/90 text-white transition-all duration-300 transform hover:scale-[1.02]"
+                      onClick={HandleBookNowButton}
+                    >
+                      Book Now
                     </Button>
                   )}
 

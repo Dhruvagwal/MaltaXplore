@@ -168,6 +168,10 @@ export const contactDetailsSchema = z.object({
 
 export const activityDetailsSchema = z.object({
   location: z.string().min(1, "Pickup location is required"),
+  city: z.string().min(1, "City is required"),
+  street: z.string().min(1, "Street is required"),
+  state: z.string().min(1, "State is required"),
+  postalCode: z.string().min(1, "PostalCode is required"),
 });
 
 export const cardSchema = z.object({

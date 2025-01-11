@@ -47,7 +47,10 @@ import { useRouter } from "next/router";
 import { useBooking } from "@/context/bookingContext";
 import { useContactDetails } from "@/context/contactDetailsContext";
 import { v4 } from "uuid";
-
+import { useAddress } from "@/context/addressContext";
+import { useAuthState } from "@/context/ueAuthContext";
+import { supplier } from "@/data/link";
+import { jsPDF } from "jspdf";
 const stripePromise = loadStripe(
   "pk_test_51QeatsDk75aWHW4POpFQMr6DEc6Vg8MNxdR0La3Q7QTNKm9ej2fgSYaZhhSpTTf93dav99IkTt6QuINLkfpaZrAI00wF7qXy50"
 ); // Use the publishable key
@@ -58,16 +61,13 @@ const PaymentDetailsPage = ({
   cancellationPolicy,
   clientSecret,
   paymentIntentId,
+  tourData,
 }) => {
-  const { adults, child, totalPrice, date } = useBooking();
-  const { fname, lname, email, phone, pickupLocation } = useContactDetails();
-
-  const [isProcessing, setIsProcessing] = useState(false);
-
+  const { user } = useAuthState();
+  console.log("userinpaymentdetailspage", user);
   const stripe = useStripe();
   const elements = useElements();
   const { toast } = useToast();
-
   const {
     FormWrapper,
     FormInput,
@@ -79,8 +79,13 @@ const PaymentDetailsPage = ({
   });
 
   const {
-    crud: { writeData },
+    crud: { writeData,syncUpload  },
   } = useFirebase();
+
+  const { adults, child, totalPrice, date } = useBooking();
+  const { contactDetails } = useContactDetails();
+  const { pickupLocation, street, city, state, postalCode } = useAddress();
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const onError = (errors) => {
     toast({
@@ -91,67 +96,11 @@ const PaymentDetailsPage = ({
     console.error(errors);
   };
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   if (!clientSecret || !stripe || !elements) {
-  //     console.error("Stripe.js or clientSecret has not loaded yet.");
-  //     return;
-  //   }
-
-  //   try {
-  //     setIsProcessing(true);
-
-  //     // Confirm the payment with Stripe
-  //     const { error, paymentIntent } = await stripe.confirmPayment({
-  //       elements,
-  //       confirmParams: {
-  //         return_url: "http://localhost:3000/complete",
-  //       },
-  //     });
-
-  //     if (error) {
-  //       console.error("Error:", error);
-  //       alert(`Payment failed: ${error.message}`);
-  //       console.log("Error details:", error);
-  //     }
-
-  //     const finalData = {
-  //       contactDetails: {
-  //         fname,
-  //         lname,
-  //         email,
-  //         phone,
-  //       },
-  //       activityDetails: {
-  //         location: pickupLocation,
-  //       },
-  //       bookingDetails: {
-  //         adults: adults,
-  //         childrens: child,
-  //         totalPrice: totalPrice,
-  //         date: date,
-  //       },
-  //       bookingDate: new Date().toISOString(),
-  //       transactionId: paymentIntent.id,
-  //     };
-
-  //     if (paymentIntent.status === "succeeded") {
-  //       console.log(paymentIntent.status);
-  //       await writeData(`/bookings/${v4()}`, finalData);
-  //       console.log("Payment successful:", paymentIntent);
-  //       alert("Payment successful!");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error processing payment:", error);
-  //   } finally {
-  //     setIsProcessing(false);
-  //   }
-  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!clientSecret || !stripe || !elements || isProcessing) {
+    if (!user || !clientSecret || !stripe || !elements || isProcessing) {
       console.error("Stripe.js or clientSecret has not loaded yet.");
       return;
     }
@@ -159,14 +108,13 @@ const PaymentDetailsPage = ({
     setIsProcessing(true);
     try {
       const finalData = {
-        contactDetails: {
-          fname,
-          lname,
-          email,
-          phone,
-        },
-        activityDetails: {
+        contactDetails: contactDetails,
+        addressDetails: {
           location: pickupLocation,
+          street,
+          city,
+          state,
+          postalCode,
         },
         bookingDetails: {
           adults: adults,
@@ -175,9 +123,20 @@ const PaymentDetailsPage = ({
           date: date,
         },
         status: false,
+        userUid: user?.uid,
+        supplierId: tourData?.createdBy?.id,
+        likes: [],
+        service: {
+          mainCategory: tourData?.mainCategory,
+          subCategory: tourData?.subCategory,
+          id: tourData?.id,
+          location: tourData?.location,
+          status: tourData?.status,
+        },
         bookingDate: new Date().toISOString(),
         paymentIntentId: paymentIntentId,
       };
+      console.log("finalData", finalData);
 
       await writeData(`/bookings/${v4()}`, finalData);
 
@@ -201,6 +160,14 @@ const PaymentDetailsPage = ({
       }
     }
   };
+
+  const doc = new jsPDF();
+
+doc.text("Hello world!", 10, 10);
+doc.save("a4.pdf");
+
+console.log(doc);
+
 
   return (
     <div>
@@ -408,7 +375,9 @@ const BookingPage = () => {
     crud: { readData, writeData },
   } = useFirebase();
 
-  const { fname, lname, email, phone, pickupLocation } = useContactDetails();
+  const { contactDetails } = useContactDetails();
+  const firstKey = Object.keys(contactDetails)[0];
+  const email = contactDetails[firstKey]?.email;
   const { adults, child, totalPrice, date } = useBooking();
 
   const [activeStep, setActiveStep] = useState(0);
@@ -422,9 +391,8 @@ const BookingPage = () => {
         const response = await axios.post("/api/create-payment-intent", {
           amount: totalPrice * 100,
           currency: "usd",
-          email,
+          email: email,
         });
-        console.log("response", response);
         setPaymentIntentId(response?.data?.paymentIntent?.id);
         setClientSecret(response?.data?.clientSecret);
       };
@@ -509,7 +477,7 @@ const BookingPage = () => {
               className="flex items-center text-muted-foreground text-sm pl-0 hover:cursor-pointer hover:bg-none pt-4"
               onClick={prevStep}
             >
-              <ChevronRight size="14" /> Activity Details
+              <ChevronRight size="14" /> Address Details
             </button>
           </div>
         )}
@@ -524,6 +492,7 @@ const BookingPage = () => {
                   cancellationPolicy={tourData?.cancellationPolicy}
                   clientSecret={clientSecret}
                   paymentIntentId={paymentIntentId}
+                  tourData={tourData}
                 />
               </Elements>
             )}
@@ -557,7 +526,7 @@ const BookingPage = () => {
                 <Separator className="" />
                 <div className="flex justify-between items-center text-sm my-4">
                   <span className="text-muted-foreground">Date</span>
-                  <span>{date}</span>
+                  <span>{date?.toString()}</span>
                 </div>
                 <div className="flex justify-between items-center text-sm">
                   <span className="text-muted-foreground">Travellers</span>

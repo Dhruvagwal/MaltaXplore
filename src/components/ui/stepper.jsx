@@ -36,7 +36,7 @@ const Step = ({ isActive, children, index }) => {
 const StepperComponent = ({ activeStep, nextStep }) => {
   const steps = [
     { label: "Contact Details" },
-    { label: "Activity Details" },
+    { label: "Address Details" },
     { label: "Payment Details" },
   ];
 

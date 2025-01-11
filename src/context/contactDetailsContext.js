@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
-
+import { v4 } from "uuid";
 const ContactDetailsContext = createContext();
 
 export const useContactDetails = () => {
@@ -7,25 +7,21 @@ export const useContactDetails = () => {
 };
 
 export const ContactDetailsProvider = ({ children }) => {
-  const [fname, setFname] = useState("");
-  const [lname, setLname] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [pickupLocation, setPickupLocation] = useState("");  
-  
+  const [contactDetails, setContactDetails] = useState({});  
+
+  const addContact = (personData) => {
+    const uuid = v4();
+    setContactDetails((prevDetails) => ({
+      ...prevDetails,
+      [uuid]: personData,
+    }));
+  };
+
   return (
     <ContactDetailsContext.Provider
       value={{
-        fname,
-        setFname,
-        lname,
-        setLname,
-        email,
-        setEmail,
-        phone,
-        setPhone,
-        pickupLocation,
-        setPickupLocation,
+        contactDetails,
+        addContact,
       }}
     >
       {children}

@@ -7,6 +7,7 @@ import Navbar from "@/components/ui/Navbar";
 import { Footer } from "@/components/cui/footer";
 import { BookingProvider } from "@/context/bookingContext";
 import { ContactDetailsProvider } from "@/context/contactDetailsContext";
+import { AddressProvider } from "@/context/addressContext";
 import { useAuthState } from "@/context/ueAuthContext";
 import useFirebase from "@/hooks/use-firebase";
 import { useEffect } from "react";
@@ -23,7 +24,7 @@ const geistMono = localFont({
 });
 
 export default function App({ Component, pageProps }) {
-  const { setAuth } = useAuthState();
+  const { setAuth, setUser } = useAuthState();
   const {
     auth: { getUserInfo },
   } = useFirebase();
@@ -32,9 +33,10 @@ export default function App({ Component, pageProps }) {
     getUserInfo().then((res) => {
       if (!res) return;
       setAuth(true);
+      setUser(res);
     });
   }, []);
-  
+
   return (
     <>
       <ScrollArea
@@ -44,7 +46,9 @@ export default function App({ Component, pageProps }) {
         <Navbar />
         <BookingProvider>
           <ContactDetailsProvider>
-            <Component {...pageProps} />
+            <AddressProvider>
+              <Component {...pageProps} />
+            </AddressProvider>
           </ContactDetailsProvider>
         </BookingProvider>
         <Footer />

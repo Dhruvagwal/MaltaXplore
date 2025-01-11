@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import Link from "next/link";
 import useFirebase from "@/hooks/use-firebase";
+import emailjs from "@emailjs/browser";
 
 const stripePromise = loadStripe(
   "pk_test_51QeatsDk75aWHW4POpFQMr6DEc6Vg8MNxdR0La3Q7QTNKm9ej2fgSYaZhhSpTTf93dav99IkTt6QuINLkfpaZrAI00wF7qXy50"
@@ -59,33 +60,74 @@ const CompletePage = () => {
     fetchPaymentDetails();
   }, [payment_intent_client_secret]);
 
+  const sendEmail = async (paymentDetails) => {
+    try {
+      const date = new Date(paymentDetails.created * 1000).toLocaleString();
+      const price = (paymentDetails.amount / 100).toFixed(2);
+      const templateParams = {
+        booking_date: date,
+        payment_amount: price,
+        user_email: paymentDetails?.receipt_email,
+        payment_method: paymentDetails?.payment_method_types[0],
+        payment_intent: paymentDetails?.id,
+      };
+
+      const response = await emailjs.send(
+        "service_w7ii0wa",
+        "template_di5w0yw",
+        templateParams,
+        "XvpCI43kTo5rkOW7y"
+      );
+
+      console.log("Email sent successfully:", response.status, response.text);
+    } catch (error) {
+      console.error("Error sending email:", error);
+    }
+  };
+
   useEffect(() => {
     if (bookings) {
       Object?.entries(bookings).forEach(async ([bookingId, entry]) => {
         const {
-          paymentIntentId,
           contactDetails,
-          bookingDate,
-          activityDetails,
+          addressDetails,
           bookingDetails,
+          bookingDate,
+          userUid,
+          supplierId,
+          paymentIntentId,
+          service,
+          status,
         } = entry;
 
+        console.log("entry", entry);
+
         if (
-          paymentDetails.status === "succeeded" &&
+          paymentDetails?.status === "succeeded" &&
           paymentDetails &&
           paymentIntentId == paymentDetails?.id
         ) {
           const finalData = {
             contactDetails,
             bookingDate,
-            activityDetails,
+            addressDetails,
             bookingDetails,
+            userUid,
+            supplierId,
+            paymentIntentId,
+            service,
+            likes: [],
             status: true,
           };
 
           await updateData({
             [`/bookings/${bookingId}`]: finalData,
           });
+
+          if (bookings && paymentDetails && status === false) {
+            await sendEmail(paymentDetails);
+            console.log("Email sent successfully:");
+          }
         }
       });
     }

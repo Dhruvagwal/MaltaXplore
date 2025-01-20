@@ -7,8 +7,9 @@ export const useContactDetails = () => {
 };
 
 export const ContactDetailsProvider = ({ children }) => {
-  const [contactDetails, setContactDetails] = useState({});  
-
+  const [contactDetails, setContactDetails] = useState({});
+  const [userId, setUserId] = useState([]);
+  const [userEmail, setUserEmail] = useState();
   const addContact = (personData) => {
     const uuid = v4();
     setContactDetails((prevDetails) => ({
@@ -22,6 +23,10 @@ export const ContactDetailsProvider = ({ children }) => {
       value={{
         contactDetails,
         addContact,
+        userId,
+        setUserId,
+        userEmail,
+        setUserEmail,
       }}
     >
       {children}

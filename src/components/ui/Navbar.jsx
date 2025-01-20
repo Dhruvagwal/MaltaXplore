@@ -4,16 +4,14 @@ import Image from "next/image";
 import { useTranslation } from "react-i18next";
 import { Button } from "./button";
 import { aboutUs, contactUs, home, maltapass, supplier } from "@/data/link";
-import useFirebase from "@/hooks/use-firebase";
 import { useAuthState } from "@/context/ueAuthContext";
+import { useRouter } from "next/router";
 
 function Navbar() {
   const { t } = useTranslation();
+  const router = useRouter();
 
-  const {
-    auth: { googleSignIn },
-  } = useFirebase();
-  const { auth, user } = useAuthState();
+  const { user } = useAuthState();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
@@ -78,21 +76,21 @@ function Navbar() {
 
         {/* Signup and Login Buttons */}
         <div className="flex items-center gap-4">
-          {auth ? (
+          {user ? (
             <Button
               size="sm"
               asChild
               className="w-full md:w-auto"
               onClick={() => {}}
             >
-              <Link href="/dashboard">Dashboard</Link>
+              <Link href="/user/dashboard">Dashboard</Link>
             </Button>
           ) : (
             <Button
               size="sm"
               asChild
               className="w-full md:w-auto"
-              onClick={() => googleSignIn()}
+              onClick={() => router.push("/user/dashboard")}
             >
               <Link href="#">{t("navbar.login")}</Link>
             </Button>

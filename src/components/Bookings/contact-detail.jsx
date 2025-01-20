@@ -39,21 +39,18 @@ const ContactDetailsPage = ({ nextStep }) => {
       for (const user of formData) {
         const { email, name, mobile_no } = user;
 
-        // Step 1: Check if the user exists in Supabase Auth
         const { data: authUsers } = await supabase.auth.admin.listUsers();
         const existingAuthUser = authUsers.users.find((u) => u.email === email);
 
         let authId;
         if (existingAuthUser) {
-          // User exists in Supabase Authss
           authId = existingAuthUser.id;
           console.log(`User already exists in Auth with ID: ${authId}`);
         } else {
-          // Step 2: Sign up the user in Supabase Auth
           const { data: signUpData, error: signUpError } =
             await supabase.auth.signUp({
               email,
-              password: Math.random().toString(36).slice(-10), // Random password
+              password: Math.random().toString(36).slice(-10),
             });
 
           if (signUpError) throw new Error(`Error signing up user: ${email}`);
@@ -61,7 +58,6 @@ const ContactDetailsPage = ({ nextStep }) => {
           console.log(`New user signed up with ID: ${authId}`);
         }
 
-        // Step 3: Check if the user exists in the `users` table
         const { data: existingUser } = await supabase
           .from("users")
           .select("*")
@@ -69,11 +65,9 @@ const ContactDetailsPage = ({ nextStep }) => {
           .single();
 
         if (existingUser) {
-          // User already exists in the `users` table
           console.log(`User already exists in users table: ${email}`);
-          userIds.push(existingUser.id); // Add the existing user's ID to the list
+          userIds.push(existingUser.id); 
         } else {
-          // Step 4: Insert the user into the `users` table
           const { data: insertedUser, error: insertError } = await supabase
             .from("users")
             .insert({
@@ -88,12 +82,11 @@ const ContactDetailsPage = ({ nextStep }) => {
           if (insertError)
             throw new Error(`Error inserting user into users table: ${email}`);
           console.log(`User inserted into users table: ${email}`);
-          userIds.push(insertedUser.id); // Add the new user's ID to the list
+          userIds.push(insertedUser.id); 
         }
         setUserId(userIds);
       }
 
-      // Proceed to the next step after processing all users
       nextStep();
     } catch (error) {
       console.error("Error processing users:", error);

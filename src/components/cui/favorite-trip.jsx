@@ -3,106 +3,61 @@ import { Card } from "../ui/card";
 import Image from "next/image";
 import { CalendarDays } from "lucide-react";
 import { useAuthState } from "@/context/ueAuthContext";
-import useFirebase from "@/hooks/use-firebase";
+import { useServicesState } from "@/context/servicesContext";
 import { Heart } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
-function FavoriteTripComponent({ data, refetch }) {
+function FavoriteTripComponent({ data, className, likes }) {
   const { user } = useAuthState();
-  const {
-    crud: { updateData, readData },
-  } = useFirebase();
+  const { likeService, unlikeService } = useServicesState();
   const [isLiked, setIsLiked] = useState(false);
 
   useEffect(() => {
-    if (data && user?.uid) {
-      const likes = data.likes || [];
-      setIsLiked(likes.includes(user.uid));
-    }
-  }, [data, user]);
+    setIsLiked(likes?.some((like) => like.service_id === data.id));
+  }, [likes, data.id]);
 
   const handleLikesbutton = async () => {
-    if (data && user?.uid) {
-      const likes = data.likes || [];
-
-      const updatedLikes = likes.includes(user.uid)
-        ? likes
-        : [...likes, user.uid];
-
-      const finalData = {
-        ...data,
-        likes: updatedLikes,
-      };
-
-      try {
-        await updateData({
-          [`/services/${data?.mainCategory}/${data?.subCategory}/${data.id}`]:
-            finalData,
-        });
-        refetch();
-        setIsLiked(true);
-        console.log("Data updated successfully!");
-      } catch (error) {
-        console.error("Error updating data:", error);
-      }
-    }
-  };
-
-  const handleUnlikesbutton = async () => {
-    if (data && user?.uid) {
-      const likes = data.likes || [];
-
-      const updatedLikes = likes.filter((uid) => uid !== user.uid);
-
-      const finalData = {
-        ...data,
-        likes: updatedLikes,
-      };
-
-      try {
-        await updateData({
-          [`/services/${data?.mainCategory}/${data?.subCategory}/${data.id}`]:
-            finalData,
-        });
-        refetch();
+    try {
+      if (isLiked) {
+        await unlikeService(data, user.id);
         setIsLiked(false);
-        console.log("Data updated successfully!");
-      } catch (error) {
-        console.error("Error updating data:", error);
+      } else {
+        await likeService(data, user.id);
+        setIsLiked(true);
       }
+    } catch (error) {
+      console.error("Error handling like/unlike:", error);
     }
   };
 
   return (
-    <Card className="border rounded-2xl bg-zinc-50">
+    <Card className={className}>
       <div className="relative">
         <Image
           width={500}
           height={500}
-          className="w-full rounded-t-2xl h-64 object-cover"
+          className=" rounded-t-xl h-64 object-cover w-[350px]"
           src={"/adventure.jpg"}
           alt={data.title}
+          loading="lazy"
         />
         <div className="absolute z-10 top-4 right-4 cursor-pointer transition-transform duration-200 transform hover:scale-110">
-          {!isLiked ? (
-            <Heart
-              className="w-4 h-4 sm:w-5 sm:h-5"
-              onClick={handleLikesbutton}
-            />
-          ) : (
-            <img
-              src="/heart.png"
-              className="w-4 h-4 sm:w-5 sm:h-5"
-              onClick={handleUnlikesbutton}
-            />
-          )}
+          <Button
+            variant="outline"
+            className={cn("rounded-full w-10 h-10 p-0")}
+            onClick={handleLikesbutton}
+          >
+            <Heart className={cn(isLiked && "fill-primary text-primary")} />
+          </Button>
         </div>
       </div>
       <div className="flex flex-col my-4 gap-2 px-6">
         <div className="flex justify-between font-semibold text-sm gap-8">
           <div className="relative group">
-            <p className="text-lg font-bold line-clamp-1">{data?.title}</p>
+            <p className="text-lg font-bold line-clamp-1">{data?.name}</p>
             <span className="absolute top-full left-0 z-10 hidden w-max max-w-xs p-2 bg-white shadow-lg rounded-md group-hover:block">
-              {data?.title}
+              {data?.name}
             </span>
           </div>
           <p className="text-lg font-semibold">${data?.price}</p>

@@ -15,7 +15,7 @@ const CategoryCard = ({ data, index }) => {
             height={400}
             width={400}
             className=" w-full group-hover:scale-125 transition-all ease-in-out object-cover"
-            src={data.image}
+            src="/adventure.jpg"
           />
         </div>
         <Button
@@ -26,7 +26,7 @@ const CategoryCard = ({ data, index }) => {
           <Link
             href={{
               pathname: search,
-              query: { category: data.category },
+              query: { category: data.id },
             }}
           >
             <ArrowTopRightIcon />
@@ -36,7 +36,7 @@ const CategoryCard = ({ data, index }) => {
 
       <div className="mt-16">
         <p className="text-xl font-semibold">{data.name}</p>
-        <p className="group-hover:text-gray-200 text-white">{data.desc}</p>
+        {/* <p className="group-hover:text-gray-200 text-white">{data.desc}</p> */}
       </div>
     </Card>
   );

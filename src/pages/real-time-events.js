@@ -1,8 +1,13 @@
-import Banner from "@/components/cui/banner";
-import EventCard from "@/components/cui/event";
-import { Button } from "@/components/ui/button";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+
+import useCustomForm from "@/hooks/use-custom-form";
+
 import { DatePicker } from "@/components/ui/datepicker";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import CPagination from "@/components/ui/CPagniation";
+import { Separator } from "@/components/ui/separator";
 import {
   Select,
   SelectContent,
@@ -11,13 +16,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
+import Banner from "@/components/cui/banner";
+import EventCard from "@/components/cui/event";
+
 import { SearchIcon, XIcon } from "lucide-react";
-import Image from "next/image";
-import React, { useState, useEffect } from "react";
-import CPagination from "@/components/ui/CPagniation";
-import { Separator } from "@/components/ui/separator";
-import { useRouter } from "next/router";
-import useCustomForm from "@/hooks/use-custom-form";
+
 
 
 const popularEvents = [
@@ -209,6 +213,12 @@ function RealTimeEvents() {
   // Split the data into chunks (6 items per page)
   const chunkedData = chunkArray(searchedEvents, SIZE);
 
+  useEffect(() => {
+    if (currentPage >= chunkedData.length) {
+      handlePageChange(chunkedData.length - 1);
+    }
+  }, [currentPage, chunkedData.length]);
+
   // Handle page change and update the URL query param
   const handlePageChange = (page) => {
     router.push({
@@ -216,12 +226,6 @@ function RealTimeEvents() {
       query: { ...router.query, page: page.toString() },
     });
   };
-
-  useEffect(() => {
-    if (currentPage >= chunkedData.length) {
-      handlePageChange(chunkedData.length - 1);
-    }
-  }, [currentPage, chunkedData.length]);
 
   const handleSearch = () => {
     if (searchTerm.trim() === "") {
@@ -237,7 +241,6 @@ function RealTimeEvents() {
       setSearchedEvents(filtered);
     }
   };
-
 
   return (
     <div className="from-primary-foreground to-transparent">

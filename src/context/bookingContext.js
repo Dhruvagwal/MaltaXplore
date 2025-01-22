@@ -12,6 +12,7 @@ export const BookingProvider = ({ children }) => {
   const [adults, setAdults] = useState(1);
   const [child, setChild] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [discountedPrice, setDiscountedPrice] = useState(0);
   const [date, setDate] = useState();
 
   return (
@@ -25,6 +26,8 @@ export const BookingProvider = ({ children }) => {
         setTotalPrice,
         date,
         setDate,
+        discountedPrice,
+        setDiscountedPrice,
       }}
     >
       {children}

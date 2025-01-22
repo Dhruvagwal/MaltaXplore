@@ -1,16 +1,23 @@
 "use client";
+
 import React from "react";
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { addSeller, businessActivities, types } from "@/lib/schema";
+
 import useCustomForm from "@/hooks/use-custom-form";
 import useFirebase from "@/hooks/use-firebase";
 import { useToast } from "@/hooks/use-toast";
+
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+
+import { addSeller, businessActivities, types } from "@/lib/schema";
 import { v4 } from "uuid";
+import Banner from "@/components/cui/banner";
 
 function SupplierRegistration() {
   const { toast } = useToast();
-
+  const {
+    crud: { writeData },
+  } = useFirebase();
   const {
     FormWrapper,
     FormInput,
@@ -21,11 +28,16 @@ function SupplierRegistration() {
     schema: addSeller,
   });
 
-  const {
-    crud: { writeData },
-  } = useFirebase();
-
   const businessType = watch("type");
+
+  const onError = (errors) => {
+    toast({
+      variant: "destructive",
+      title: "Invalid Form Submission",
+      description: "Please check the form for errors and try again.",
+    });
+    console.error(errors);
+  };
 
   const handleSubmit = async (data) => {
     try {
@@ -40,26 +52,21 @@ function SupplierRegistration() {
     }
   };
 
-  const onError = (errors) => {
-    toast({
-      variant: "destructive",
-      title: "Invalid Form Submission",
-      description: "Please check the form for errors and try again.",
-    });
-    console.error(errors);
-  };
-
   return (
     <div className="from-primary-foreground bg-gradient-to-br to-transparent">
-      <main className="pt-16 px-16 md:px-32">
-        <p className="text-4xl font-bold text-center">
-          Join Malta’s Leading Tourism Platform
-        </p>
-        <Card className="mt-16 w-full md:w-[50vw] mx-auto">
+      <div className="pt-16 relative">
+        <Banner url="/corporate-partnership.png">
+          <h1 className="text-xl md:text-4xl max-md:text-center font-bold text-white">
+            Join Malta’s Leading Tourism Platform
+          </h1>
+        </Banner>
+      </div>
+      <main className="px-8 md:px-32 relative -mt-16">
+        <Card className="w-[70vw] md:w-[50vw] mx-auto">
           <CardHeader>
-            <p className="text-2xl font-semibold mx-7">Supplier Registration</p>
+            <p className="text-2xl font-semibold mx-7 max-md:text-center">Supplier Registration</p>
           </CardHeader>
-          <CardContent className="mx-8 my-4">
+          <CardContent className="md:mx-8 my-4">
             <FormWrapper
               className="flex flex-col gap-6"
               onSubmit={handleSubmit}
@@ -69,7 +76,7 @@ function SupplierRegistration() {
                 id="type"
                 options={types}
                 title="Business Type"
-                className="p-4"
+                className="p-4 h-12"
                 required
               />
               <FormSelect
@@ -112,19 +119,20 @@ function SupplierRegistration() {
                   title={input.label}
                   placeholder={input.placeholder}
                   required
+                  className="h-12"
                 />
               ))}
 
-              <Button className="p-8 text-base">Submit</Button>
+              <Button className="w-full md:w-48 p-6 text-base">Submit</Button>
             </FormWrapper>
           </CardContent>
         </Card>
         <div className="md:px-32 lg:px-64 mt-16">
           <p className="text-center">
             Our team will review your information and activate your account
-            within 48 hours. Once approved, you’ll be able to list your
-            services, manage bookings, and start growing your business with
-            MaltaXplore.
+            <span className="text-primary"> within 48 hours</span>. Once approved, you’ll be
+            able to list your services, manage bookings, and start growing your
+            business with MaltaXplore.
           </p>
         </div>
       </main>

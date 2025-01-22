@@ -25,9 +25,15 @@ import { useForm, Path, DefaultValues } from "react-hook-form";
 import { z, ZodSchema } from "zod";
 import { cn } from "@/lib/utils";
 import { Slider } from "@/components/ui/slider";
-import { Command, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import {
+  Command,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 
-const useCustomForm = ({ defaultValues = {} }) => {  
+const useCustomForm = ({ defaultValues = {} }) => {
   const form = useForm({
     defaultValues,
     mode: "onChange",
@@ -112,7 +118,13 @@ const useCustomForm = ({ defaultValues = {} }) => {
     />
   );
 
-  const FormSelect = ({ title = "", id, options , placeholder="Select an option", className}) => (
+  const FormSelect = ({
+    title = "",
+    id,
+    options,
+    placeholder = "Select an option",
+    className,
+  }) => (
     <FormField
       control={control}
       name={id}
@@ -158,7 +170,6 @@ const useCustomForm = ({ defaultValues = {} }) => {
     />
   );
 
-  
   const FormCommand = ({ title, id, options }) => (
     <FormField
       control={control}
@@ -193,7 +204,6 @@ const useCustomForm = ({ defaultValues = {} }) => {
     />
   );
 
-
   const FormTextarea = ({ title, placeholder, id }) => (
     <FormField
       control={control}
@@ -210,23 +220,20 @@ const useCustomForm = ({ defaultValues = {} }) => {
     />
   );
 
-
-  const FormCheckbox = ({ title, id, onChange }) => (
+  const FormCheckbox = ({ title, id, onCheckboxChange }) => (
     <FormField
       control={control}
       name={id}
       render={({ field }) => (
         <FormItem className="inline-flex items-center gap-4">
           <FormControl>
-          <Checkbox
-            checked={field.value}
-            onCheckedChange={(value) => {
-              field.onChange(value); 
-              if (onChange) {
-                onChange(value); 
-              }
-            }}
-          />
+            <Checkbox
+              checked={field.value}
+              onCheckedChange={(isChecked) => {
+                field.onChange(isChecked);
+                onCheckboxChange?.(id, isChecked);
+              }}
+            />
           </FormControl>
           <FormLabel>{title}</FormLabel>
           <FormMessage />
@@ -234,7 +241,6 @@ const useCustomForm = ({ defaultValues = {} }) => {
       )}
     />
   );
-
 
   const FormSlider = ({ title, id, min, max, step = 1 }) => (
     <FormField

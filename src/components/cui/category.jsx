@@ -16,10 +16,12 @@ import { Input } from "@/components/ui/input";
 import { search } from "@/data/link";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/router";
+import { useServiceTypeState } from "@/context/servicesContext";
 
 export const Categories = ({ className }) => {
   const router = useRouter();
   const { query } = router;
+  const { serviceType } = useServiceTypeState();
   const [date, setDate] = useState();
   const [category, setCategory] = useState();
   const [guest, setGuest] = useState();
@@ -56,9 +58,9 @@ export const Categories = ({ className }) => {
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              {Object.keys(categories).map((category) => (
-                <SelectItem key={category} value={category}>
-                  {categories[category].name}
+              {serviceType?.map((category) => (
+                <SelectItem key={category.id} value={category.id}>
+                  {category.name}
                 </SelectItem>
               ))}
             </SelectGroup>

@@ -3,6 +3,9 @@ import apiKeys from "./apiKeys";
 import Clock from "react-live-clock";
 import Forcast from "./forecast";
 import ReactAnimatedWeather from "react-animated-weather";
+import { Skeleton } from "@/components/ui/skeleton";
+import Tilt from "react-parallax-tilt";
+
 const dateBuilder = (d) => {
   let months = [
     "January",
@@ -70,118 +73,157 @@ class Weather extends React.Component {
     });
   };
   getWeather = async (lat, lon) => {
-    const api_call = await fetch(
-      `${apiKeys.base}weather?lat=${lat}&lon=${lon}&units=metric&APPID=${apiKeys.key}`
-    );
-    const data = await api_call.json();
+    // const api_call = await fetch(
+    //   `${apiKeys.base}weather?lat=${lat}&lon=${lon}&units=metric&APPID=${apiKeys.key}`
+    // );
+    // const data = await api_call.json();
+    this.setState({ loading: true });
 
-    const oneCallApi = await fetch(
-      `https://api.weatherapi.com/v1/forecast.json?key=80b8bc51de824911bc295834250301&q=${lat},${lon}&hours=48`
-    );
-    const oneCallData = await oneCallApi.json();
-    
-    const timezoneOffset = oneCallData.location.tz_id;
+    try {
+      const oneCallApi = await fetch(
+        `https://api.weatherapi.com/v1/forecast.json?key=80b8bc51de824911bc295834250301&q=${lat},${lon}&hours=48`
+      );
+      const oneCallData = await oneCallApi.json();
 
-    const currentTime = new Date().toLocaleString("en-US", { timeZone: timezoneOffset });
-    const currentHour = new Date(currentTime).getHours(); 
-  
-    const hourlyData = oneCallData.forecast.forecastday[0].hour;
-      
-    const nextFourHoursData = hourlyData.filter((hour) => {
-      const hourTime = new Date(hour.time).getHours();
-      return hourTime >= currentHour && hourTime < currentHour + 4;
-    });
-  
-  
-    const nextFourHoursTemp = nextFourHoursData.map((hour) => {
-      const date = new Date(hour.time);
-      
-      let hour12 = date.getHours();
-      const minutes = date.getMinutes();
-      
-      const ampm = hour12 >= 12 ? 'PM' : 'AM';
-      
-      hour12 = hour12 % 12;
-      hour12 = hour12 ? hour12 : 12; 
-      
-      const formattedTime = `${hour12.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')} ${ampm}`;
-    
-      return {
-        time: formattedTime, 
-        temperature: Math.round(hour.temp_c), 
-        conditionIcon: hour.condition.icon,
-      };
-    });  
-  
-    this.setState({
-      lat: lat,
-      lon: lon,
-      city: data.name,
-      temperatureC: Math.round(data.main.temp),
-      temperatureF: Math.round(data.main.temp * 1.8 + 32),
-      humidity: data.main.humidity,
-      main: data.weather[0].main,
-      country: data.sys.country,
-      hourlyWeather: nextFourHoursTemp,
-      // sunrise: this.getTimeFromUnixTimeStamp(data.sys.sunrise),
+      const timezoneOffset = oneCallData.location.tz_id;
+      const currentTime = new Date().toLocaleString("en-US", {
+        timeZone: timezoneOffset,
+      });
+      const currentHour = new Date(currentTime).getHours();
 
-      // sunset: this.getTimeFromUnixTimeStamp(data.sys.sunset),
-    });
-    switch (this.state.main) {
-      case "Haze":
-        this.setState({ icon: "CLEAR_DAY" });
-        break;
-      case "Clouds":
-        this.setState({ icon: "CLOUDY" });
-        break;
-      case "Rain":
-        this.setState({ icon: "RAIN" });
-        break;
-      case "Snow":
-        this.setState({ icon: "SNOW" });
-        break;
-      case "Dust":
-        this.setState({ icon: "WIND" });
-        break;
-      case "Drizzle":
-        this.setState({ icon: "SLEET" });
-        break;
-      case "Fog":
-        this.setState({ icon: "FOG" });
-        break;
-      case "Smoke":
-        this.setState({ icon: "FOG" });
-        break;
-      case "Tornado":
-        this.setState({ icon: "WIND" });
-        break;
-      default:
-        this.setState({ icon: "CLEAR_DAY" });
+      const hourlyData = oneCallData.forecast.forecastday[0].hour;
+
+      const nextFourHoursData = hourlyData.filter((hour) => {
+        const hourTime = new Date(hour.time).getHours();
+        return hourTime >= currentHour && hourTime < currentHour + 4;
+      });
+
+      const nextFourHoursTemp = nextFourHoursData.map((hour) => {
+        const date = new Date(hour.time);
+
+        let hour12 = date.getHours();
+        const minutes = date.getMinutes();
+
+        const ampm = hour12 >= 12 ? "PM" : "AM";
+
+        hour12 = hour12 % 12;
+        hour12 = hour12 ? hour12 : 12;
+
+        const formattedTime = `${hour12.toString().padStart(2, "0")}:${minutes
+          .toString()
+          .padStart(2, "0")} ${ampm}`;
+
+        return {
+          time: formattedTime,
+          temperature: Math.round(hour.temp_c),
+          conditionIcon: hour.condition.icon,
+        };
+      });
+
+      this.setState({
+        lat: lat,
+        lon: lon,
+        city: oneCallData?.location.name,
+        temperatureC: Math.round(oneCallData?.current.temp_c),
+        temperatureF: Math.round(oneCallData?.current.temp_f),
+        humidity: oneCallData?.current.humidity,
+        wind: oneCallData?.current.wind_kph,
+        precipitation: oneCallData?.current.precip_in,
+        // main: data.weather[0].main,
+        country: oneCallData?.location.country,
+        hourlyWeather: nextFourHoursTemp,
+        loading: false,
+
+        // sunrise: this.getTimeFromUnixTimeStamp(data.sys.sunrise),
+
+        // sunset: this.getTimeFromUnixTimeStamp(data.sys.sunset),
+      });
+    } catch (error) {
+      console.error("Error fetching weather data:", error);
+      this.setState({ loading: false });
+    } finally {
+      this.setState({ loading: false });
     }
+    // switch (this.state.main) {
+    //   case "Haze":
+    //     this.setState({ icon: "CLEAR_DAY" });
+    //     break;
+    //   case "Clouds":
+    //     this.setState({ icon: "CLOUDY" });
+    //     break;
+    //   case "Rain":
+    //     this.setState({ icon: "RAIN" });
+    //     break;
+    //   case "Snow":
+    //     this.setState({ icon: "SNOW" });
+    //     break;
+    //   case "Dust":
+    //     this.setState({ icon: "WIND" });
+    //     break;
+    //   case "Drizzle":
+    //     this.setState({ icon: "SLEET" });
+    //     break;
+    //   case "Fog":
+    //     this.setState({ icon: "FOG" });
+    //     break;
+    //   case "Smoke":
+    //     this.setState({ icon: "FOG" });
+    //     break;
+    //   case "Tornado":
+    //     this.setState({ icon: "WIND" });
+    //     break;
+    //   default:
+    //     this.setState({ icon: "CLEAR_DAY" });
+    // }
   };
 
   render() {
     return (
-      <div className="lg:relative flex flex-col bg-red-100 rounded-[3rem] lg:w-[32vw] h-full p-4 max-lg:space-y-8">
-        <div className="bg-red-500 items-center text-white flex justify-between p-4 rounded-2xl">
-          <span className="text-sm md:text-xl">
-            {this.state.city}, {this.state.country}
-          </span>
-          <div className="text-sm md:text-xl">{dateBuilder(new Date())}</div>
-        </div>
-        <Forcast data={this.state} />
-        <div className="bg-gradient-to-r from-black flex-col flex justify-center  to-green-800 h-full rounded-3xl text-white p-4">
-          <h2 className="text-xl font-md pl-4">Today</h2>
-          <div className="grid grid-cols-4">
-            {this.state.hourlyWeather?.map((hour, index) => (
-              <div key={index} className="flex flex-col items-center gap-2 py-8 lg:py-4">
-                <p className="text-xs md:text-base font-thin">{hour.time}</p>
-                <img src={`https:${hour.conditionIcon}`} alt="" className="w-10 h-10"/>
-                <p className="text-sm md:text-lg">{Math.round(hour.temperature)}°C</p>
+      <div className="lg:relative flex flex-col bg-red-100 rounded-[3rem] lg:w-[26.5vw] h-full lg:h-[560px] p-4 max-lg:space-y-8 top-16">
+        {this.state.loading ? (
+          <Skeleton className={"bg-gray-300 p-4 rounded-[3rem]"} />
+        ) : (
+          <Tilt>
+            <div className="bg-gradient-to-r from-red-800 to-red-500 items-center text-white flex justify-between p-4 rounded-2xl">
+              <span className="text-sm md:text-xl">
+                {this.state.city}, {this.state.country}
+              </span>
+              <div className="text-sm md:text-xl">
+                {dateBuilder(new Date())}
               </div>
-            ))}
-          </div>
-        </div>
+            </div>
+          </Tilt>
+        )}
+        <Forcast data={this.state} />
+        {this.state.loading ? (
+          <Skeleton className={"bg-gray-300 h-full rounded-3xl"} />
+        ) : (
+          <Tilt>
+            <div className="bg-gradient-to-r from-black to-green-800 flex-col flex justify-center h-full rounded-3xl text-white lg:mt-5">
+              <h2 className="text-xl font-md pl-4">Today</h2>
+              <div className="grid grid-cols-4">
+                {this.state.hourlyWeather?.map((hour, index) => (
+                  <div
+                    key={index}
+                    className="flex flex-col items-center gap-2 py-8 lg:py-4"
+                  >
+                    <p className="text-xs md:text-base font-thin">
+                      {hour.time}
+                    </p>
+                    <img
+                      src={`https:${hour.conditionIcon}`}
+                      alt=""
+                      className="w-10 h-10"
+                    />
+                    <p className="text-sm md:text-lg">
+                      {Math.round(hour.temperature)}°C
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Tilt>
+        )}
       </div>
     );
   }

@@ -1,13 +1,12 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { MapPin, Gift, Calendar, Star } from "lucide-react";
-import Reviews from "@/components/cui/review";
-// import hero from '/images/maltapasshero.svg'
-// import bg from '../../public/Rectangle 102.svg'
-import { River } from "@/components/cui/river";
 import Image from "next/image";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import Reviews from "@/components/cui/review";
+import { River } from "@/components/cui/river";
+import { MapPin, Gift, Calendar } from "lucide-react";
+import Tilt from "react-parallax-tilt";
 
 const reviews = [
   {
@@ -44,7 +43,7 @@ function maltapass() {
     <div className="min-h-screen flex flex-col">
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="relative bg-[#E5484D] max-md:px-0 grid md:grid-cols-2 md:gap-28 mx-8 md:mx-32 items-center max-md:rounded-md">
+        <section className="relative bg-[#E5484D] max-md:px-0 grid md:grid-cols-2 md:gap-28 mx-8 md:mx-20 items-center max-md:rounded-md">
           <div className="text-white space-y-6 py-32 relative z-10 md:pl-24 max-md:px-8">
             <span className="text-sm font-medium">MaltaPass</span>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
@@ -64,9 +63,7 @@ function maltapass() {
               alt="Malta Harbor"
               className="md:absolute right-0 top-0 inset-0 w-full h-full object-cover max-md:rounded-b-md"
             />
-            <div
-              className="absolute right-4 top-4 md:right-[85%] md:top-[25%] w-[150px] h-[150px] md:w-[180px] md:h-[180px] bg-white rounded-full flex flex-col items-center justify-center text-[#E5484D] font-bold"
-            >
+            <div className="absolute right-4 top-4 md:right-[85%] md:top-[29%] w-[150px] h-[150px] md:w-[180px] md:h-[180px] bg-white rounded-full flex flex-col items-center justify-center text-[#E5484D] font-bold">
               <div className="text-5xl md:text-7xl">30%</div>
               <div className="text-sm">UP TO OFF</div>
             </div>
@@ -76,38 +73,12 @@ function maltapass() {
         {/* What is MaltaPass Section */}
         <section className="py-16 md:py-24">
           {/* <div className="container mx-auto px-4"> */}
-          <div className="mx-auto md:mx-32 px-8">
+          <div className="mx-auto md:mx-20 max-md:px-8">
             <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-md:space-y-4 place-items-center">
-                <img
-                  src="https://s3-alpha-sig.figma.com/img/9e8e/459f/547f90de8498547915d5e813462b4486?Expires=1735516800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=N57Aghv5C6zeRw~g-VHaFspsDxxeB773EHl8rwVa0ksRzrXyNE8TQzSufCb2u9pNxiPm9PD4jeSgjLDHOzxl9ieCkAWaqgtD4-114LrSdunFjba4IQ3gOcLAdBGPsV4yaNe8ouRsGJVeUi~nf0me7dr6oKvLhoY2Z105GZ1nLjY1VmIcea8122THbkmZSIXjvsh-cDgQDDfHRyytwkRqHCd5Wj2PaYVKipWJ9Lb0kuYFNEAW~i6dPtsVU1TBOoU6aXnx-nN5h6Onh~cOO24nSgy6UUV7wa0AmjSpURCa-n91lcMvXrKKabFxR00qncok~f8Mi5aS7~i-qApvIc~zHg__"
-                  width={300}
-                  height={200}
-                  alt="Malta Landscape"
-                  className="rounded-lg md:col-span-1 md:mt-3 max-md:w-full"
-                />
-                <img
-                  src="https://s3-alpha-sig.figma.com/img/1299/b1b3/1f15317fa9a9af9a70f739a3d67e707b?Expires=1735516800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=oh6LqwMB~IiP4eB4eFnqfE-sj4iSxCB9qmXayH0u0WMidCIs7beDyOEfPkDcZ1HVTOUe3-pV8D8GJfPTbcqdgRN6mcVqBtGhqVeGS5k-6pAkh250xlS8Kjg5Ds-0TTs1Cu4lYWaDwdU-VdHPKC7dkqXAoyUGQweCbRv1gFBtgFlmx0vJjbkuayEwNq0yr035uu5VFuEkV3PZCeMVtLTa95699V93TAIF7Zbxh~f~2nSbKJkDjSbf8FmV18zWeuP8nH1rj8PZhj13lTL5wzAtnE0Bwc5YCXuR4FLJuIQJ~VwIksuouiSE33bGFCNnv5QVgLUZCLebr1T4FiViBrDEIA__"
-                  width={300}
-                  height={200}
-                  alt="Malta Architecture"
-                  className="rounded-lg md:mt-10 max-md:w-full"
-                />
-                <img
-                  src="https://s3-alpha-sig.figma.com/img/1299/b1b3/1f15317fa9a9af9a70f739a3d67e707b?Expires=1735516800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=oh6LqwMB~IiP4eB4eFnqfE-sj4iSxCB9qmXayH0u0WMidCIs7beDyOEfPkDcZ1HVTOUe3-pV8D8GJfPTbcqdgRN6mcVqBtGhqVeGS5k-6pAkh250xlS8Kjg5Ds-0TTs1Cu4lYWaDwdU-VdHPKC7dkqXAoyUGQweCbRv1gFBtgFlmx0vJjbkuayEwNq0yr035uu5VFuEkV3PZCeMVtLTa95699V93TAIF7Zbxh~f~2nSbKJkDjSbf8FmV18zWeuP8nH1rj8PZhj13lTL5wzAtnE0Bwc5YCXuR4FLJuIQJ~VwIksuouiSE33bGFCNnv5QVgLUZCLebr1T4FiViBrDEIA__"
-                  width={300}
-                  height={200}
-                  alt="Malta Architecture"
-                  className="rounded-lg max-md:w-full"
-                />
-                <img
-                  src="https://s3-alpha-sig.figma.com/img/77c6/514f/151e6f6aa8d8c03200b9ae774f496d33?Expires=1735516800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=KbrTsbyb-jL-vfbgO78M9Z0rQptaGLQHq-giNZcayKaUANN~RfEpEMTqcOsPkRUPMWyqs6j0II6mXlGB3HI5uX0fZhFwitUXT5AW0UCIjdlCSi~j0CywhM3n4QUxO0kf1YwR~2WhT-TVvU3ZCZfGDDerMRn5QPu9nxAiFJUWZACVzrrDNGgtep17cKUL6RHdlb3ubjbo6~sSqELAzd-rk7dTUJckSt1jappzsgMHkkUR9jyihlL~eqsCqc7BmOYNHl7eoQqlKvlSQju-z4e7Njc5TwJ8qr7T8EpT6OayHzJkiz2EP8pVseRKfpNhMC8S8-k0X1pjYAYpv8cuQgB2aQ__"
-                  width={300}
-                  height={200}
-                  alt="Malta Coastline"
-                  className="rounded-lg max-md:w-full"
-                />
-              </div>
+                <div className="place-items-center">
+                  <img src="/group.png" className="w-full h-full" />
+                </div>
+
               <div className="max-md:mx-8 space-y-8">
                 <h2 className="text-3xl md:text-4xl font-bold">
                   What is the MaltaPass?
@@ -161,7 +132,7 @@ function maltapass() {
         {/* Benefits Overview Section */}
         <section className="py-16 md:py-24 bg-[#FFF1F2]">
           {/* <div className="container mx-auto px-4"> */}
-          <div className="mx-8 md:mx-32 md:px-4">
+          <div className="mx-8 md:mx-20">
             <div className="text-center max-w-3xl mx-auto mb-16">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">
                 Overview of Benefits
@@ -176,91 +147,97 @@ function maltapass() {
             </div>
 
             <div className="grid md:grid-cols-2 gap-8">
-              <Card className="bg-white">
-                <CardContent className="p-6">
-                  <h3 className="text-2xl font-bold mb-6">
-                    Save Money on Top Attractions
-                  </h3>
-                  <p className="mb-4">
-                    With the MaltaPass, you'll enjoy free entry or significant
-                    discounts at Malta's most popular and must-see destinations,
-                    including:
-                  </p>
-                  <div className="space-y-6">
-                    {[
-                      {
-                        number: "01",
-                        title: "Historic Sites:",
-                        description:
-                          "The Hypogeum, St. John's Co-Cathedral, and Hagar Qim Temples.",
-                      },
-                      {
-                        number: "02",
-                        title: "UNESCO World Heritage Locations:",
-                        description:
-                          "Gain access to sites like the Megalithic Temples and the ancient city of Mdina.",
-                      },
-                      {
-                        number: "03",
-                        title: "Museums:",
-                        description:
-                          "Save on admission to the National Museum of Archaeology, Malta Maritime Museum, and many more.",
-                      },
-                    ].map((item) => (
-                      <div key={item.number} className="flex gap-4">
-                        <span className="text-4xl font-bold text-gray-200">
-                          {item.number}
-                        </span>
-                        <div>
-                          <h4 className="font-semibold">{item.title}</h4>
-                          <p className="text-gray-600">{item.description}</p>
+              <Tilt>
+                <Card className="bg-white">
+                  <CardContent className="p-6">
+                    <h3 className="text-2xl font-bold mb-6">
+                      Save Money on Top Attractions
+                    </h3>
+                    <p className="mb-4">
+                      With the MaltaPass, you'll enjoy free entry or significant
+                      discounts at Malta's most popular and must-see
+                      destinations, including:
+                    </p>
+                    <div className="space-y-6">
+                      {[
+                        {
+                          number: "01",
+                          title: "Historic Sites:",
+                          description:
+                            "The Hypogeum, St. John's Co-Cathedral, and Hagar Qim Temples.",
+                        },
+                        {
+                          number: "02",
+                          title: "UNESCO World Heritage Locations:",
+                          description:
+                            "Gain access to sites like the Megalithic Temples and the ancient city of Mdina.",
+                        },
+                        {
+                          number: "03",
+                          title: "Museums:",
+                          description:
+                            "Save on admission to the National Museum of Archaeology, Malta Maritime Museum, and many more.",
+                        },
+                      ].map((item) => (
+                        <div key={item.number} className="flex gap-4">
+                          <span className="text-4xl font-bold text-gray-200">
+                            {item.number}
+                          </span>
+                          <div>
+                            <h4 className="font-semibold">{item.title}</h4>
+                            <p className="text-gray-600">{item.description}</p>
+                          </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-              <Card className="bg-white">
-                <CardContent className="p-6">
-                  <h3 className="text-2xl font-bold mb-6">Dining Discounts</h3>
-                  <p className="mb-4">
-                    Taste the flavors of Malta while saving on dining
-                    experiences:
-                  </p>
-                  <div className="space-y-6">
-                    {[
-                      {
-                        number: "01",
-                        title: "Exclusive Restaurant Offers:",
-                        description:
-                          "Enjoy up to 20% off at a curated list of Malta's top-rated restaurants and cafes.",
-                      },
-                      {
-                        number: "02",
-                        title: "Food Tours:",
-                        description:
-                          "Discounts on guided food and wine tours to experience Malta's culinary heritage.",
-                      },
-                      {
-                        number: "03",
-                        title: "Local Markets and Shops:",
-                        description:
-                          "Save on souvenirs, artisanal products, and gourmet treats.",
-                      },
-                    ].map((item) => (
-                      <div key={item.number} className="flex gap-4">
-                        <span className="text-4xl font-bold text-gray-200">
-                          {item.number}
-                        </span>
-                        <div>
-                          <h4 className="font-semibold">{item.title}</h4>
-                          <p className="text-gray-600">{item.description}</p>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </Tilt>
+              <Tilt>
+                <Card className="bg-white">
+                  <CardContent className="p-6">
+                    <h3 className="text-2xl font-bold mb-6">
+                      Dining Discounts
+                    </h3>
+                    <p className="mb-4">
+                      Taste the flavors of Malta while saving on dining
+                      experiences:
+                    </p>
+                    <div className="space-y-6">
+                      {[
+                        {
+                          number: "01",
+                          title: "Exclusive Restaurant Offers:",
+                          description:
+                            "Enjoy up to 20% off at a curated list of Malta's top-rated restaurants and cafes.",
+                        },
+                        {
+                          number: "02",
+                          title: "Food Tours:",
+                          description:
+                            "Discounts on guided food and wine tours to experience Malta's culinary heritage.",
+                        },
+                        {
+                          number: "03",
+                          title: "Local Markets and Shops:",
+                          description:
+                            "Save on souvenirs, artisanal products, and gourmet treats.",
+                        },
+                      ].map((item) => (
+                        <div key={item.number} className="flex gap-4">
+                          <span className="text-4xl font-bold text-gray-200">
+                            {item.number}
+                          </span>
+                          <div>
+                            <h4 className="font-semibold">{item.title}</h4>
+                            <p className="text-gray-600">{item.description}</p>
+                          </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </Tilt>
             </div>
           </div>
         </section>
@@ -282,7 +259,7 @@ function maltapass() {
                 <CardContent className="flex-1 flex flex-col p-4">
                   {" "}
                   <img
-                    src="https://s3-alpha-sig.figma.com/img/dbce/9435/6e5e9262be40a8ad6d3f8cf68622f4a9?Expires=1735516800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=LNR0fmVW~-4QnBYLzjbvO5J86A-clTGdbK9W~VcH3Iz2nnmO3t3ROWLNk2bmmpHoyMHN60kN6T1KTM-ACNEte5xKMXbZfGM8u-d2dRnn00KqrV-nMpouVIMIj3xJ8wfpjJmnr0NQK54ev-ngESVP3QvzEL1bx6m3EeNSEYijOpachUvRAPJSE6LttH0DiJGSfcPmGfvREoabHES7O4~V6jA03l4Z-GAIcp53Z~-eYctty0T0LFq4quO20mXep-xJufkpIkaVaM-YSMFS0KsXp3pV2B6HLn2QMlM0WMcEBl87GVP~i8wPi4r0XDf1fgLDPAR02t3lzHv~zmw5gusMgA__"
+                    src="/church.png"
                     width={600}
                     height={400}
                     alt="Malta Church"
@@ -341,7 +318,7 @@ function maltapass() {
               <Card className="flex flex-col h-full">
                 <CardContent className="flex-1 flex flex-col p-4">
                   <img
-                    src="https://s3-alpha-sig.figma.com/img/dbce/9435/6e5e9262be40a8ad6d3f8cf68622f4a9?Expires=1735516800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=LNR0fmVW~-4QnBYLzjbvO5J86A-clTGdbK9W~VcH3Iz2nnmO3t3ROWLNk2bmmpHoyMHN60kN6T1KTM-ACNEte5xKMXbZfGM8u-d2dRnn00KqrV-nMpouVIMIj3xJ8wfpjJmnr0NQK54ev-ngESVP3QvzEL1bx6m3EeNSEYijOpachUvRAPJSE6LttH0DiJGSfcPmGfvREoabHES7O4~V6jA03l4Z-GAIcp53Z~-eYctty0T0LFq4quO20mXep-xJufkpIkaVaM-YSMFS0KsXp3pV2B6HLn2QMlM0WMcEBl87GVP~i8wPi4r0XDf1fgLDPAR02t3lzHv~zmw5gusMgA__"
+                    src="/coast-line.png"
                     width={600}
                     height={450}
                     alt="Malta Coastline"

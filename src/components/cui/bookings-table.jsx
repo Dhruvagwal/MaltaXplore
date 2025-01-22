@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/table";
 
 const BookingTableComponent = ({ heading, data }) => {
-  console.log("data", data);
 
   return (
     <Card className="p-4">
@@ -21,20 +20,22 @@ const BookingTableComponent = ({ heading, data }) => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[100px]">Date</TableHead>
-            <TableHead>Destination</TableHead>
-            <TableHead>Pickup Location</TableHead>
-            <TableHead className="text-right">Status</TableHead>
+            <TableHead className="">Name</TableHead>
+            <TableHead className="">Date</TableHead>
+            <TableHead className="">Destination</TableHead>
+            <TableHead className="text-center">Status</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {data?.map((item) => (
             <TableRow>
               <TableCell className="font-medium">
-                {item?.bookingDetails?.date}
+                {item?.name}
               </TableCell>
-              <TableCell>{item?.service?.location}</TableCell>
-              <TableCell>{item?.addressDetails?.location}</TableCell>
+              <TableCell className="font-medium">
+                {item?.date}
+              </TableCell>
+              <TableCell>{item?.location}</TableCell>
               {/* <TableCell className="text-right">
       {!item?.service?.status ? (
         <span className="text-green-500">Done</span>
@@ -42,7 +43,7 @@ const BookingTableComponent = ({ heading, data }) => {
         <span className="text-primary">Upcoming</span>
       )}
     </TableCell> */}
-              <TableCell className="text-right">
+              <TableCell className="text-center">
                 {heading === "Past Bookings" ? (
                   <span className="text-green-500">Done</span>
                 ) : (

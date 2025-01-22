@@ -39,7 +39,7 @@ const ContactPage = () => {
     <div className="min-h-screen flex flex-col">
       <main className="flex-1">
         <div className="">
-          <Banner url="https://s3-alpha-sig.figma.com/img/fc25/458a/3e1b4f4a9926b7f3d91b10f931a0568a?Expires=1735516800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=Q3bswHrQWskga2vcPwHIvSTBWovCIByZaU5rh1ZDxkpb1IyeWDBPmBfxUXiCUMuHHzVtNm6CRkPWLv-Vmi~CkVIjS6Dbj4izvR19gEySHGDT2h9FEqqLsV8AGfXBRcTzCFOTheXedbBcRZANt7xuiY6qPw7GMqBYIMyDZfv5i12~o1w~XCOWgsPHW6PRwcZNK9budzAGLiGOLSK-~abL5zk279Pf5zzQgM~7L1J97DPpadwTkMYGTgC94va3tbMqcAseONRDQIhDvj~myu9RT3Iz-Bmy71UTspGFPwXerfLaho4sqDM1oxAIQIwaZp5URosmsipsVCdrLX3y4P41Eg__">
+          <Banner url="/contact-us.png">
             <h1 className="text-4xl font-bold text-white">Contact Us</h1>
           </Banner>
         </div>
@@ -47,7 +47,7 @@ const ContactPage = () => {
         <div className="py-12">
           <ContactForm /> 
         </div>
-        <div className="mx-8 md:mx-32 mt-16">
+        <div className="mx-8 md:mx-20 mt-16">
           <ChatSection />
         </div>
 

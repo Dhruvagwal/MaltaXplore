@@ -7,69 +7,37 @@ import { Button } from "../ui/button";
 import { tourListing } from "@/data/link";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuthState } from "@/context/ueAuthContext";
-import useFirebase from "@/hooks/use-firebase";
+import { useServicesState } from "@/context/servicesContext";
 import { Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/supabaseConfig";
 
-export const ServiceCard = ({ index, data, className = "", loading }) => {
+export const ServiceCard = ({
+  index,
+  data,
+  className = "",
+  loading,
+  likes,
+}) => {
   const { user } = useAuthState();
-  const {
-    crud: { updateData },
-  } = useFirebase();
+  const { likeService, unlikeService } = useServicesState();
   const [isLiked, setIsLiked] = useState(false);
 
   useEffect(() => {
-    if (data && user?.uid) {
-      const likes = data.likes || [];
-      setIsLiked(likes.includes(user.uid));
-    }
-  }, [data, user]);
+    setIsLiked(likes?.some((like) => like.service_id === data.id));
+  }, [likes, data.id]);
 
   const handleLikesbutton = async () => {
-    if (data && user?.uid) {
-      const likes = data.likes || [];
-
-      const updatedLikes = likes.includes(user.uid)
-        ? likes
-        : [...likes, user.uid];
-
-      const finalData = {
-        ...data,
-        likes: updatedLikes,
-      };
-      try {
-        await updateData({
-          [`/services/${data?.mainCategory}/${data?.subCategory}/${data.id}`]:
-            finalData,
-        });
-        setIsLiked(true);
-        console.log("Data updated successfully!");
-      } catch (error) {
-        console.error("Error updating data:", error);
-      }
-    }
-  };
-
-  const handleUnlikesbutton = async () => {
-    if (data && user?.uid) {
-      const likes = data.likes || [];
-
-      const updatedLikes = likes.filter((uid) => uid !== user.uid);
-
-      const finalData = {
-        ...data,
-        likes: updatedLikes,
-      };
-      try {
-        await updateData({
-          [`/services/${data?.mainCategory}/${data?.subCategory}/${data.id}`]:
-            finalData,
-        });
+    try {
+      if (isLiked) {
+        await unlikeService(data, user.id);
         setIsLiked(false);
-        console.log("Data updated successfully!");
-      } catch (error) {
-        console.error("Error updating data:", error);
+      } else {
+        await likeService(data, user.id);
+        setIsLiked(true);
       }
+    } catch (error) {
+      console.error("Error handling like/unlike:", error);
     }
   };
 
@@ -87,15 +55,15 @@ export const ServiceCard = ({ index, data, className = "", loading }) => {
           />
         )}
         <div className="absolute z-10 top-4 right-4 cursor-pointer transition-transform duration-200 transform hover:scale-110">
-          <Button
-            variant="outline"
-            className={cn("rounded-full w-10 h-10 p-0", )}
-            onClick={() =>
-              !isLiked ? handleLikesbutton() : handleUnlikesbutton()
-            }
-          >
-            <Heart className={cn(isLiked && "fill-primary text-primary")}/>
-          </Button>
+          {user && (
+            <Button
+              variant="outline"
+              className={cn("rounded-full w-10 h-10 p-0")}
+              onClick={handleLikesbutton}
+            >
+              <Heart className={cn(isLiked && "fill-primary text-primary")} />
+            </Button>
+          )}
         </div>
         <div className="backdrop-blur-sm bg-white bottom-4 right-4 rounded-full p-2 px-4 absolute z-10 flex items-center text-xs">
           {loading ? (
@@ -103,7 +71,7 @@ export const ServiceCard = ({ index, data, className = "", loading }) => {
           ) : (
             <>
               <DotFilledIcon height={20} width={20} className="text-red-400" />{" "}
-              {data.title} & More Info
+              {data.name} & More Info
             </>
           )}
         </div>
@@ -114,7 +82,7 @@ export const ServiceCard = ({ index, data, className = "", loading }) => {
             <Skeleton className="w-[150px] h-[20px] text-ellipsis font-semibold" />
           ) : (
             <p className="text-base w-[50%] text-ellipsis font-semibold">
-              {data.title}
+              {data.name}
             </p>
           )}
           <span>
@@ -134,7 +102,7 @@ export const ServiceCard = ({ index, data, className = "", loading }) => {
         {loading ? (
           <Skeleton className="w-full h-[50px] text-muted-foreground text-ellipsis text-sm" />
         ) : (
-          <p className="text-muted-foreground text-ellipsis text-sm">
+          <p className="text-muted-foreground text-ellipsis text-sm  line-clamp-3">
             {data.description}
           </p>
         )}

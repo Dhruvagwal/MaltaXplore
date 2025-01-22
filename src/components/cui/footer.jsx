@@ -16,18 +16,18 @@ export function Footer() {
         className="w-screen max-md:hidden"
         src="/images/footer_back.svg"
       />
-      <div className="absolute bg-primary flex flex-col h-auto w-full py-16 px-32 top-0 left-0">
-        <div className="flex items-center justify-between">
+      <div className="absolute bg-primary flex flex-col h-auto w-full py-16 px-8 md:px-32 top-0 left-0">
+        <div className="flex flex-col md:flex-row max-md:space-y-8 items-center justify-between">
           <p className="text-3xl text-white font-semibold uppercase leading-[1.3]">
             {" "}
             So why late? one steep <br /> far from a tour
           </p>
-          <div className="flex max-md:w-full max-md:px-8">
+          <div className="flex max-md:w-full gap-2">
             <Input
               className="bg-white text-black"
               placeholder="Your Email Address"
             />
-            <Button variant="secondary" className="ml-2">
+            <Button variant="secondary" className="">
               Send
             </Button>
           </div>
@@ -82,7 +82,7 @@ export function Footer() {
             <Link href={contactUs}>Support</Link>
             <Link href={search}>Explore</Link>
             <Link href={contactUs}>Get in Touch</Link>
-            <Link href={contactUs}>Get in Touch</Link>
+            {/* <Link href={contactUs}>Get in Touch</Link> */}
           </div>
           <div className="flex flex-col gap-4">
             <p className="font-bold">Contact Info</p>

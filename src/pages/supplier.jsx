@@ -1,11 +1,12 @@
+import React from "react";
+import Image from "next/image";
+import Link from "next/link";
 import Faq from "@/components/cui/faq";
 import { River } from "@/components/cui/river";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { supplierRegistration } from "@/data/link";
-import Image from "next/image";
-import Link from "next/link";
-import React from "react";
+import Tilt from "react-parallax-tilt";
 
 function supplier() {
   const DEALS = [
@@ -51,7 +52,7 @@ function supplier() {
     <main>
       <div className="bg-gradient-to-br md:h-screen from-primary-foreground to-transparent">
         {/* Hero Section */}
-        <div className="flex gap-64 items-center px-16 md:px-32 pt-16">
+        <div className="flex gap-64 items-center px-16 md:px-20 pt-16">
           <div className="flex-1 flex flex-col gap-8">
             <h1 className="text-4xl md:text-7xl leading-[1.3] font-bold">
               Join Malta’s
@@ -80,7 +81,7 @@ function supplier() {
         </div>
       </div>
       {/* Steps */}
-      <div className="p-8 md:p-16 border-2 text-center rounded-2xl border-primary/50 my-24 md:my-48 mx-8 md:mx-32">
+      <div className="p-8 md:p-16 border-2 text-center rounded-2xl border-primary/50 my-24 md:my-48 mx-8 md:mx-20">
         <p className="text-3xl font-bold">Simple Process to Become Partner</p>
         <br />
         <div className="relative">
@@ -121,31 +122,34 @@ function supplier() {
         </div>
       </div>
       {/* Deals */}
-      <div className="my-24 md:my-48 px-8 md:px-32 text-center">
+      <div className="my-24 md:my-48 px-8 md:px-20 text-center">
         <p className="text-3xl font-bold">
           Best Partnership Deal With MaltaXplore?
         </p>
         <div className="md:grid md:grid-cols-3 mt-16 max-md:space-y-12 gap-8">
           {DEALS.map((item, idx) => (
-            <Card className="p-8 md:p-16" key={idx}>
-              <CardHeader>
-                <p className="font-bold text-xl">{item.name}</p>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">{item.description}</p>
-              </CardContent>
-            </Card>
+            <Tilt>
+              <Card className="p-8 md:p-16" key={idx}>
+                <CardHeader>
+                  <p className="font-bold text-xl">{item.name}</p>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">{item.description}</p>
+                </CardContent>
+              </Card>
+            </Tilt>
           ))}
         </div>
       </div>
       {/* Benifits */}
-      <div className="p-8 md:p-16 md:grid md:grid-cols-2 place-content-center my-24 md:my-48 max-md:mx-8 md:px-32 text-center bg-red-100 cut_corner">
+      <div className="p-8 md:p-16 md:grid md:grid-cols-2 place-content-center my-24 md:my-48 max-md:mx-8 md:px-20 text-center bg-red-100 cut_corner">
         <Image
           width={500}
           height={500}
           className="object-contain self-end max-md:hidden"
           src="/images/benefits_supplier.svg"
         />
+
         <div className="">
           <p className="text-3xl font-bold">Benefit of Become Partner</p>
           <div className="md:grid md:grid-cols-2 gap-16 mt-16 text-left max-md:space-y-12">

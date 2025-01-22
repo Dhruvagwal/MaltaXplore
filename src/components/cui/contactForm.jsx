@@ -1,41 +1,42 @@
+import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import React from "react";
 import { MapPin, Phone, Mail, FacebookIcon, TwitterIcon } from "lucide-react";
 import { GitHubLogoIcon, InstagramLogoIcon } from "@radix-ui/react-icons";
 import useCustomForm from "@/hooks/use-custom-form";
 import { contactFormSchema } from "@/lib/schema";
-import useFirebase from "@/hooks/use-firebase";
-import { v4 } from "uuid";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/supabaseConfig";
 
 const ContactForm = () => {
   const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
 
   const {
     FormWrapper,
     FormInput,
     FormSelect,
     formState: { isSubmitting },
+    reset,
   } = useCustomForm({
     schema: contactFormSchema,
   });
 
-  const {
-    crud: { writeData },
-  } = useFirebase();
-
   const handleSubmit = async (data) => {
+    setLoading(true);
     try {
-      await writeData(`/contacts/${v4()}`, data);
-      toast({
-        title: "Form Submitted",
-        description: "Thank you for contacting us!",
-      });
+      const { data: response, error } = await supabase
+        .from("contacts")
+        .insert(data)
+        .select();
+      if (error) {
+        throw new Error(error.message);
+      }
+      reset();
+      setLoading(false);
     } catch (error) {
       console.error("Error submitting the form: ", error);
+      setLoading(false);
     }
   };
 
@@ -48,7 +49,7 @@ const ContactForm = () => {
     console.error(errors);
   };
   return (
-    <div className="max-w-7xl mx-8 md:mx-48">
+    <div className="mx-8 md:mx-20 py-12">
       {/* Contact Form */}
       <Card className="shadow-lg rounded-lg overflow-hidden md:py-12">
         <CardContent className="p-8 grid md:grid-cols-3 gap-12 md:gap-32 md:px-32">
@@ -61,7 +62,7 @@ const ContactForm = () => {
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <FormInput
-                    id="fname"
+                    id="first_name"
                     title="First Name"
                     placeholder="First Name"
                     required
@@ -69,7 +70,7 @@ const ContactForm = () => {
                 </div>
                 <div className="space-y-2">
                   <FormInput
-                    id="lname"
+                    id="last_name"
                     title="Last Name"
                     placeholder="Last Name"
                     required
@@ -104,7 +105,7 @@ const ContactForm = () => {
                 type="submit"
                 className="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-5 text-lg"
               >
-                Send Now
+                {loading ? "Sending..." : "Send Now"}
               </Button>
             </FormWrapper>
           </div>

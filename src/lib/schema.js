@@ -159,11 +159,10 @@ export const userProfileSchema = z.object({
 
 // Contact Details Schema
 export const contactDetailsSchema = z.object({
-  fname: z.string().min(1, "First name is required"),
-  lname: z.string().min(1, "Last name is required"),
+  name: z.string().min(1, "First name is required"),
+  // lname: z.string().min(1, "Last name is required"),
   email: z.string().email("Invalid email address").min(1, "Email is required"),
-  phone: z.string().min(1, "Phone number is required"),
-  promoCode: z.string().optional(),
+  mobile_no: z.string().min(1, "Phone number is required"),
 });
 
 export const activityDetailsSchema = z.object({
@@ -172,6 +171,8 @@ export const activityDetailsSchema = z.object({
   street: z.string().min(1, "Street is required"),
   state: z.string().min(1, "State is required"),
   postalCode: z.string().min(1, "PostalCode is required"),
+  addLine1: z.string().min(1, "address line 1 is required"),
+  addLine2: z.string().min(1, "address line 2 is required"),
 });
 
 export const cardSchema = z.object({
@@ -185,9 +186,34 @@ export const cardSchema = z.object({
 });
 
 export const contactFormSchema = z.object({
-  fname: z.string().min(1, "First Name is required"),
-  lname: z.string().min(1, "Last Name is required"),
+  name: z.string().min(1, "Name is required"),
   email: z.string().email("Invalid email address").min(1, "Email is required"),
   phone: z.string().min(1, "Phone number is required"),
-  message: z.string().min(1, "Message is required"),
+  message: z.string().min(1, "Message is required").optional(),
+});
+
+export const reviewsSchema = z.object({
+  reviews: z.string().min(1, "Reviews is required"),
+});
+
+export const filtersSchema = z.object({
+  range: z
+    .array(z.number())
+    .length(2, "Range must have exactly two values [min, max]"),
+
+  min: z
+    .number({ required_error: "Minimum price is required" })
+    .min(0, "Minimum price must be greater than or equal to 0"),
+
+  max: z
+    .number({ required_error: "Maximum price is required" })
+    .min(0, "Maximum price must be greater than or equal to 0"),
+
+  location: z.string().optional(),
+
+  serviceType: z.array(z.string()).optional(),
+
+  serviceSubType: z.array(z.string()).optional(),
+
+  ratings: z.array(z.number().int().min(1).max(5)).optional(),
 });

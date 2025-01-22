@@ -12,126 +12,138 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import Link from "next/link";
-import useFirebase from "@/hooks/use-firebase";
-import emailjs from "@emailjs/browser";
-
+import { sendEmail, sendEmailToBookingPersons } from "@/features/sendEmail";
+import getPaymentDetails from "@/features/getPaymentDetails";
+import { supabase } from "@/supabaseConfig";
 const stripePromise = loadStripe(
   "pk_test_51QeatsDk75aWHW4POpFQMr6DEc6Vg8MNxdR0La3Q7QTNKm9ej2fgSYaZhhSpTTf93dav99IkTt6QuINLkfpaZrAI00wF7qXy50"
 );
 
 const CompletePage = () => {
   const router = useRouter();
+  const [session, setSession] = useState();
   const {
-    crud: { readData, updateData },
-  } = useFirebase();
-  const { payment_intent, payment_intent_client_secret, redirect_status } =
-    router.query;
+    bookingId,
+    payment_intent,
+    payment_intent_client_secret,
+    redirect_status,
+  } = router.query;
+
   const [paymentDetails, setPaymentDetails] = useState(null);
+  const [users, setUsers] = useState([]);
+  const [service, setService] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [bookings, setBookings] = useState();
-  console.log(bookings);
 
   useEffect(() => {
-    const fetchBookings = async () => {
-      const fetchedData = await readData("bookings");
-      if (fetchedData) {
-        setBookings(fetchedData);
+    const fetchUserData = async () => {
+      const { data, error } = await supabase.auth.getUser();
+
+      if (error) {
+        console.error("Error fetching user data:", error);
+        return;
       }
+      setSession(data);
     };
-    fetchBookings();
+
+    fetchUserData();
   }, []);
 
   useEffect(() => {
-    const fetchPaymentDetails = async () => {
-      if (payment_intent_client_secret) {
-        const stripe = await stripePromise;
-        const paymentIntent = await stripe.retrievePaymentIntent(
-          payment_intent_client_secret
-        );
-        if (paymentIntent.error) {
-          console.error("Error fetching payment intent", paymentIntent.error);
-        } else {
-          setPaymentDetails(paymentIntent.paymentIntent);
+    const fetchBookingPersons = async () => {
+      try {
+        const { data: bookingData, error: bookingError } = await supabase
+          .from("servicebookingperson")
+          .select("user_id, service_id")
+          .eq("booking_id", bookingId);
+
+        if (bookingError) {
+          console.log(bookingError);
+          return;
         }
-      }
-      setLoading(false);
+
+        if (bookingData.length > 0) {
+          const userIds = bookingData.map((booking) => booking.user_id);
+          const serviceIds = bookingData.map((booking) => booking.service_id);
+
+          const [usersRes, servicesRes] = await Promise.all([
+            supabase.from("users").select("*").in("id", userIds),
+            supabase.from("services").select("*").in("id", serviceIds),
+          ]);
+
+          if (usersRes.error || servicesRes.error) {
+            console.log(usersRes.error || servicesRes.error);
+            return;
+          }
+
+          const filteredUsers = usersRes.data.filter(
+            (user) => user.auth_id !== session?.user.id
+          );
+
+          setUsers(filteredUsers);
+          setService(servicesRes.data);
+        }
+      } catch (err) {}
     };
 
-    fetchPaymentDetails();
-  }, [payment_intent_client_secret]);
-
-  const sendEmail = async (paymentDetails) => {
-    try {
-      const date = new Date(paymentDetails.created * 1000).toLocaleString();
-      const price = (paymentDetails.amount / 100).toFixed(2);
-      const templateParams = {
-        booking_date: date,
-        payment_amount: price,
-        user_email: paymentDetails?.receipt_email,
-        payment_method: paymentDetails?.payment_method_types[0],
-        payment_intent: paymentDetails?.id,
-      };
-
-      const response = await emailjs.send(
-        "service_w7ii0wa",
-        "template_di5w0yw",
-        templateParams,
-        "XvpCI43kTo5rkOW7y"
-      );
-
-      console.log("Email sent successfully:", response.status, response.text);
-    } catch (error) {
-      console.error("Error sending email:", error);
+    if (bookingId) {
+      fetchBookingPersons();
     }
-  };
+  }, [bookingId]);
 
   useEffect(() => {
-    if (bookings) {
-      Object?.entries(bookings).forEach(async ([bookingId, entry]) => {
-        const {
-          contactDetails,
-          addressDetails,
-          bookingDetails,
-          bookingDate,
-          userUid,
-          supplierId,
-          paymentIntentId,
-          service,
-          status,
-        } = entry;
+    const details = getPaymentDetails(
+      stripePromise,
+      payment_intent_client_secret,
+      setLoading
+    );
+    details.then((d) => setPaymentDetails(d));
+  }, [payment_intent_client_secret]);
 
-        console.log("entry", entry);
+  useEffect(() => {
+    const updatePaymentStatus = async () => {
+      if (paymentDetails?.status === "succeeded" && paymentDetails) {
+        const { data, error } = await supabase
+          .from("servicebookings")
+          .update({ payment_status: true })
+          .eq("payment_intent_id", paymentDetails.id);
+
+        if (error) {
+          console.error("Error updating payment status:", error);
+        } else {
+          console.log("Payment status updated successfully:", data);
+        }
 
         if (
-          paymentDetails?.status === "succeeded" &&
           paymentDetails &&
-          paymentIntentId == paymentDetails?.id
+          paymentDetails.status === "succeeded" &&
+          service?.length > 0
         ) {
-          const finalData = {
-            contactDetails,
-            bookingDate,
-            addressDetails,
-            bookingDetails,
-            userUid,
-            supplierId,
-            paymentIntentId,
-            service,
-            likes: [],
-            status: true,
+          await sendEmail(paymentDetails);
+
+          const templateDetails = {
+            Booking_id: bookingId,
+            service_name: service[0]?.name,
+            service_date: "-",
+            service_location: service[0]?.location,
+            booker_name: session?.user.id,
+            total_tickets_booked: users.length + 1,
           };
 
-          await updateData({
-            [`/bookings/${bookingId}`]: finalData,
-          });
-
-          if (bookings && paymentDetails && status === false) {
-            await sendEmail(paymentDetails);
-            console.log("Email sent successfully:");
+          for (const user of users) {
+            const emailTemplate = {
+              ...templateDetails,
+              guest_name: user.name,
+              email: user.email,
+              id: user.id,
+            };
+            await sendEmailToBookingPersons(emailTemplate);
           }
         }
-      });
-    }
-  }, [bookings, paymentDetails]);
+      }
+    };
+
+    updatePaymentStatus();
+  }, [paymentDetails]);
 
   if (loading) {
     return (
@@ -175,7 +187,7 @@ const CompletePage = () => {
                   </div>
                   <div className="font-medium">
                     ${(paymentDetails.amount / 100).toFixed(2)}{" "}
-                    {paymentDetails.currency.toUpperCase()}
+                    {paymentDetails.currency?.toUpperCase()}
                   </div>
                 </div>
                 <div className="flex justify-between items-center mb-2">
@@ -184,8 +196,8 @@ const CompletePage = () => {
                   </div>
                   <div className="font-medium">
                     {paymentDetails.payment_method_types
-                      .join(", ")
-                      .toUpperCase()}
+                      ?.join(", ")
+                      ?.toUpperCase()}
                   </div>
                 </div>
                 <div className="flex justify-between items-center">

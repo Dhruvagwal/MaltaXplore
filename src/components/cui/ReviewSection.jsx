@@ -20,7 +20,7 @@ const ReviewSection = ({ heading, allReviews }) => {
   };
 
   return (
-    <section className="py-12 md:py-16 md:px-4">
+    <section className="py-12 md:py-16">
       <div className="max-w-7xl mx-8 md:mx-auto">
         {/* Title and Navigation */}
         <div className="md:flex md:justify-between items-center mb-12 md:mb-20 space-y-8 md:space-y-0 ">

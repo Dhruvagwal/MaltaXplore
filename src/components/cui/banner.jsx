@@ -3,7 +3,7 @@ import React from "react";
 
 function Banner({ url, children }) {
   return (
-    <div className="mx-8 md:mx-32 relative rounded-xl overflow-clip group bg-black">
+    <div className="mx-8 md:mx-20 relative rounded-xl overflow-clip group bg-black">
       <Image
         width={500}
         height={200}

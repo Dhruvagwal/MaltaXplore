@@ -49,7 +49,7 @@ const ContactForm = () => {
     console.error(errors);
   };
   return (
-    <div className="max-w-7xl mx-8 md:mx-48">
+    <div className="mx-8 md:mx-20 py-12">
       {/* Contact Form */}
       <Card className="shadow-lg rounded-lg overflow-hidden md:py-12">
         <CardContent className="p-8 grid md:grid-cols-3 gap-12 md:gap-32 md:px-32">

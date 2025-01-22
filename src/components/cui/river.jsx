@@ -5,7 +5,7 @@ import { search } from "@/data/link";
 
 export const River = () => {
   return (
-    <div className="px-8 md:px-32 relative">
+    <div className="px-8 md:px-20 relative">
       <Image
         className="rounded-lg w-full max-md:aspect-[1/1] max-md:object-cover"
         width={1000}

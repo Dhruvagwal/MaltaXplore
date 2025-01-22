@@ -20,9 +20,9 @@ const BookingTableComponent = ({ heading, data }) => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[100px]">Name</TableHead>
-            <TableHead className="w-[100px]">Date</TableHead>
-            <TableHead>Destination</TableHead>
+            <TableHead className="">Name</TableHead>
+            <TableHead className="">Date</TableHead>
+            <TableHead className="">Destination</TableHead>
             <TableHead className="text-center">Status</TableHead>
           </TableRow>
         </TableHeader>

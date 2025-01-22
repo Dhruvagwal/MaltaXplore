@@ -36,7 +36,7 @@ const Events = () => {
   ];
 
   return (
-    <div className="px-8 md:px-32 my-48 relative">
+    <div className="px-8 md:px-20 my-48 relative">
       <div className="text-center">
         <p className="text-4xl md:text-5xl font-bold">
           What’s Happening in Malta Today?

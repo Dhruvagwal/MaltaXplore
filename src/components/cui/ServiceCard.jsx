@@ -102,7 +102,7 @@ export const ServiceCard = ({
         {loading ? (
           <Skeleton className="w-full h-[50px] text-muted-foreground text-ellipsis text-sm" />
         ) : (
-          <p className="text-muted-foreground text-ellipsis text-sm">
+          <p className="text-muted-foreground text-ellipsis text-sm  line-clamp-3">
             {data.description}
           </p>
         )}

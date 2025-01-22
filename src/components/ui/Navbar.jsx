@@ -16,7 +16,7 @@ function Navbar() {
 
   return (
     <div className="py-6 bg-gradient-to-br from-primary-foreground to-transparent relative z-50 w-full">
-      <nav className="flex uppercase items-center justify-between md:mx-32 mx-8">
+      <nav className="flex uppercase items-center justify-between md:mx-20 mx-8">
         <div className="flex gap-16">
           <div className="flex items-center">
             <Link href={home}>
@@ -80,7 +80,7 @@ function Navbar() {
             <Button
               size="sm"
               asChild
-              className="w-full md:w-auto"
+              className="w-full md:w-auto md:mr-2"
               onClick={() => {}}
             >
               <Link href="/user/dashboard">Dashboard</Link>

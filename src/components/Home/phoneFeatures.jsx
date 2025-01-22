@@ -57,8 +57,12 @@ const PhoneFeatures = () => {
         </div>
         <div className="max-md:flex max-md:items-center max-md:flex-col mt-8 md:mt-0">
           <Tilt>
-            loading="lazy"
-            <Image src="/images/iphone.png" width={300} height={600} />
+            <Image
+              src="/images/iphone.png"
+              width={300}
+              height={600}
+              loading="lazy"
+            />
           </Tilt>
 
           <br />

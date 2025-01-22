@@ -19,3 +19,24 @@ export const getServiceReviews = async (serviceId) => {
     return [];
   }
 };
+
+export const getAllServiceReviews = async () => {
+  try {
+    const { data, error } = await supabase
+      .from("servicecomments")
+      .select(
+        `
+        *,
+        users (id, name, email, mobile_no, auth_id, created_at),
+        services (id, name)
+      `
+      );
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error("Error fetching reviews with user and service data:", error.message);
+    return [];
+  }
+};
+

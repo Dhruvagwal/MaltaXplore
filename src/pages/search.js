@@ -1,34 +1,30 @@
-import Banner from "@/components/cui/banner";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+
+import useCustomForm from "@/hooks/use-custom-form";
+import {
+  useServicesState,
+  useServiceSubTypeState,
+  useServiceTypeState,
+} from "@/context/servicesContext";
+
+import { CommentRatings } from "@/components/ui/rating";
+import CPagination from "@/components/ui/CPagniation";
+import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
+
 import { Categories } from "@/components/cui/category";
 import { ServiceCard } from "@/components/cui/ServiceCard";
-import { Button } from "@/components/ui/button";
-import { CommentRatings } from "@/components/ui/rating";
-import { Separator } from "@/components/ui/separator";
+import Banner from "@/components/cui/banner";
+
 import { categories, maltaLocations } from "@/data/data";
-import useCustomForm from "@/hooks/use-custom-form";
-import React, { useState, useEffect } from "react";
-import CPagination from "@/components/ui/CPagniation";
-import { useRouter } from "next/router";
+
 import Lottie from "lottie-react";
 import animationData from "../../public/empty.json";
-import { get, ref } from "firebase/database";
-import { db } from "@/firebase/firebaseConfig";
-
-async function fetchDataFromRealtimeDB() {
-  try {
-    const snapshot = await get(ref(db, "services"));
-    if (snapshot.exists()) {
-      const data = snapshot.val();
-      return data;
-    } else {
-      console.log("No data available.");
-      return [];
-    }
-  } catch (error) {
-    console.error("Error fetching Realtime DB data:", error);
-    return [];
-  }
-}
+import { supabase } from "@/supabaseConfig";
+import { filtersSchema } from "@/lib/schema";
+import { useAuthState } from "@/context/ueAuthContext";
+import { getUserLikes } from "@/features/getUserLikes";
 
 const chunkArray = (array, size) => {
   const result = [];
@@ -43,49 +39,6 @@ function ExploreCategories() {
   const router = useRouter();
   const { query } = router;
   const { date, category, guest } = query;
-  const [services, setServices] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
-  const [selectedCategories, setSelectedCategories] = useState([]);
-  const [selectedSubcategories, setSelectedSubcategories] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        setIsLoading(true);
-        const fetchedData = await fetchDataFromRealtimeDB();
-
-        // Extract all services into a flat array
-        const allServices = Object.keys(fetchedData || {}).reduce(
-          (acc, categoryKey) => {
-            const subCategories = fetchedData[categoryKey];
-            if (subCategories) {
-              Object.keys(subCategories || {}).forEach((subCategoryKey) => {
-                const subCategoryData = subCategories[subCategoryKey];
-                if (subCategoryData) {
-                  Object.keys(subCategoryData || {}).forEach((itemKey) => {
-                    const item = subCategoryData[itemKey];
-                    if (item) acc.push(item); // Add the item to the flat array
-                  });
-                }
-              });
-            }
-            return acc;
-          },
-          []
-        );
-
-        setServices(allServices);
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setIsLoading(false);
-      }
-    }
-
-    fetchData();
-  }, []);
-
   const {
     FormCheckbox,
     FormWrapper,
@@ -94,14 +47,49 @@ function ExploreCategories() {
     watch,
     setValue,
     FormCommand,
-  } = useCustomForm({});
-
-  const onSubmit = () => {};
-  const onError = () => {};
+    register,
+  } = useCustomForm({
+    schema: filtersSchema,
+  });
+  const { user } = useAuthState();
+  const { services, isLoading } = useServicesState();
+  const { serviceType } = useServiceTypeState();
+  const [likes, setLikes] = useState();
+  const [filteredData, setFilteredData] = useState([]);
+  const [checkedServiceTypeIds, setCheckedServiceTypeIds] = useState([]);
+  const [serviceSubType, setServiceSubType] = useState([]);
 
   const range = watch("range");
   const min = watch("min");
   const max = watch("max");
+
+  useEffect(() => {
+    const fetchLikes = async () => {
+      const likesData = await getUserLikes(user?.id);
+      console.log(likesData)
+      setLikes(likesData);
+    };
+    fetchLikes();
+  }, [user]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (checkedServiceTypeIds.length > 0) {
+        let { data: servicesubtype, error } = await supabase
+          .from("servicesubtype")
+          .select("*")
+          .in("service_id", checkedServiceTypeIds);
+        if (error) {
+          console.error("Error fetching data:", error);
+        } else {
+          console.log(servicesubtype);
+          setServiceSubType(servicesubtype);
+        }
+      }
+    };
+
+    fetchData();
+  }, [checkedServiceTypeIds]);
 
   useEffect(() => {
     if (!range) return;
@@ -121,25 +109,46 @@ function ExploreCategories() {
   }, [category, services]);
 
   useEffect(() => {
+    const fetchFilteredData = async () => {
+      try {
+        let queryBuilder = supabase.from("services").select("*");
+        if (category) {
+          queryBuilder = queryBuilder.eq("service_type", category);
+        }
+        if (guest) {
+          queryBuilder = queryBuilder.gte("maximum_group_size", guest);
+        }
+
+        let formattedDate = null;
+
+        if (date) {
+          const localDate = new Date(decodeURIComponent(date));
+          localDate.setMinutes(
+            localDate.getMinutes() - localDate.getTimezoneOffset()
+          );
+          formattedDate = localDate.toISOString().split("T")[0];
+        }
+
+        if (formattedDate) {
+          console.log("formattedDate", formattedDate);
+          queryBuilder = queryBuilder.eq("date", formattedDate);
+        }
+
+        const { data, error } = await queryBuilder;
+        if (error) {
+          console.error("Error fetching filtered data:", error);
+        } else {
+          setFilteredData(data);
+        }
+      } catch (err) {
+        console.error("Unexpected error:", err);
+      }
+    };
+
     if (services.length > 0) {
-      let filtered = services;
-
-      if (category) {
-        filtered = filtered.filter(
-          (service) =>
-            service.category?.toLowerCase() === category.toLowerCase()
-        );
-      }
-
-      if (guest) {
-        filtered = filtered.filter(
-          (service) => service?.maxGroupSize >= guest
-        );
-      }
-
-      setFilteredData(filtered.length > 0 ? filtered : []);
+      fetchFilteredData();
     }
-  }, [category, guest, services]);
+  }, [category, guest, date, services]);
 
   // Get the current page from the query parameter or default to 0
   const currentPage =
@@ -150,6 +159,12 @@ function ExploreCategories() {
   // Split the data into chunks (4 items per page)
   const chunkedData = chunkArray(filteredData, SIZE);
 
+  useEffect(() => {
+    if (currentPage >= chunkedData.length) {
+      handlePageChange(chunkedData.length - 1);
+    }
+  }, [currentPage, chunkedData.length]);
+
   const handlePageChange = (page) => {
     router.push({
       pathname: router.pathname,
@@ -157,82 +172,40 @@ function ExploreCategories() {
     });
   };
 
-  useEffect(() => {
-    if (currentPage >= chunkedData.length) {
-      // If the page is out of range, set the last page
-      handlePageChange(chunkedData.length - 1);
-    }
-  }, [currentPage, chunkedData.length]);
-
-  //apply button
-  const handleApplyFilterButton = async () => {
-    let filtered = services;
-
-    // Filter by selected categories
-    if (selectedCategories.length > 0) {
-      filtered = filtered.filter((service) =>
-        selectedCategories.some(
-          (category) =>
-            service.mainCategory?.toLowerCase() === category.toLowerCase()
-        )
-      );
-    }
-
-    // Filter by selected subcategories
-    if (selectedSubcategories.length > 0) {
-      filtered = filtered.filter((service) =>
-        selectedSubcategories.some(
-          (subCategory) =>
-            service.subCategory?.toLowerCase() === subCategory.toLowerCase()
-        )
-      );
-    }
-
-    // Price range filter
-    if (min !== undefined && max !== undefined) {
-      filtered = filtered.filter((service) => {
-        const price = parseFloat(service.price);
-        return price >= min && price <= max;
-      });
-    }
-
-    //location based filter
-    const selectedLocation = watch("location");
-    if (selectedLocation) {
-      filtered = filtered.filter(
-        (service) =>
-          service?.location?.toLowerCase() === selectedLocation.toLowerCase()
-      );
-    }
-
-    setFilteredData(filtered);
+  const handleServiceTypeCheckboxChange = (id, isChecked) => {
+    setCheckedServiceTypeIds((prev) =>
+      isChecked ? [...prev, id] : prev.filter((checkedId) => checkedId !== id)
+    );
   };
 
-  const handleCategoryChange = (categoryKey, isChecked) => {
-    setSelectedCategories((prev) => {
-      if (isChecked) {
-        return [...prev, categoryKey];
-      } else {
-        return prev.filter((key) => key !== categoryKey);
+  const onSubmit = async (data) => {
+    console.log("data", data);
+    try {
+      let queryBuilder = supabase.from("services").select("*");
+
+      if (data.location) {
+        queryBuilder = queryBuilder.eq("location", data.location);
       }
-    });
 
-    if (!isChecked) {
-      setSelectedSubcategories((prev) =>
-        prev.filter((sub) => !categories[categoryKey]?.subcategories[sub])
-      );
+      if (data.min !== undefined && data.max !== undefined) {
+        queryBuilder = queryBuilder
+          .gte("price", data.min)
+          .lte("price", data.max);
+      }
+
+      const { data: filterData, error } = await queryBuilder;
+
+      if (error) {
+        console.error("Error fetching filtered data:", error);
+      } else {
+        setFilteredData(filterData);
+      }
+    } catch (err) {
+      console.error("Unexpected error:", err);
     }
   };
 
-  const handleSubcategoryChange = (categoryKey, subKey, isChecked) => {
-    setSelectedSubcategories((prev) => {
-      if (isChecked) {
-        return [...prev, subKey];
-      } else {
-        return prev.filter((sub) => sub !== subKey);
-      }
-    });
-  };
+  const onError = () => {};
 
   return (
     <div className="from-primary-foreground to-transparent">
@@ -255,16 +228,18 @@ function ExploreCategories() {
                 onSubmit={onSubmit}
                 onError={onError}
               >
+                {/* Service Type */}
                 <div className="flex bg-primary-foreground p-4 rounded-lg flex-col gap-4">
                   <p className="font-bold text-xl">Select Service</p>
                   <Separator />
-                  {Object.keys(categories).map((key) => (
+                  {serviceType?.map((cat) => (
                     <FormCheckbox
-                      id={key}
-                      title={categories[key].name}
-                      onChange={(isChecked) =>
-                        handleCategoryChange(key, isChecked)
-                      }
+                      id={cat.id}
+                      title={cat?.name}
+                      key={cat.id}
+                      name="serviceType"
+                      {...register("serviceType")}
+                      onCheckboxChange={handleServiceTypeCheckboxChange}
                     />
                   ))}
                 </div>
@@ -273,36 +248,18 @@ function ExploreCategories() {
                   {" "}
                   <p className="font-bold text-xl">Select Type</p>
                   <Separator />
-                  {selectedCategories.length > 0 && (
-                    <div className=" flex flex-col gap-4">
-                      {" "}
-                      {selectedCategories.map((categoryKey) => (
-                        <div key={categoryKey} className="flex flex-col gap-4">
-                          {/* <p className="font-semibold text-lg">
-                            {categories[categoryKey].name} Subcategories
-                          </p> */}
-                          {Object.keys(
-                            categories[categoryKey].subcategories
-                          ).map((subKey) => (
-                            <FormCheckbox
-                              key={subKey}
-                              id={subKey}
-                              title={
-                                categories[categoryKey].subcategories[subKey]
-                              }
-                              onChange={(isChecked) =>
-                                handleSubcategoryChange(
-                                  categoryKey,
-                                  subKey,
-                                  isChecked
-                                )
-                              }
-                            />
-                          ))}
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                  <div className=" flex flex-col gap-4">
+                    {" "}
+                    {serviceSubType?.map((subCat) => (
+                      <div key={subCat.id} className="flex flex-col gap-4">
+                        <FormCheckbox
+                          id={subCat.id}
+                          title={subCat.name}
+                          name="serviceSubType"
+                        />
+                      </div>
+                    ))}
+                  </div>
                 </div>
 
                 <div className="flex bg-primary-foreground p-4 rounded-lg flex-col gap-4">
@@ -311,7 +268,7 @@ function ExploreCategories() {
                   {[5, 4, 3, 2, 1].map((key) => (
                     <FormCheckbox
                       id={String(key)}
-                      title={<CommentRatings rating={key} />}
+                      title={<CommentRatings rating={key} name="ratings" />}
                     />
                   ))}
                 </div>
@@ -340,7 +297,7 @@ function ExploreCategories() {
                   <Separator />
                   <FormCommand id="location" options={maltaLocations} />
                 </div>
-                <Button onClick={handleApplyFilterButton}>Apply Filter</Button>
+                <Button>Apply Filter</Button>
               </FormWrapper>
             </div>
           </div>
@@ -372,6 +329,7 @@ function ExploreCategories() {
                       data={isLoading ? {} : chunkedData[currentPage][index]}
                       loading={isLoading}
                       className="col-span-1"
+                      likes={likes}
                     />
                   ))}
                 </div>

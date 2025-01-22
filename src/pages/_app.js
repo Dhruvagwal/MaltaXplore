@@ -8,9 +8,19 @@ import { Footer } from "@/components/cui/footer";
 import { BookingProvider } from "@/context/bookingContext";
 import { ContactDetailsProvider } from "@/context/contactDetailsContext";
 import { AddressProvider } from "@/context/addressContext";
-import { useAuthState } from "@/context/ueAuthContext";
-import useFirebase from "@/hooks/use-firebase";
+import {
+  useServicesState,
+  useServiceTypeState,
+} from "@/context/servicesContext";
 import { useEffect } from "react";
+import { useRouter } from "next/router";
+import { dbNames } from "@/utils/fetch";
+import { useSupabaseGetAllQuery } from "@/utils/query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import useFirebase from "@/hooks/use-firebase";
+import { supabase } from "@/supabaseConfig";
+import { useAuthState } from "@/context/ueAuthContext";
+import { getUserFromDatabase } from "@/features/getUser";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -23,36 +33,75 @@ const geistMono = localFont({
   weight: "100 900",
 });
 
+const queryClient = new QueryClient();
 export default function App({ Component, pageProps }) {
-  const { setAuth, setUser } = useAuthState();
-  const {
-    auth: { getUserInfo },
-  } = useFirebase();
+  const router = useRouter();
+  const currentPath = router.pathname;
+  const { setServices, setIsLoading } = useServicesState();
+  const { setServiceType, setIsServiceTypeLoading } = useServiceTypeState();
+  const { setUser, setSession } = useAuthState();
 
   useEffect(() => {
-    getUserInfo().then((res) => {
-      if (!res) return;
-      setAuth(true);
-      setUser(res);
-    });
+    const fetchData = async () => {
+      let { data: services, error } = await supabase
+        .from("services")
+        .select("*");
+      setServices(services);
+    };
+    fetchData();
   }, []);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      let { data: servicetype, error } = await supabase
+        .from("servicetype")
+        .select("*");
+      setServiceType(servicetype);
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const { data, error } = await supabase.auth.getUser();
+
+      if (error) {
+        console.error("Error fetching user data:", error);
+        return;
+      }
+      const user = await getUserFromDatabase(data?.user.id);
+      setUser(user);
+      setSession(data);
+    };
+
+    fetchUserData();
+  }, []);
+
+  const isDashboard = currentPath.split("/")[1] !== "user" && currentPath.split("/")[1] !== "admin";
+
   return (
-    <>
+    <QueryClientProvider client={queryClient}>
       <ScrollArea
         className={`${geistSans.variable} ${geistMono.variable} min-h-screen w-[100%] antialiased font-[family-name:var(--font-geist-sans)]`}
       >
         <Toaster />
-        <Navbar />
+        {isDashboard && <Navbar />}{" "}
         <BookingProvider>
           <ContactDetailsProvider>
             <AddressProvider>
+              <DataDownload />
               <Component {...pageProps} />
             </AddressProvider>
           </ContactDetailsProvider>
         </BookingProvider>
-        <Footer />
+        {isDashboard && <Footer />}{" "}
       </ScrollArea>
-    </>
+    </QueryClientProvider>
   );
 }
+
+const DataDownload = () => {
+  useSupabaseGetAllQuery(dbNames.servicetype);
+  useSupabaseGetAllQuery(dbNames.servicesubtype);
+  return <></>;
+};

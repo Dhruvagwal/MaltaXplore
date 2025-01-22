@@ -1,104 +1,49 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
+import { useRouter } from "next/router";
+import Link from "next/link";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { DatePicker } from "@/components/ui/datepicker";
+import { Separator } from "@/components/ui/separator";
+
+import ReviewsPage from "@/components/cui/reviews-page";
+import TopPicks from "@/components/Home/topPicks";
+
+import { contactUs, booking } from "@/data/link";
+
+import { useBooking } from "@/context/bookingContext";
+import { useAuthState } from "@/context/ueAuthContext";
+import { useServicesState } from "@/context/servicesContext";
+
+import { cn } from "@/lib/utils";
+
 import {
   Heart,
   MapPin,
   Share2,
   Star,
-  ChevronLeft,
-  ChevronRight,
-  Menu,
   X,
   Check,
   Minus,
   User,
   Clock5,
 } from "lucide-react";
-import Reviews from "@/components/cui/review";
-import { TopPicks } from ".././index";
-import { useRouter } from "next/router";
-import { Separator } from "@/components/ui/separator";
-import ReviewsPage from "@/components/cui/reviews-page";
-import { get, ref } from "firebase/database";
-import { db } from "@/firebase/firebaseConfig";
-import { Skeleton } from "@/components/ui/skeleton";
-import { contactUs, booking } from "@/data/link";
-import Link from "next/link";
-import { useBooking } from "@/context/bookingContext";
-import { useAuthState } from "@/context/ueAuthContext";
-import useFirebase from "@/hooks/use-firebase";
-import { DatePicker } from "@/components/ui/datepicker";
-
-async function fetchDataFromRealtimeDB() {
-  try {
-    const snapshot = await get(ref(db, "services"));
-    if (snapshot.exists()) {
-      const data = snapshot.val();
-      return data;
-    } else {
-      console.log("No data available.");
-      return [];
-    }
-  } catch (error) {
-    console.error("Error fetching Realtime DB data:", error);
-    return [];
-  }
-}
-
-const reviews = [
-  {
-    id: 1,
-    name: "David Wilson",
-    rating: 5,
-    comment:
-      "The guided tour of Valletta was incredible! Our guide was knowledgeable and passionate about Malta's history. The small group size made it very personal and engaging.",
-    image: "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg",
-    date: "December 18, 2023",
-  },
-  {
-    id: 2,
-    name: "Sofia Martinez",
-    rating: 5,
-    comment:
-      "The Blue Grotto boat tour was breathtaking! The water was crystal clear and the caves were stunning. The tour guides were very professional and made sure everyone was comfortable.",
-    image: "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg",
-    date: "December 12, 2023",
-  },
-  {
-    id: 3,
-    name: "James Parker",
-    rating: 4,
-    comment:
-      "Great experience at the ancient temples! The audio guide was very informative, and the sites were well-preserved. Would have loved a bit more time at each location though.",
-    image: "https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg",
-    date: "December 8, 2023",
-  },
-];
+import { supabase } from "@/supabaseConfig";
+import Tilt from "react-parallax-tilt";
+import addUserToDatabase from "@/features/addUser";
+import { getUserLikes } from "@/features/getUserLikes";
+import { getServiceById } from "@/features/getServiceById";
+import { getUserFromDatabase } from "@/features/getUser";
 
 function TourismPage() {
   const router = useRouter();
   const { id } = router.query;
-
-  const {
-    crud: { updateData },
-    auth: { googleSignIn },
-  } = useFirebase();
-  const { auth, user } = useAuthState();
-  const [services, setServices] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isSignupOpen, setIsSignupOpen] = useState(false);
+  const { user, session, setSession, setUser } = useAuthState();
+  const { likeService, unlikeService } = useServicesState();
   const {
     adults,
     setAdults,
@@ -109,52 +54,80 @@ function TourismPage() {
     date,
     setDate,
   } = useBooking();
+  const [isLiked, setIsLiked] = useState(false);
+  const [service, setService] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        setIsLoading(true);
-        const fetchedData = await fetchDataFromRealtimeDB();
-        // Extract all services into a flat array
-        const allServices = Object.keys(fetchedData || {}).reduce(
-          (acc, categoryKey) => {
-            const subCategories = fetchedData[categoryKey];
-            if (subCategories) {
-              Object.keys(subCategories || {}).forEach((subCategoryKey) => {
-                const subCategoryData = subCategories[subCategoryKey];
-                if (subCategoryData) {
-                  Object.keys(subCategoryData || {}).forEach((itemKey) => {
-                    const item = subCategoryData[itemKey];
-                    if (item) acc.push(item);
-                  });
-                }
-              });
-            }
-            return acc;
-          },
-          []
-        );
+    const fetchService = async () => {
+      setIsLoading(true);
 
-        setServices(allServices);
+      try {
+        const fetchedService = await getServiceById(id);
+        setService(fetchedService);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching service:", error.message);
       } finally {
         setIsLoading(false);
       }
+    };
+
+    if (id) {
+      fetchService();
     }
-    if (id) fetchData();
   }, [id]);
 
-  const tourData = services.find((service) => service.id === id);
-  console.log("tourData", tourData);
-
   useEffect(() => {
-    if (tourData?.price) {
-      const calculatedPrice = tourData.price * (adults + child * 0.5);
+    if (service?.price) {
+      const calculatedPrice = service.price * (adults + child * 0.5);
       setTotalPrice(calculatedPrice);
     }
-  }, [tourData, adults, child]);
+  }, [service, adults, child]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (service && user?.id) {
+          const likesData = await getUserLikes(user?.id);
+
+          if (likesData.length > 0) {
+            const userLikes = likesData.some(
+              (like) => like.service_id === service.id
+            );
+
+            setIsLiked(userLikes);
+          } else {
+            console.log("No likes data found for the user");
+          }
+        }
+      } catch (error) {
+        console.error("Error in fetchData:", error);
+      }
+    };
+
+    if (user) {
+      fetchData();
+    }
+  }, [user, service]);
+
+  const handleDateChange = (selectedDate) => {
+    const formattedDate = new Date(selectedDate).toDateString();
+    setDate(formattedDate);
+  };
+
+  const handleLikesbutton = async () => {
+    try {
+      if (isLiked) {
+        await unlikeService(service, user.id);
+        setIsLiked(false);
+      } else {
+        await likeService(service, user.id);
+        setIsLiked(true);
+      }
+    } catch (error) {
+      console.error("Error handling like/unlike:", error);
+    }
+  };
   const HandleBookNowButton = () => {
     const selectedDate = new Date(date);
     const currentDate = new Date();
@@ -169,82 +142,29 @@ function TourismPage() {
     if (selectedDate < currentDate) {
       return;
     }
-    if (auth) {
+    if (session) {
+      if (session?.user) {
+        addUserToDatabase(session.user);
+        const fetchUserData = async () => {
+          const user = await getUserFromDatabase(session?.user.id);
+          if (user) {
+            setUser(user);
+          }
+        };
+        fetchUserData();
+      }
+
       router.push(`${booking.replace("[id]", id)}`);
     } else {
-      googleSignIn();
-    }
-  };
-
-  const handleDateChange = (selectedDate) => {
-    const formattedDate = new Date(selectedDate).toDateString();
-    setDate(formattedDate);
-  };
-
-  const [isLiked, setIsLiked] = useState(false);
-
-  useEffect(() => {
-    if (tourData && user?.uid) {
-      const likes = tourData.likes || [];
-      setIsLiked(likes.includes(user.uid));
-    }
-  }, [tourData, user, services]);
-
-  const handleLikesbutton = async () => {
-    if (tourData && user?.uid) {
-      const likes = tourData.likes || [];
-
-      const updatedLikes = likes.includes(user.uid)
-        ? likes
-        : [...likes, user.uid];
-
-      const finalData = {
-        ...tourData,
-        likes: updatedLikes,
-      };
-
-      try {
-        await updateData({
-          [`/services/${tourData?.mainCategory}/${tourData?.subCategory}/${tourData.id}`]:
-            finalData,
-        });
-        setIsLiked(true);
-        console.log("Data updated successfully!");
-      } catch (error) {
-        console.error("Error updating data:", error);
-      }
-    }
-  };
-
-  const handleUnlikesbutton = async () => {
-    if (tourData && user?.uid) {
-      const likes = tourData.likes || [];
-
-      const updatedLikes = likes.filter((uid) => uid !== user.uid);
-
-      const finalData = {
-        ...tourData,
-        likes: updatedLikes,
-      };
-
-      try {
-        await updateData({
-          [`/services/${tourData?.mainCategory}/${tourData?.subCategory}/${tourData.id}`]:
-            finalData,
-        });
-        setIsLiked(false);
-        console.log("Data updated successfully!");
-      } catch (error) {
-        console.error("Error updating data:", error);
-      }
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        setSession(session);
+      });
     }
   };
 
   return (
     <main className="min-h-screen bg-white">
-      {/* Hero Section without 3D Tilt */}
-      {/* <div className="pt-16 md:pt-24 container mx-auto px-4"> */}
-      <div className="md:pt-24 mx-8 md:mx-32 md:px-4">
+      <div className="md:pt-24 mx-8 md:mx-20">
         {isLoading ? (
           <div className="space-y-2 mb-6 md:mb-8">
             <Skeleton className="h-4 w-[250px]" />
@@ -252,7 +172,7 @@ function TourismPage() {
           </div>
         ) : (
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-6 md:mb-8">
-            {tourData?.title}{" "}
+            {service?.name}{" "}
           </h1>
         )}
 
@@ -341,7 +261,7 @@ function TourismPage() {
                 </div>
                 <div className="flex items-center gap-2 text-sm sm:text-base text-gray-600">
                   <MapPin className="w-4 h-4" />
-                  <span className="line-clamp-1">{tourData?.location}</span>
+                  <span className="line-clamp-1">{service?.location}</span>
                 </div>
               </>
             )}
@@ -355,20 +275,19 @@ function TourismPage() {
               </>
             ) : (
               <>
-                <button className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center bg-[#FFE4E5] text-[#E5484D] transition-all duration-300">
-                  {!isLiked ? (
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center">
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "rounded-full w-10 h-10 p-0 text-primary bg-[#FFE4E5] hover:bg-[#FFE4E5]"
+                    )}
+                    onClick={handleLikesbutton}
+                  >
                     <Heart
-                      className="w-4 h-4 sm:w-5 sm:h-5"
-                      onClick={handleLikesbutton}
+                      className={cn(isLiked && "fill-primary text-primary")}
                     />
-                  ) : (
-                    <img
-                      src="/heart.png"
-                      className="w-4 h-4 sm:w-5 sm:h-5"
-                      onClick={handleUnlikesbutton}
-                    />
-                  )}
-                </button>
+                  </Button>
+                </div>
                 <button className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center bg-[#FFE4E5] text-[#E5484D] transition-all duration-300">
                   <Share2 className="w-4 h-4 sm:w-5 sm:h-5" />
                 </button>
@@ -380,7 +299,7 @@ function TourismPage() {
 
       {/* Booking Section */}
       {/* <section className="container mx-auto px-4 py-12"> */}
-      <section className="mx-8 md:mx-32 md:px-4 py-12">
+      <section className="mx-8 md:mx-20 py-12">
         <div className="grid lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
             <div>
@@ -391,7 +310,7 @@ function TourismPage() {
                     <Skeleton className="h-4 w-[200px]" />
                   </div>
 
-                  {[...Array(tourData?.features?.length || 0)].map((_, i) => (
+                  {[...Array(service?.features?.length || 0)].map((_, i) => (
                     <div
                       key={i}
                       className="grid grid-cols-2 md:grid-cols-4 my-4 py-8 gap-4 bg-primary-foreground px-4"
@@ -405,21 +324,16 @@ function TourismPage() {
                 </>
               ) : (
                 <>
-                  <h2 className="text-3xl font-bold">
-                    About {tourData?.title}
-                  </h2>
+                  <h2 className="text-3xl font-bold">About {service?.name}</h2>
 
-                  {tourData?.features?.map((f, index) => (
-                    <div
-                      key={index}
-                      className="grid grid-cols-2 md:grid-cols-4 my-4 py-8 gap-4 bg-primary-foreground px-4"
-                    >
+                  <div className="grid grid-cols-2 md:grid-cols-4 my-4 py-8 gap-4 bg-primary-foreground px-4 rounded-lg">
+                    {service?.features?.map((f, index) => (
                       <div className="flex gap-2">
                         <Clock5 className="text-[#e03837]" />
                         <p>{f}</p>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </>
               )}
 
@@ -447,7 +361,7 @@ function TourismPage() {
                   </div>
                 ) : (
                   <div className="prose prose-lg max-w-none">
-                    <p>{tourData?.description}</p>
+                    <p>{service?.description}</p>
                     <div className="mt-8 space-y-6">
                       <div>
                         <h3 className="text-xl font-semibold mb-2">
@@ -498,7 +412,7 @@ function TourismPage() {
 
               <div className="space-y-4">
                 {isLoading
-                  ? [...Array(tourData?.specialBenefits?.length || 0)].map(
+                  ? [...Array(service?.specialBenefits?.length || 0)].map(
                       (_, i) => (
                         <div key={i} className="flex items-center gap-3">
                           <Skeleton className="h-5 w-5 rounded-full" />
@@ -506,7 +420,7 @@ function TourismPage() {
                         </div>
                       )
                     )
-                  : tourData?.specialBenefits?.map((benefit, index) => (
+                  : service?.special_benefits?.map((benefit, index) => (
                       <div key={index} className="flex items-center gap-3">
                         <Check className="h-5 w-6 md:w-5 bg-green-500 text-white rounded-full p-1" />
                         <span className="text-gray-600">{benefit}</span>
@@ -529,63 +443,41 @@ function TourismPage() {
               <div className="flex flex-col md:flex-row gap-16">
                 <div className="space-y-4">
                   {isLoading
-                    ? [
-                        ...Array(
-                          tourData?.includes?.filter((item) => item.isIncluded)
-                            .length || 0
-                        ),
-                      ].map((_, i) => (
+                    ? [...Array(service?.includes?.length || 0)].map((_, i) => (
                         <div key={i} className="flex items-center gap-3">
                           <Skeleton className="h-5 w-5 rounded-full" />
                           <Skeleton className="h-4 w-16" />
                         </div>
                       ))
-                    : tourData?.includes
-                        ?.filter((item) => item.isIncluded)
-                        .map((item) => (
-                          <div
-                            className="flex items-center gap-3"
-                            key={item.id}
-                          >
-                            <Check className="h-5 w-5 bg-green-500 text-white rounded-full p-1" />
-                            <span className="text-gray-600">{item.text}</span>
-                          </div>
-                        ))}
+                    : service?.includes.map((item, index) => (
+                        <div className="flex items-center gap-3" key={index}>
+                          <Check className="h-5 w-5 bg-green-500 text-white rounded-full p-1" />
+                          <span className="text-gray-600">{item}</span>
+                        </div>
+                      ))}
                 </div>
 
                 <div className="space-y-4">
                   {isLoading
-                    ? [
-                        ...Array(
-                          tourData?.includes?.filter((item) => !item.isIncluded)
-                            .length || 0
-                        ),
-                      ].map((_, i) => (
+                    ? [...Array(service?.excludes?.length || 0)].map((_, i) => (
                         <div key={i} className="flex items-center gap-3">
                           <Skeleton className="h-5 w-5 rounded-full" />
                           <Skeleton className="h-4 w-2/3" />
                         </div>
                       ))
-                    : tourData?.includes
-                        ?.filter((item) => !item.isIncluded)
-                        .map((item) => (
-                          <div
-                            className="flex items-center gap-3"
-                            key={item.id}
-                          >
-                            <Minus className="h-5 w-5 bg-red-500 text-white rounded-full p-1" />
-                            <span className="text-gray-600">{item.text}</span>
-                          </div>
-                        ))}
+                    : service?.excludes.map((item, index) => (
+                        <div className="flex items-center gap-3" key={index}>
+                          <Minus className="h-5 w-5 bg-red-500 text-white rounded-full p-1" />
+                          <span className="text-gray-600">{item}</span>
+                        </div>
+                      ))}
                 </div>
               </div>
             </div>
 
             <Separator className="my-10" />
 
-            <div>
-              <ReviewsPage />
-            </div>
+            <ReviewsPage serviceId={id} />
           </div>
 
           <div>
@@ -594,7 +486,7 @@ function TourismPage() {
                 {isLoading ? (
                   <Skeleton className="h-10 w-[80px]" />
                 ) : (
-                  <CardTitle className="text-3xl">${tourData?.price}</CardTitle>
+                  <CardTitle className="text-3xl">${service?.price}</CardTitle>
                 )}
                 <div className="text-white/90">
                   {isLoading ? (
@@ -743,7 +635,7 @@ function TourismPage() {
       {/* Gallery Section */}
       <section className="py-12 md:py-24 bg-white">
         {/* <div className="container mx-auto px-4"> */}
-        <div className="mx-8 md:mx-32 md:px-4">
+        <div className="mx-8 md:mx-20">
           <h2 className="text-3xl font-bold text-center mb-12">
             Explore Gallery
           </h2>
@@ -752,14 +644,16 @@ function TourismPage() {
             {["/g1.png", "/g2.png", "/g3.png"].map((image, index) => (
               <div
                 key={index}
-                className="relative group overflow-hidden rounded-2xl cursor-pointer"
+                className="relative group rounded-2xl cursor-pointer"
               >
-                <img
-                  src={image}
-                  alt={`Gallery ${index + 1}`}
-                  className="w-full h-[300px] object-cover"
-                />
-                <div className="absolute inset-0 bg-black/20" />
+                <Tilt>
+                  <img
+                    src={image}
+                    alt={`Gallery ${index + 1}`}
+                    className="w-full h-[300px] object-cover rounded-2xl"
+                  />
+                  <div className="absolute inset-0 bg-black/20 rounded-2xl" />
+                </Tilt>
               </div>
             ))}
           </div>
@@ -769,14 +663,16 @@ function TourismPage() {
             {["/g4.png", "/g5.png"].map((image, index) => (
               <div
                 key={index}
-                className="relative group overflow-hidden rounded-2xl cursor-pointer"
+                className="relative group rounded-2xl cursor-pointer"
               >
-                <img
-                  src={image}
-                  alt={`Gallery ${index + 4}`}
-                  className="w-full h-[400px] object-cover"
-                />
-                <div className="absolute inset-0 bg-black/20" />
+                <Tilt>
+                  <img
+                    src={image}
+                    alt={`Gallery ${index + 4}`}
+                    className="w-full h-[400px] object-cover rounded-2xl"
+                  />
+                  <div className="absolute inset-0 bg-black/20 rounded-2xl" />
+                </Tilt>
               </div>
             ))}
           </div>
@@ -792,7 +688,7 @@ function TourismPage() {
       /> */}
 
       {/* Top Picks */}
-      <TopPicks services={services} loading={isLoading} />
+      <TopPicks />
     </main>
   );
 }

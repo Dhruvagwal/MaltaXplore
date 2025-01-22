@@ -1,15 +1,8 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import useCustomForm from "@/hooks/use-custom-form";
+import { useRouter } from "next/router";
+import axios from "axios";
 import { Separator } from "@/components/ui/separator";
-import {
-  Accordion,
-  AccordionTrigger,
-  AccordionContent,
-  AccordionItem,
-} from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
-import { PhoneInput } from "@/components/ui/phone-input";
 import { StepperComponent } from "@/components/ui/stepper";
 import {
   Card,
@@ -19,8 +12,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import ContactDetailsPage from "@/components/cui/contact-detail";
-import ActivityDetailsPage from "@/components/cui/activity-detail";
+import ContactDetailsPage from "@/components/Bookings/contact-detail";
+import ActivityDetailsPage from "@/components/Bookings/activity-detail";
+import PaymentDetailsPage from "@/components/Bookings/paymentDetails";
+import { useBooking } from "@/context/bookingContext";
+import { useContactDetails } from "@/context/contactDetailsContext";
 import {
   ClockAlert,
   Wallet,
@@ -29,369 +25,44 @@ import {
   Headphones,
   Phone,
 } from "lucide-react";
-import { months, countries } from "@/data/data";
 import { loadStripe } from "@stripe/stripe-js";
-import {
-  Elements,
-  CardElement,
-  useStripe,
-  useElements,
-  PaymentElement,
-  LinkAuthenticationElement,
-} from "@stripe/react-stripe-js";
-import axios from "axios";
-import { cardSchema } from "@/lib/schema";
-import { useToast } from "@/hooks/use-toast";
-import useFirebase from "@/hooks/use-firebase";
-import { useRouter } from "next/router";
-import { useBooking } from "@/context/bookingContext";
-import { useContactDetails } from "@/context/contactDetailsContext";
-import { v4 } from "uuid";
-import { useAddress } from "@/context/addressContext";
+import { Elements } from "@stripe/react-stripe-js";
+import { useServicesState } from "@/context/servicesContext";
 import { useAuthState } from "@/context/ueAuthContext";
-import { supplier } from "@/data/link";
-import { jsPDF } from "jspdf";
+
 const stripePromise = loadStripe(
   "pk_test_51QeatsDk75aWHW4POpFQMr6DEc6Vg8MNxdR0La3Q7QTNKm9ej2fgSYaZhhSpTTf93dav99IkTt6QuINLkfpaZrAI00wF7qXy50"
 ); // Use the publishable key
 
-//payment page
-const PaymentDetailsPage = ({
-  nextStep,
-  cancellationPolicy,
-  clientSecret,
-  paymentIntentId,
-  tourData,
-}) => {
-  const { user } = useAuthState();
-  console.log("userinpaymentdetailspage", user);
-  const stripe = useStripe();
-  const elements = useElements();
-  const { toast } = useToast();
-  const {
-    FormWrapper,
-    FormInput,
-    FormSelect,
-    formState: { isSubmitting },
-    watch,
-  } = useCustomForm({
-    schema: cardSchema,
-  });
-
-  const {
-    crud: { writeData,syncUpload  },
-  } = useFirebase();
-
-  const { adults, child, totalPrice, date } = useBooking();
-  const { contactDetails } = useContactDetails();
-  const { pickupLocation, street, city, state, postalCode } = useAddress();
-  const [isProcessing, setIsProcessing] = useState(false);
-
-  const onError = (errors) => {
-    toast({
-      variant: "destructive",
-      title: "Invalid Form Submission",
-      description: "Please check the form for errors and try again.",
-    });
-    console.error(errors);
-  };
-
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!user || !clientSecret || !stripe || !elements || isProcessing) {
-      console.error("Stripe.js or clientSecret has not loaded yet.");
-      return;
-    }
-
-    setIsProcessing(true);
-    try {
-      const finalData = {
-        contactDetails: contactDetails,
-        addressDetails: {
-          location: pickupLocation,
-          street,
-          city,
-          state,
-          postalCode,
-        },
-        bookingDetails: {
-          adults: adults,
-          childrens: child,
-          totalPrice: totalPrice,
-          date: date,
-        },
-        status: false,
-        userUid: user?.uid,
-        supplierId: tourData?.createdBy?.id,
-        likes: [],
-        service: {
-          mainCategory: tourData?.mainCategory,
-          subCategory: tourData?.subCategory,
-          id: tourData?.id,
-          location: tourData?.location,
-          status: tourData?.status,
-        },
-        bookingDate: new Date().toISOString(),
-        paymentIntentId: paymentIntentId,
-      };
-      console.log("finalData", finalData);
-
-      await writeData(`/bookings/${v4()}`, finalData);
-
-      const { error } = await stripe.confirmPayment({
-        elements,
-        confirmParams: {
-          return_url: "http://localhost:3000/complete",
-        },
-      });
-
-      if (error) {
-        console.log(error.message);
-        setIsProcessing(false);
-      }
-    } catch (error) {
-      setIsProcessing(false);
-      if (error?.message) {
-        console.log(error.message);
-      } else {
-        console.log("Something went wrong");
-      }
-    }
-  };
-
-  const doc = new jsPDF();
-
-doc.text("Hello world!", 10, 10);
-doc.save("a4.pdf");
-
-console.log(doc);
-
-
-  return (
-    <div>
-      {/* <div className="grid grid-cols-1 md:grid-cols-2"> */}
-      {clientSecret && stripe && (
-        // <Elements options={{ clientSecret }} stripe={stripePromise}>
-        <form className="w-full" id="payment-form" onSubmit={handleSubmit}>
-          {" "}
-          <div className="col-span-2">
-            <p className="text-3xl font-semibold my-8">Payment Details</p>
-
-            <div className="my-6">
-              <p className="text-base font-medium my-2">Pay with:</p>
-              <div>
-                {" "}
-                <Card className="">
-                  <Accordion type="single" collapsible className="">
-                    <AccordionItem value="item-1">
-                      <AccordionTrigger className="py-0 px-4 hover:no-underline">
-                        <div className="flex justify-start">
-                          Credit/Debit Card{" "}
-                          <img src="https://static.tacdn.com/img2/solutions/shoppingcart/cc_AMEX_icon_no_bg.svg"></img>
-                          <img src="https://static.tacdn.com/img2/solutions/shoppingcart/cc_Visa_icon_no_bg.svg"></img>
-                          <img src="https://static.tacdn.com/img2/solutions/shoppingcart/cc_Mastercard_icon_no_bg.svg"></img>
-                        </div>
-                      </AccordionTrigger>
-                      <AccordionContent className="px-4 mt-6">
-                        {/* <CardElement options={{ hidePostalCode: false }} /> */}
-                        {/* {clientSecret && stripe && elements && ( */}
-                        <PaymentElement id="payment-element" />
-                        {/* )} */}
-                        {/* <FormWrapper
-                            className="flex flex-col gap-6"
-                            // onSubmit={handleSubmit}
-                            onError={onError}
-                          > */}
-                        {/* {[
-                        {
-                          id: "cardHolderName",
-                          label: `Cardholder Name`,
-                          placeholder: "Type card holder name",
-                          type: "text",
-                        },
-                        {
-                          id: "cardNum",
-                          label: `Credit/debit card number`,
-                          placeholder: "Type credit/debit card number",
-                          type: "number",
-                        },
-                      ].map((input) => (
-                        <div className="col-span-1 w-full md:w-3/4">
-                          <FormInput
-                            id={input.id}
-                            title={input.label}
-                            placeholder={input.placeholder}
-                            required
-                            className="h-12"
-                          />
-                        </div>
-                      ))} */}
-                        {/* <div className="w-full md:w-3/4 grid grid-cols-1 md:grid-cols-3 md:gap-4">
-                        <div className="col-span-1 md:col-span-3">
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 my-2">
-                            <FormSelect
-                              id="expirationMonth"
-                              options={months}
-                              title="Expiration month"
-                              placeholder="Select a month"
-                              className="bg-white h-12"
-                              required
-                            />
-                            <FormSelect
-                              id="expirationYear"
-                              title="Expiration year"
-                              options={Array.from(
-                                { length: 20 },
-                                (_, index) => new Date().getFullYear() + index
-                              ).map((year) => ({
-                                value: year.toString(),
-                                label: year.toString(),
-                              }))}
-                              placeholder="Select a year"
-                              className="bg-white h-12"
-                              required
-                            />
-                            <FormInput
-                              id={"cvvCode"}
-                              title={"CVC Code"}
-                              placeholder={"Type cvc code"}
-                              className="h-12"
-                              required
-                            />
-                          </div>
-                        </div>
-
-                        <div className="col-span-2">
-                          {" "}
-                          <FormSelect
-                            id="country"
-                            options={countries}
-                            title="Country"
-                            placeholder="Select a country"
-                            className="bg-white h-12"
-                            required
-                          />
-                        </div>
-
-                        <FormInput
-                          id={"postalZipCode"}
-                          title={"Postal/Zip Code"}
-                          placeholder={"Type Postal/Zip code"}
-                          className="h-12 space-y-2"
-                          required
-                        />
-                      </div> */}
-                        {/* <button type="submit" disabled={!stripe || isProcessing}>
-                        {isProcessing ? "Processing..." : "Pay Now"}
-                      </button>{" "} */}
-                        {/* </FormWrapper> */}
-                      </AccordionContent>
-                    </AccordionItem>
-                  </Accordion>
-                </Card>
-              </div>
-              <div className="flex flex-col justify-center items-center mt-12">
-                <div className="text-2xl font-semibold">
-                  Total Price: ${totalPrice}
-                </div>
-                <div className="flex justify-center items-center text-base gap-2 font-medium">
-                  <ClockAlert size={16} /> {cancellationPolicy}
-                </div>
-                <p className="text-sm my-4">
-                  By clicking "Complete Booking", you acknowledge that you have
-                  read and are bound by
-                  <span>
-                    MaltaXplore's Terms & Privacy and Cookies Statement;
-                    Viator's Terms;
-                  </span>{" "}
-                  plus the tour operator's rules & regulations (see listing for
-                  more details).
-                </p>
-              </div>
-
-              <div className="flex justify-center">
-                <Button
-                  variant="destructive"
-                  className="bg-[#f1b203] text-black font-semibold text-base w-3/5 h-12 
-            rounded-full"
-                  id="submit"
-                  disabled={!stripe || !elements || isProcessing}
-                  // onClick={handleSubmit}
-                >
-                  {isProcessing ? "Processing..." : "Complete Booking"}
-                </Button>
-              </div>
-              <p className="text-sm my-4">
-                Your booking is facilitated by MaltaXplore, but a third-party
-                tour operator provides the tour/activity directly to you.
-              </p>
-              <p className="text-sm my-4">
-                Your statement will list MaltaXplore as the merchant for this
-                transaction
-              </p>
-            </div>
-          </div>
-        </form>
-      )}
-    </div>
-  );
-};
-
-// const finalData = {
-//         contactDetails: {
-//           fname,
-//           lname,
-//           email,
-//           phone,
-//         },
-//         activityDetails: {
-//           location: pickupLocation,
-//         },
-//         bookingDetails: {
-//           adults: adults,
-//           childrens: child,
-//           totalPrice: totalPrice,
-//           date: date,
-//         },
-//         bookingDate: new Date().toISOString(),
-//         transactionId: paymentIntent.id,
-//       };
-
-//       if (paymentIntent.status === "succeeded") {
-//         console.log(paymentIntent.status);
-//         await writeData(`/bookings/${v4()}`, finalData);
-//         console.log("Payment successful:", paymentIntent);
-//         alert("Payment successful!");
-
-//booking page
 const BookingPage = () => {
-  const [clientSecret, setClientSecret] = useState("");
-  const [paymentIntentId, setPaymentIntentId] = useState("");
+  const { user } = useAuthState();
   const router = useRouter();
   const { id } = router.query;
-  const {
-    crud: { readData, writeData },
-  } = useFirebase();
-
-  const { contactDetails } = useContactDetails();
-  const firstKey = Object.keys(contactDetails)[0];
-  const email = contactDetails[firstKey]?.email;
-  const { adults, child, totalPrice, date } = useBooking();
+  const { services } = useServicesState();
+  const { adults, child, totalPrice, discountedPrice, date } = useBooking();
 
   const [activeStep, setActiveStep] = useState(0);
+  const [clientSecret, setClientSecret] = useState("");
+  const [paymentIntentId, setPaymentIntentId] = useState("");
 
-  const [services, setServices] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-
+  const tourData = services.find((service) => service.id === id);
+  const taxRate = 0.1; // Example: 10% tax
+  const basePrice = Number(totalPrice);
+  const taxesAndFees = basePrice * taxRate;
+  const discountAmount = discountedPrice
+    ? basePrice - Number(discountedPrice)
+    : 0;
+  const finalPrice = discountedPrice
+    ? Number(discountedPrice) + taxesAndFees
+    : basePrice + taxesAndFees;
+    
   useEffect(() => {
-    if (activeStep === 1 && totalPrice > 0 && email) {
+    if (activeStep === 1 && totalPrice > 0 && user.email) {
       const fetchClientSecret = async () => {
         const response = await axios.post("/api/create-payment-intent", {
-          amount: totalPrice * 100,
+          amount: finalPrice * 100,
           currency: "usd",
-          email: email,
+          email: user?.email,
         });
         setPaymentIntentId(response?.data?.paymentIntent?.id);
         setClientSecret(response?.data?.clientSecret);
@@ -399,45 +70,6 @@ const BookingPage = () => {
       fetchClientSecret();
     }
   }, [activeStep]);
-
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        setIsLoading(true);
-        const fetchedData = await readData("services");
-        // Extract all services into a flat array
-        const allServices = Object.keys(fetchedData || {}).reduce(
-          (acc, categoryKey) => {
-            const subCategories = fetchedData[categoryKey];
-            if (subCategories) {
-              Object.keys(subCategories || {}).forEach((subCategoryKey) => {
-                const subCategoryData = subCategories[subCategoryKey];
-                if (subCategoryData) {
-                  Object.keys(subCategoryData || {}).forEach((itemKey) => {
-                    const item = subCategoryData[itemKey];
-                    if (item) acc.push(item);
-                  });
-                }
-              });
-            }
-            return acc;
-          },
-          []
-        );
-
-        setServices(allServices);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    if (id) fetchData();
-  }, [id]);
-
-  const tourData = services.find((service) => service.id === id);
-
-  console.log("tourData", tourData);
 
   const nextStep = () => {
     if (activeStep < 2) setActiveStep((prev) => prev + 1);
@@ -489,10 +121,10 @@ const BookingPage = () => {
               <Elements stripe={stripePromise} options={{ clientSecret }}>
                 <PaymentDetailsPage
                   nextStep={nextStep}
-                  cancellationPolicy={tourData?.cancellationPolicy}
                   clientSecret={clientSecret}
                   paymentIntentId={paymentIntentId}
                   tourData={tourData}
+                  finalPrice={finalPrice.toFixed(2)}
                 />
               </Elements>
             )}
@@ -503,7 +135,7 @@ const BookingPage = () => {
                 <div className="flex justify-between items-start">
                   <div>
                     <CardTitle className="flex-1 text-base">
-                      {tourData?.title}
+                      {tourData?.name}
                     </CardTitle>
                     <CardDescription className="py-2">
                       by{" "}
@@ -537,12 +169,34 @@ const BookingPage = () => {
                 <Separator className="my-4" />
 
                 <div className="flex justify-center items-center text-base gap-2">
-                  <ClockAlert size={16} /> {tourData?.cancellationPolicy}
+                  <ClockAlert size={16} /> {tourData?.cancellation_policy}
                 </div>
               </CardContent>
-              <CardFooter className="bg-[#E5484D] text-white rounded-b-xl flex justify-between items-center py-8 font-semibold">
-                <span className="text-white/90">Total</span>
-                <span className="text-white/90">${totalPrice}</span>
+              <CardFooter className="bg-[#E5484D] text-white rounded-b-xl flex flex-col justify-between py-8 font-semibold">
+                <div className="flex justify-between items-center w-full">
+                  <span className="text-white/90">Base Price</span>
+                  <span className="text-white/90">${basePrice.toFixed(2)}</span>
+                </div>
+
+                <div className="flex justify-between items-center w-full mt-2">
+                  <span className="text-white/90">Taxes and Fees</span>
+                  <span className="text-white/90">
+                    +${taxesAndFees.toFixed(2)}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center w-full mt-2">
+                  <span className="text-white/90">Discount </span>
+                  <span className="text-white/90">
+                    - ${discountAmount.toFixed(2)}
+                  </span>
+                </div>
+                <Separator className="my-4" />
+                <div className="flex justify-between items-center w-full">
+                  <span className="text-white/90">Total</span>
+                  <span className="text-white/90">
+                    ${finalPrice.toFixed(2)}
+                  </span>
+                </div>
               </CardFooter>
             </Card>
 

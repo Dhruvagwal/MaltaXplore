@@ -66,8 +66,10 @@ const ServicesDashboard = () => {
 
   return (
     <AdminWrapper>
+      <>
+
       <div className="flex justify-between">
-        <div className="text-2xl font-semibold mb-4">Service List</div>
+        <div className="text-2xl font-semibold mb-4">Draft Service List</div>
         <div className="flex gap-4">
           <Select onValueChange={handleSelectChange}>
             <SelectTrigger className="w-[180px]">
@@ -97,6 +99,39 @@ const ServicesDashboard = () => {
         </div>
       </div>
       <ServiceList headings={headings} data={service} />
+
+
+      {/* approved list */}
+          <div className="text-2xl font-semibold mb-4 mt-16">Approved Service List</div>
+        <div className="flex gap-4">
+          <Select onValueChange={handleSelectChange}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Select Type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Service Type</SelectLabel>
+                {serviceType?.map((st) => (
+                  <SelectItem key={st.id} value={st.id}>{st.name}</SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <Select>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Select Sub Type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+              {serviceSubtype?.map((st) => (
+                  <SelectItem key={st.id} value={st.id}>{st.name}</SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+      <ServiceList headings={headings} data={service} />
+      </>
     </AdminWrapper>
   );
 };

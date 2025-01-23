@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 const Iteneray = () => {
   return (
     <div className="my-48 px-8 md:px-32 xl:px-20">
-      <div className="flex flex-col md:flex-row gap-8 lg:gap-64 justify-between max-md:px-1">
+      <div className="flex flex-col md:flex-row gap-8 lg:gap-64 justify-between items-center max-md:px-1">
         <p className="text-5xl font-bold">Create Your Own Perfect Itinerary</p>
         <p className="text-xl md:text-right">
           Customize your trip based on what you love. Whether you’re an

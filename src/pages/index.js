@@ -20,7 +20,7 @@ export default function Home() {
           {/* Discover Malta Best Experiences */}
           <DiscoverMalta />
           {/* Categories Search */}
-          <Categories className="lg:my-16 max-md:w-[80%]" />
+          <Categories className="max-md:w-[80%]" />
           {/* Phone Features */}
           <PhoneFeatures />
           {/* Top Picks */}

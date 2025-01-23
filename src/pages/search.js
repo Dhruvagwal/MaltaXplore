@@ -59,6 +59,7 @@ function ExploreCategories() {
   const [checkedServiceTypeIds, setCheckedServiceTypeIds] = useState([]);
   const [serviceSubType, setServiceSubType] = useState([]);
 
+
   const range = watch("range");
   const min = watch("min");
   const max = watch("max");
@@ -66,7 +67,6 @@ function ExploreCategories() {
   useEffect(() => {
     const fetchLikes = async () => {
       const likesData = await getUserLikes(user?.id);
-      console.log(likesData)
       setLikes(likesData);
     };
     fetchLikes();
@@ -82,7 +82,6 @@ function ExploreCategories() {
         if (error) {
           console.error("Error fetching data:", error);
         } else {
-          console.log(servicesubtype);
           setServiceSubType(servicesubtype);
         }
       }
@@ -193,7 +192,18 @@ function ExploreCategories() {
           .lte("price", data.max);
       }
 
+      const selectedIds = Object.keys(data).filter(
+        (key) => data[key] === true && !isNaN(key) === false
+      );
+
+      if (selectedIds.length > 0) {
+        queryBuilder = queryBuilder.in("service_type", selectedIds);
+      }
+
+      console.log("selectedIds", selectedIds);
+
       const { data: filterData, error } = await queryBuilder;
+
 
       if (error) {
         console.error("Error fetching filtered data:", error);
@@ -237,8 +247,6 @@ function ExploreCategories() {
                       id={cat.id}
                       title={cat?.name}
                       key={cat.id}
-                      name="serviceType"
-                      {...register("serviceType")}
                       onCheckboxChange={handleServiceTypeCheckboxChange}
                     />
                   ))}
@@ -252,11 +260,7 @@ function ExploreCategories() {
                     {" "}
                     {serviceSubType?.map((subCat) => (
                       <div key={subCat.id} className="flex flex-col gap-4">
-                        <FormCheckbox
-                          id={subCat.id}
-                          title={subCat.name}
-                          name="serviceSubType"
-                        />
+                        <FormCheckbox id={subCat.id} title={subCat.name} />
                       </div>
                     ))}
                   </div>

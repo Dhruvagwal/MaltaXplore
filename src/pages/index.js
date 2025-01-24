@@ -32,6 +32,7 @@ import { HeroCarousel } from "@/components/Home/hero-carousel";
 import { HappyCustomers } from "@/components/Home/happy-customer";
 import { ListingEveryDay } from "@/components/Home/listing-everyday";
 import { HeroSearch } from "@/components/Home/hero-search";
+import Weather from "@/components/Home/Weather";
 
 export default function Home() {
   return (
@@ -39,37 +40,45 @@ export default function Home() {
       <div className="bg-gradient-to-br from-primary-foreground to-transparent">
         {/* <Navbar /> */}
         <main className="relative pt-16">
-          <div className="lg:relative">
-            <Image
+          <div className="lg:relative h-[100vh]">
+            {/* <Image
               src={"/hero-bg.png"}
               width={200}
               height={200}
-              className="w-full max-lg:hidden"
-            />
-            <div className="flex flex-col lg:flex-row justify-around items-center">
-              <div className="lg:absolute lg:left-32 z-50 top-0">
-                <div className="mx-12 md:mx-0 space-y-4">
-                  <p className="font-semibold text-xl text-primary">
-                    Discover Malta In One Place
-                  </p>
-                  <br />
-                  <h1 className="text-5xl md:text-6xl lg:text-7xl leading-[1.3] font-bold">
-                    Discover Malta's <br />
-                    Best Experiences
-                  </h1>
-                  <p className="text-lg lg:text-xl leading-[1.5]">
-                    From tours and adventures to dining and relaxation, <br />
-                    find everything you need for the perfect trip to Malta - all
+              className="w-full max-lg:hidden absolute top-0"
+            /> */}
+            <div className="lg:absolute w-full flex flex-col z-10 h-full top-0">
+              <div className="w-full  flex justify-around">
+                <div className="">
+                  <div className="mx-12 md:mx-0 space-y-4">
+                    <p className="font-semibold text-xl text-primary">
+                      Discover Malta In One Place
+                    </p>
                     <br />
-                    in one place
-                  </p>
+                    <h1 className="text-5xl md:text-6xl lg:text-7xl leading-[1.3] font-bold">
+                      Discover Malta's <br />
+                      Best Experiences
+                    </h1>
+
+                    <p className="text-lg lg:text-xl leading-[1.5]">
+                      From tours and adventures to dining and relaxation, <br />
+                      find everything you need for the perfect trip to Malta -
+                      all
+                      <br />
+                      in one place
+                    </p>
+                    <br />
+                  </div>
+                  {/* <HeroCarousel className="" /> */}
+                  <HeroSearch className="" />
+                  <br />
+
+                  <div className="flex flex-col md:flex-row justify-center gap-6">
+                    <HappyCustomers />
+                    <ListingEveryDay />
+                  </div>
                 </div>
-                <HeroCarousel className="pt-12 md:pt-6" />
-              </div>
-              <HeroSearch className="lg:absolute right-32 top-20 my-12  " />
-              <div className="flex flex-col md:flex-row lg:absolute justify-center gap-6">
-                <HappyCustomers />
-                <ListingEveryDay />
+                <Weather className="" />
               </div>
             </div>
           </div>

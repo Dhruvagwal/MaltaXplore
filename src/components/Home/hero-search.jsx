@@ -43,7 +43,7 @@ export const HeroSearch = ({ className }) => {
     return (
       <div
         className={cn(
-          "flex flex-col gap-2 md:gap-6 p-12 md:p-8 border bg-white md:w-[400px] shadow-lg rounded-2xl max-md:space-y-1s",
+          "flex gap-2 md:gap-6 p-12 md:p-4 border bg-white w-full shadow-lg rounded-2xl max-md:space-y-1s",
           className
         )}
       >
@@ -53,7 +53,7 @@ export const HeroSearch = ({ className }) => {
             Categories
           </p>
           <Select value={category} onValueChange={setCategory}>
-            <SelectTrigger className="w-full h-16 rounded-2xl">
+            <SelectTrigger className="h-16 rounded-2xl">
               <SelectValue placeholder="Select Category" />
             </SelectTrigger>
             <SelectContent>

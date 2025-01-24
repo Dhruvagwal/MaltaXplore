@@ -179,7 +179,7 @@ class Weather extends React.Component {
 
   render() {
     return (
-      <div className="lg:relative flex flex-col bg-red-100 rounded-[3rem] lg:w-[26.5vw] h-full lg:h-[560px] p-4 max-lg:space-y-8 top-16">
+      <div className="flex flex-col bg-white rounded-[3rem] lg:w-[26.5vw] h-full lg:h-[560px] p-4 max-lg:space-y-8">
         {this.state.loading ? (
           <Skeleton className={"bg-gray-300 p-4 rounded-[3rem]"} />
         ) : (

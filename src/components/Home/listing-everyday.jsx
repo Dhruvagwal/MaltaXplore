@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 export const ListingEveryDay = ({ className }) => {
     return (
       <Card className={`rounded-full md:w-96 h-16 ${className}`}>
-        <CardContent className="flex items-center justify-center gap-4">
+        <CardContent className="flex items-center justify-center gap-4 p-2">
             <Avatar className="">
               <AvatarImage
                 src={`https://picsum.photos/600/400?random=${0}`}

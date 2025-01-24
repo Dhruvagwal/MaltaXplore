@@ -7,12 +7,15 @@ import { useServicesState } from "@/context/servicesContext";
 import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/supabaseConfig";
+import { getBookingByServiceId } from "@/features/getBookingDetailsByServiceId";
+import { useRouter } from 'next/router'; 
 
 function FavoriteTripComponent({ data, className, likes }) {
+  const router = useRouter(); 
   const { user } = useAuthState();
   const { likeService, unlikeService } = useServicesState();
   const [isLiked, setIsLiked] = useState(false);
-
   useEffect(() => {
     setIsLiked(likes?.some((like) => like.service_id === data.id));
   }, [likes, data.id]);
@@ -30,6 +33,37 @@ function FavoriteTripComponent({ data, className, likes }) {
       console.error("Error handling like/unlike:", error);
     }
   };
+
+  // const [bookingDetails, setBookingDetails] = useState(null);
+  // console.log(bookingDetails);
+  // useEffect(() => {
+  //   const fetchBookingDetails = async () => {
+  //     if (data?.id) {
+  //       try {
+  //         const { data: bookingData, error } = await supabase
+  //           .from("servicebookings")
+  //           .select("*")
+  //           .eq("service_id", data.id)
+  //           .eq("created_by", user.id);
+  //         if (error) {
+  //           console.log("Error fetching booking details:", error.message);
+  //         } else {
+  //           console.log("Fetched booking details:", bookingData);
+  //           setBookingDetails(bookingData);
+  //         }
+  //       } catch (error) {
+  //         console.log("Error:", error.message);
+  //       }
+  //     }
+  //   };
+
+  //   fetchBookingDetails();
+  // }, [data?.id]);
+
+  // const handleViewDetails = (bookingId) => {
+  //   const url = `/booking-details?booking_id=${bookingId}&user_id=${user.id}`;
+  //   router.push(url); // Navigate to the booking details page
+  // };
 
   return (
     <Card className={className}>
@@ -63,8 +97,14 @@ function FavoriteTripComponent({ data, className, likes }) {
           <p className="text-lg font-semibold">${data?.price}</p>
         </div>
         <div className="flex items-center gap-2 text-muted-foreground">
-          <CalendarDays className="w-4 h-4 sm:w-5 sm:h-5" />
-          <p className="font-medium text-base">{data?.duration}</p>
+            <CalendarDays className="w-4 h-4 sm:w-5 sm:h-5" />
+            <p className="font-medium text-base">{data?.duration}</p>
+          {/* <div
+            className="hover:cursor-pointer"
+            onClick={() => handleViewDetails(bookingDetails?.[0]?.id)}
+          >
+            View Details
+          </div> */}
         </div>
       </div>
     </Card>

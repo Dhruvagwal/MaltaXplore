@@ -13,14 +13,14 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-export function DatePicker({ date, setDate }) {
+export function DatePicker({ date, setDate , className}) {
   return (
     <Popover>
       <PopoverTrigger asChild>
         <Button
           variant={"outline"}
           className={cn(
-            "justify-start text-left font-normal w-full",
+            `justify-start text-left font-normal w-full ${className}`,
             !date && "text-muted-foreground"
           )}
         >

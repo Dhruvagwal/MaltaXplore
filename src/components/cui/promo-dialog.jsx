@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { useBooking } from "@/context/bookingContext";
 import { supabase } from "@/supabaseConfig";
 import { useAuthState } from "@/context/ueAuthContext";
+import { MoreOffersComponent } from "./more-promo-code";
 
 const PromCodeDialog = ({ serviceId, setAppliedCode, appliedCode }) => {
   const { user } = useAuthState();

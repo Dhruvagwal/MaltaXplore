@@ -35,7 +35,7 @@ const PaymentDetailsPage = ({
   clientSecret,
   paymentIntentId,
   tourData,
-  finalPrice
+  finalPrice,
 }) => {
   const { session, user } = useAuthState();
 
@@ -54,26 +54,23 @@ const PaymentDetailsPage = ({
     schema: cardSchema,
   });
 
-  const {
-    crud: { writeData },
-  } = useFirebase();
-
-  const { adults, child, totalPrice, date } = useBooking();
-  const { contactDetails, userId } = useContactDetails();
-  const {
-    pickupLocation,
-    city,
-    state,
-    postalCode,
-    addLine1,
-    addLine2,
-  } = useAddress();
+  const { adults, child, totalPrice, date, endDate } = useBooking();
+  const { userId } = useContactDetails();
+  const { pickupLocation, city, state, postalCode, addLine1, addLine2 } =
+    useAddress();
   const [isProcessing, setIsProcessing] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!session || !user || !clientSecret || !stripe || !elements || isProcessing) {
+    if (
+      !session ||
+      !user ||
+      !clientSecret ||
+      !stripe ||
+      !elements ||
+      isProcessing
+    ) {
       console.error("Stripe.js or clientSecret has not loaded yet.");
       return;
     }
@@ -97,6 +94,8 @@ const PaymentDetailsPage = ({
             state,
             postal_code: postalCode,
             country: "india",
+            start_date: date,
+            end_date: endDate,
           },
         ])
         .select();

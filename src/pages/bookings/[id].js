@@ -24,11 +24,13 @@ import {
   LockKeyhole,
   Headphones,
   Phone,
+  Info ,
 } from "lucide-react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import { useServicesState } from "@/context/servicesContext";
 import { useAuthState } from "@/context/ueAuthContext";
+import { HoverCardComponent } from "@/components/cui/hover-card";
 
 const stripePromise = loadStripe(
   "pk_test_51QeatsDk75aWHW4POpFQMr6DEc6Vg8MNxdR0La3Q7QTNKm9ej2fgSYaZhhSpTTf93dav99IkTt6QuINLkfpaZrAI00wF7qXy50"
@@ -39,7 +41,7 @@ const BookingPage = () => {
   const router = useRouter();
   const { id } = router.query;
   const { services } = useServicesState();
-  const { adults, child, totalPrice, discountedPrice, date } = useBooking();
+  const { adults, child, totalPrice, discountedPrice, date , endDate} = useBooking();
 
   const [activeStep, setActiveStep] = useState(0);
   const [clientSecret, setClientSecret] = useState("");
@@ -55,7 +57,7 @@ const BookingPage = () => {
   const finalPrice = discountedPrice
     ? Number(discountedPrice) + taxesAndFees
     : basePrice + taxesAndFees;
-    
+
   useEffect(() => {
     if (activeStep === 1 && totalPrice > 0 && user.email) {
       const fetchClientSecret = async () => {
@@ -157,8 +159,12 @@ const BookingPage = () => {
               <CardContent>
                 <Separator className="" />
                 <div className="flex justify-between items-center text-sm my-4">
-                  <span className="text-muted-foreground">Date</span>
+                  <span className="text-muted-foreground">Start Date</span>
                   <span>{date?.toString()}</span>
+                </div>
+                <div className="flex justify-between items-center text-sm my-4">
+                  <span className="text-muted-foreground">End Date</span>
+                  <span>{endDate?.toString()}</span>
                 </div>
                 <div className="flex justify-between items-center text-sm">
                   <span className="text-muted-foreground">Travellers</span>
@@ -169,7 +175,11 @@ const BookingPage = () => {
                 <Separator className="my-4" />
 
                 <div className="flex justify-center items-center text-base gap-2">
-                  <ClockAlert size={16} /> {tourData?.cancellation_policy}
+                  <HoverCardComponent
+                    title={"Cancellation Policy"}
+                    heading={"Cancellation Policy"}
+                    data={tourData?.cancellation_policy}
+                  />
                 </div>
               </CardContent>
               <CardFooter className="bg-[#E5484D] text-white rounded-b-xl flex flex-col justify-between py-8 font-semibold">
@@ -179,7 +189,7 @@ const BookingPage = () => {
                 </div>
 
                 <div className="flex justify-between items-center w-full mt-2">
-                  <span className="text-white/90">Taxes and Fees</span>
+                  <span className="text-white/90 flex justify-center items-center">Taxes and Fees <HoverCardComponent title={<Info size={16} color="white" />} heading={"Taxes and Fees"} data={"Disclaier: This includes transaction taxes"}/></span>
                   <span className="text-white/90">
                     +${taxesAndFees.toFixed(2)}
                   </span>

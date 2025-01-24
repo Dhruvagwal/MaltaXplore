@@ -44,8 +44,10 @@ export default function App({ Component, pageProps }) {
   useEffect(() => {
     const fetchData = async () => {
       let { data: services, error } = await supabase
-        .from("services")
-        .select("*");
+      .from("services")
+      .select("*")
+      .eq("status", "active")
+      console.log(services)
       setServices(services);
     };
     fetchData();

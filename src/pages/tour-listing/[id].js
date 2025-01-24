@@ -53,11 +53,14 @@ function TourismPage() {
     setTotalPrice,
     date,
     setDate,
+    endDate,
+    setEndDate,
   } = useBooking();
   const [isLiked, setIsLiked] = useState(false);
   const [service, setService] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-
+  console.log("Date", date);
+  console.log("endDate", endDate);
   useEffect(() => {
     const fetchService = async () => {
       setIsLoading(true);
@@ -111,8 +114,22 @@ function TourismPage() {
   }, [user, service]);
 
   const handleDateChange = (selectedDate) => {
-    const formattedDate = new Date(selectedDate).toDateString();
-    setDate(formattedDate);
+    console.log(selectedDate);
+
+    const formattedDate = new Date(selectedDate);
+    const formattedDateString = formattedDate.toISOString().split("T")[0];
+
+    console.log(formattedDateString);
+    setDate(formattedDateString);
+  };
+
+  const handleEndDateChange = (selectedDate) => {
+    console.log(selectedDate);
+
+    const formattedDate = new Date(selectedDate);
+    const formattedDateString = formattedDate.toISOString().split("T")[0];
+
+    setEndDate(formattedDateString);
   };
 
   const handleLikesbutton = async () => {
@@ -504,13 +521,31 @@ function TourismPage() {
                       {isLoading ? (
                         <Skeleton className="h-4 w-[60px]" />
                       ) : (
-                        "Check In"
+                        "Start Date"
                       )}
                     </label>
                     {isLoading ? (
                       <Skeleton className="h-10 w-full" />
                     ) : (
                       <DatePicker date={date} setDate={handleDateChange} />
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-medium mb-1 block">
+                      {isLoading ? (
+                        <Skeleton className="h-4 w-[60px]" />
+                      ) : (
+                        "End Date"
+                      )}
+                    </label>
+                    {isLoading ? (
+                      <Skeleton className="h-10 w-full" />
+                    ) : (
+                      <DatePicker
+                        date={endDate}
+                        setDate={handleEndDateChange}
+                      />
                     )}
                   </div>
 

@@ -22,7 +22,7 @@ export const River = () => {
             experiences on the island.
           </p>
           <div className="flex gap-8">
-            <Button asChild size="lg" className="md:p-8 w-fit">
+            <Button asChild size="lg" className="md:p-6 w-fit">
               <Link href={search}>Explore</Link>
             </Button>
           </div>

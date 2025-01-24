@@ -14,6 +14,7 @@ export const BookingProvider = ({ children }) => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [discountedPrice, setDiscountedPrice] = useState(0);
   const [date, setDate] = useState();
+  const [endDate, setEndDate] = useState();
 
   return (
     <BookingContext.Provider
@@ -28,6 +29,8 @@ export const BookingProvider = ({ children }) => {
         setDate,
         discountedPrice,
         setDiscountedPrice,
+        endDate,
+        setEndDate,
       }}
     >
       {children}

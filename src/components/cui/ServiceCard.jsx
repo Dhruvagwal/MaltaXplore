@@ -52,6 +52,7 @@ export const ServiceCard = ({
             width={400}
             className="rounded-t-xl w-full"
             src={`https://picsum.photos/500/400?random=${index}`}
+            // src={JSON.parse(data.images?.[0]??"{}")?.url??`https://picsum.photos/500/400?random=${index}`}
           />
         )}
         <div className="absolute z-10 top-4 right-4 cursor-pointer transition-transform duration-200 transform hover:scale-110">

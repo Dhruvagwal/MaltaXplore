@@ -10,6 +10,7 @@ import { useContactDetails } from "@/context/contactDetailsContext";
 import { useBooking } from "@/context/bookingContext";
 import { supabase } from "@/supabaseConfig";
 import { useRouter } from "next/router";
+import { MoreOffersComponent } from "../cui/more-promo-code";
 
 const ContactDetailsPage = ({ nextStep }) => {
   const router = useRouter();
@@ -66,7 +67,7 @@ const ContactDetailsPage = ({ nextStep }) => {
 
         if (existingUser) {
           console.log(`User already exists in users table: ${email}`);
-          userIds.push(existingUser.id); 
+          userIds.push(existingUser.id);
         } else {
           const { data: insertedUser, error: insertError } = await supabase
             .from("users")
@@ -82,7 +83,7 @@ const ContactDetailsPage = ({ nextStep }) => {
           if (insertError)
             throw new Error(`Error inserting user into users table: ${email}`);
           console.log(`User inserted into users table: ${email}`);
-          userIds.push(insertedUser.id); 
+          userIds.push(insertedUser.id);
         }
         setUserId(userIds);
       }
@@ -172,7 +173,14 @@ const ContactDetailsPage = ({ nextStep }) => {
           ))}
 
           <div className="my-12">
-            <p className="text-2xl font-semibold">Promo Code</p>
+            <p className="text-2xl font-semibold flex gap-2 items-center">
+              Promo Code{" "}
+              <MoreOffersComponent
+                serviceId={id}
+                setAppliedCode={setAppliedCode}
+                appliedCode={appliedCode}
+              />
+            </p>
             <Separator className="my-4" />
             <PromCodeDialog
               serviceId={id}

@@ -66,6 +66,8 @@ const BookingDetails = () => {
     }
   }, [booking_id]);
 
+  console.log(service);
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col py-8">
       {/* Hero Section */}
@@ -126,6 +128,9 @@ const BookingDetails = () => {
               </h2>
               <p className="text-lg text-gray-500 mt-2 text-center">
                 {service?.description}
+              </p>
+              <p className="text-lg text-gray-500 mt-2 text-center">
+                {service?.start_date} to {service?.end_date}
               </p>
               <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {[

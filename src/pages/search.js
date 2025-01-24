@@ -59,7 +59,7 @@ function ExploreCategories() {
   const [checkedServiceTypeIds, setCheckedServiceTypeIds] = useState([]);
   const [serviceSubType, setServiceSubType] = useState([]);
 
-
+console.log(services)
   const range = watch("range");
   const min = watch("min");
   const max = watch("max");
@@ -110,7 +110,7 @@ function ExploreCategories() {
   useEffect(() => {
     const fetchFilteredData = async () => {
       try {
-        let queryBuilder = supabase.from("services").select("*");
+        let queryBuilder = supabase.from("services").select("*").eq("status", "active");
         if (category) {
           queryBuilder = queryBuilder.eq("service_type", category);
         }
@@ -157,6 +157,7 @@ function ExploreCategories() {
 
   // Split the data into chunks (4 items per page)
   const chunkedData = chunkArray(filteredData, SIZE);
+  console.log("filteredData", filteredData)
 
   useEffect(() => {
     if (currentPage >= chunkedData.length) {

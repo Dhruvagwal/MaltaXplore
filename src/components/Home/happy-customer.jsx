@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 export const HappyCustomers = ({ className }) => {
     return (
       <Card className={`rounded-full md:w-96 h-16 ${className}`}>
-        <CardContent className="flex items-center justify-center gap-4">
+        <CardContent className="flex items-center justify-center gap-4 p-3">
           {/* Profile Images */}
           <div className="flex -space-x-4">
             {Array.from({ length: 6 }).map((_, index) => (

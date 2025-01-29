@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import UserWrapper from "./_app";
-import FavoriteEventComponent from "@/components/cui/favorite-trip";
-import { getPastServices } from "@/features/dashboard/getPastServices";
 import { useAuthState } from "@/context/ueAuthContext";
 import { getServices } from "@/features/getServices";
 import { getUserLikes } from "@/features/getUserLikes";
+import BookingCardComponentNew from "@/components/cui/booking-card-new";
+import { getPastUpcomingBookings } from "@/features/dashboard/getPastUpcomingBookings.js";
 
 const PastBooking = () => {
   const { user } = useAuthState();
@@ -15,8 +15,8 @@ const PastBooking = () => {
     const fetchedBookings = async () => {
       try {
         if (user) {
-          const pastServices = await getPastServices(user?.id);
-          setPastBookings(pastServices);
+          const pastServices = await getPastUpcomingBookings(user?.id);
+          setPastBookings(pastServices.pastBookings);
         }
       } catch (error) {
         console.error("Error fetching data:", error.message);
@@ -38,6 +38,9 @@ const PastBooking = () => {
     }
   }, [user]);
 
+  // console.log("pastBookings", pastBookings);
+
+
   return (
     <UserWrapper>
       <div>
@@ -46,7 +49,12 @@ const PastBooking = () => {
         <br />
         <div className="flex flex-wrap gap-4 max-md:justify-center">
           {pastBookings?.map((item, index) => (
-            <FavoriteEventComponent key={index} data={item} likes={likes} />
+            <BookingCardComponentNew
+              key={index}
+              data={item?.services}
+              likes={likes}
+              bookingsData={item?.servicebookings}
+            />
           ))}
         </div>
       </div>

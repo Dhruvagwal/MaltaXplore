@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import UserWrapper from "./_app";
-import FavoriteEventComponent from "@/components/cui/favorite-trip";
-import { supabase } from "@/supabaseConfig";
-import { getUpcomingServices } from "@/features/dashboard/getUpcomingServices";
+import { getPastUpcomingBookings } from "@/features/dashboard/getPastUpcomingBookings.js";
 import { useAuthState } from "@/context/ueAuthContext";
 import { getServices } from "@/features/getServices";
 import { getUserLikes } from "@/features/getUserLikes";
+import BookingCardComponent from "@/components/cui/booking-card";
+import BookingCardComponentNew from "@/components/cui/booking-card-new";
 
 const UpcomingBooking = () => {
   const { user } = useAuthState();
@@ -16,8 +16,10 @@ const UpcomingBooking = () => {
     const fetchedBookings = async () => {
       try {
         if (user) {
-          const upcomingServices = await getUpcomingServices(user?.id);
-          setUpcomingBookings(upcomingServices);
+          const upcomingServices = await getPastUpcomingBookings(user?.id);
+          console.log("upcomingServices", upcomingServices.upcomingBookings)
+
+          setUpcomingBookings(upcomingServices.upcomingBookings);
         }
       } catch (error) {
         console.error("Error fetching data:", error.message);
@@ -41,6 +43,7 @@ const UpcomingBooking = () => {
     }
   }, [user]);
 
+
   return (
     <UserWrapper>
       <div>
@@ -49,11 +52,11 @@ const UpcomingBooking = () => {
         <br />
         <div className="flex flex-wrap gap-4 max-md:justify-center">
           {upcomingBookings?.map((item, index) => (
-            <FavoriteEventComponent
+            <BookingCardComponentNew
               key={index}
-              data={item}
-              className="330px"
+              data={item?.services}
               likes={likes}
+              bookingsData={item?.servicebookings}
             />
           ))}
         </div>

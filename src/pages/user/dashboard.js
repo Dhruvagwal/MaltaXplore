@@ -6,8 +6,7 @@ import BookingTableComponent from "@/components/cui/bookings-table";
 import BoookingsCard from "@/components/cui/bookings-card";
 import { useAuthState } from "@/context/ueAuthContext";
 import UserWrapper from "./_app";
-import { getUpcomingServices } from "@/features/dashboard/getUpcomingServices";
-import { getPastServices } from "@/features/dashboard/getPastServices";
+import { getPastUpcomingBookings } from "@/features/dashboard/getPastUpcomingBookings.js";
 import { getServices } from "@/features/getServices";
 import { getUserLikes } from "@/features/getUserLikes";
 
@@ -17,16 +16,20 @@ const Dashboard = () => {
   const [likes, setLikes] = useState();
   const [pastBookings, setPastBookings] = useState([]);
   const [upcomingBookings, setUpcomingBookings] = useState([]);
+  const [cancelledBookings, setCancelledBookings] = useState([]);
+
+  console.log("pastBookings", pastBookings);
+  console.log("upcomingBookings", upcomingBookings);
 
   useEffect(() => {
     const fetchedBookings = async () => {
       try {
         if (user) {
-          const upcomingServices = await getUpcomingServices(user?.id);
-          const pastServices = await getPastServices(user?.id);
-
-          setUpcomingBookings(upcomingServices);
-          setPastBookings(pastServices);
+          const upcomingServices = await getPastUpcomingBookings(user?.id);
+          setUpcomingBookings(upcomingServices.upcomingBookings);
+          setPastBookings(upcomingServices.pastBookings);
+          setCancelledBookings(upcomingServices.cancelledBookings);
+          setPastBookings(upcomingServices.pastBookings);
         }
       } catch (error) {
         console.error("Error fetching data:", error.message);
@@ -70,18 +73,27 @@ const Dashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {/* Rectangle Card */}
           <BoookingsCard
-            count={pastBookings?.length + upcomingBookings?.length}
+            count={
+              pastBookings?.filter((item) => item?.service !== null).length +
+              upcomingBookings?.filter((item) => item?.service !== null).length +
+              cancelledBookings?.filter((item) => item?.service !== null).length
+            }
             heading={"Total Bookings"}
           />
           <BoookingsCard
-            count={upcomingBookings?.length}
+            count={
+              upcomingBookings?.filter((item) => item?.service !== null).length
+            }
             heading={"Upcoming Bookings"}
           />
           <BoookingsCard
-            count={pastBookings?.length}
+            count={
+              pastBookings?.filter((item) => item?.service !== null).length
+            }
             heading={"Past Bookings"}
           />
         </div>
+
         <div className="mt-16">
           <h1 className="text-2xl md:text-3xl font-semibold">
             Upcoming & Past Booking

@@ -31,6 +31,11 @@ const items = [
     icon: Home,
   },
   {
+    title: "Favorite Trip",
+    url: "/user/favorite-trip",
+    icon: Search,
+  },
+  {
     title: "Upcoming Bookings",
     url: "/user/upcoming-bookings",
     icon: Inbox,
@@ -41,9 +46,9 @@ const items = [
     icon: Calendar,
   },
   {
-    title: "Favorite Trip",
-    url: "/user/favorite-trip",
-    icon: Search,
+    title: "Cancelled Bookings",
+    url: "/user/cancelled-bookings",
+    icon: Calendar,
   },
   {
     title: "Settings",

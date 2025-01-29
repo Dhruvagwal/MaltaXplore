@@ -24,13 +24,14 @@ import {
   LockKeyhole,
   Headphones,
   Phone,
-  Info ,
+  Info,
 } from "lucide-react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import { useServicesState } from "@/context/servicesContext";
 import { useAuthState } from "@/context/ueAuthContext";
 import { HoverCardComponent } from "@/components/cui/hover-card";
+import { getTaxRate } from "@/features/getTaxAndRate";
 
 const stripePromise = loadStripe(
   "pk_test_51QeatsDk75aWHW4POpFQMr6DEc6Vg8MNxdR0La3Q7QTNKm9ej2fgSYaZhhSpTTf93dav99IkTt6QuINLkfpaZrAI00wF7qXy50"
@@ -41,14 +42,30 @@ const BookingPage = () => {
   const router = useRouter();
   const { id } = router.query;
   const { services } = useServicesState();
-  const { adults, child, totalPrice, discountedPrice, date , endDate} = useBooking();
+  const { adults, child, totalPrice, discountedPrice, date, endDate } =
+    useBooking();
 
   const [activeStep, setActiveStep] = useState(0);
   const [clientSecret, setClientSecret] = useState("");
   const [paymentIntentId, setPaymentIntentId] = useState("");
-
+  const [taxRate, setTaxRate] = useState(0);
   const tourData = services.find((service) => service.id === id);
-  const taxRate = 0.1; // Example: 10% tax
+console.log("tourData", tourData);
+  useEffect(() => {
+    const fetchTaxRate = async () => {
+      try {
+        const taxAndRate = await getTaxRate();
+        if (taxAndRate && taxAndRate.length > 0) {
+          setTaxRate(taxAndRate[0].tax_rate / 100);
+        }
+        console.log("Fetched tax rate:", taxAndRate);
+      } catch (error) {
+        console.error("Error fetching tax rate:", error);
+      }
+    };
+
+    fetchTaxRate();
+  }, []);
   const basePrice = Number(totalPrice);
   const taxesAndFees = basePrice * taxRate;
   const discountAmount = discountedPrice
@@ -127,6 +144,8 @@ const BookingPage = () => {
                   paymentIntentId={paymentIntentId}
                   tourData={tourData}
                   finalPrice={finalPrice.toFixed(2)}
+                  taxRate={taxRate}
+                  discountAmount={discountAmount}
                 />
               </Elements>
             )}
@@ -142,7 +161,7 @@ const BookingPage = () => {
                     <CardDescription className="py-2">
                       by{" "}
                       <span className="underline">
-                        {tourData?.createdBy?.name}
+                        {tourData?.supplieraccess?.name}
                       </span>{" "}
                     </CardDescription>
                     <CardDescription className="pt-2 text-base">
@@ -189,7 +208,14 @@ const BookingPage = () => {
                 </div>
 
                 <div className="flex justify-between items-center w-full mt-2">
-                  <span className="text-white/90 flex justify-center items-center">Taxes and Fees <HoverCardComponent title={<Info size={16} color="white" />} heading={"Taxes and Fees"} data={"Disclaier: This includes transaction taxes"}/></span>
+                  <span className="text-white/90 flex justify-center items-center">
+                    Taxes and Fees{" "}
+                    <HoverCardComponent
+                      title={<Info size={16} color="white" />}
+                      heading={"Taxes and Fees"}
+                      data={"Disclaier: This includes transaction taxes"}
+                    />
+                  </span>
                   <span className="text-white/90">
                     +${taxesAndFees.toFixed(2)}
                   </span>

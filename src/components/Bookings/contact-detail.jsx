@@ -164,7 +164,7 @@ const ContactDetailsPage = ({ nextStep }) => {
                     id={input.id}
                     title={input.label}
                     placeholder={input.placeholder}
-                    required
+                    // required
                     className="h-12"
                   />
                 ))}

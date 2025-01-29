@@ -86,7 +86,8 @@ export default function ReviewsPage({ serviceId }) {
       : 0;
 
   return (
-    <div className="min-h-screen max-w-6xl mx-auto px-0 sm:px-0 lg:px-0 py-8 sm:py-0">
+    <div className="max-w-6xl mx-auto px-0 sm:px-0 lg:px-0 py-8 sm:py-0">
+    {/* <div className="min-h-screen max-w-6xl mx-auto px-0 sm:px-0 lg:px-0 py-8 sm:py-0"> */}
       {/* <h1 className="text-3xl sm:text-4xl font-bold text-center mb-8 sm:mb-12">Reviews & Testimonials</h1> */}
 
       {/* Rating Overview */}
@@ -191,7 +192,7 @@ export default function ReviewsPage({ serviceId }) {
       </div>
 
       {/* Write Review Section */}
-      <div className="w-full md:w-1/2 mt-16">
+      {/* <div className="w-full md:w-1/2 mt-16">
         <h2 className="text-3xl font-bold mb-8">Write a review</h2>
         <Card>
           <CardContent className="p-6">
@@ -240,7 +241,7 @@ export default function ReviewsPage({ serviceId }) {
             </FormWrapper>
           </CardContent>
         </Card>
-      </div>
+      </div> */}
     </div>
   );
 }

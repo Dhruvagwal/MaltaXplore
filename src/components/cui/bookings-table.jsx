@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/table";
 
 const BookingTableComponent = ({ heading, data }) => {
-
   return (
     <Card className="p-4">
       <h2 className="text-xl text-center font-semibold text-muted-foreground mb-4">
@@ -21,37 +20,39 @@ const BookingTableComponent = ({ heading, data }) => {
         <TableHeader>
           <TableRow>
             <TableHead className="">Name</TableHead>
-            <TableHead className="">Date</TableHead>
+            <TableHead className="">Start Date</TableHead>
             <TableHead className="">Destination</TableHead>
             <TableHead className="text-center">Status</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data?.map((item) => (
-            <TableRow>
-              <TableCell className="font-medium">
-                {item?.name}
-              </TableCell>
-              <TableCell className="font-medium">
-                {item?.date}
-              </TableCell>
-              <TableCell>{item?.location}</TableCell>
-              {/* <TableCell className="text-right">
+          {data
+            ?.filter((item) => item?.services !== null)
+            .map((item, index) => (
+              <TableRow>
+                <TableCell className="font-medium">
+                  {item?.services?.name}
+                </TableCell>
+                <TableCell className="font-medium">
+                  {item?.servicebookings?.start_date}
+                </TableCell>
+                <TableCell>{item?.services?.location}</TableCell>
+                {/* <TableCell className="text-right">
       {!item?.service?.status ? (
         <span className="text-green-500">Done</span>
       ) : (
         <span className="text-primary">Upcoming</span>
       )}
     </TableCell> */}
-              <TableCell className="text-center">
-                {heading === "Past Bookings" ? (
-                  <span className="text-green-500">Done</span>
-                ) : (
-                  <span className="text-primary">Upcoming</span>
-                )}
-              </TableCell>
-            </TableRow>
-          ))}
+                <TableCell className="text-center">
+                  {heading === "Past Bookings" ? (
+                    <span className="text-green-500">Done</span>
+                  ) : (
+                    <span className="text-primary">Upcoming</span>
+                  )}
+                </TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </Card>

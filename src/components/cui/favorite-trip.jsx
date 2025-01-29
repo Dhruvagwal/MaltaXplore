@@ -9,16 +9,16 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/supabaseConfig";
 import { getBookingByServiceId } from "@/features/getBookingDetailsByServiceId";
-import { useRouter } from 'next/router'; 
+import { useRouter } from "next/router";
 
 function FavoriteTripComponent({ data, className, likes }) {
-  const router = useRouter(); 
+  const router = useRouter();
   const { user } = useAuthState();
   const { likeService, unlikeService } = useServicesState();
   const [isLiked, setIsLiked] = useState(false);
   useEffect(() => {
-    setIsLiked(likes?.some((like) => like.service_id === data.id));
-  }, [likes, data.id]);
+    setIsLiked(likes?.some((like) => like.service_id === data?.id));
+  }, [likes, data?.id]);
 
   const handleLikesbutton = async () => {
     try {
@@ -34,36 +34,7 @@ function FavoriteTripComponent({ data, className, likes }) {
     }
   };
 
-  // const [bookingDetails, setBookingDetails] = useState(null);
-  // console.log(bookingDetails);
-  // useEffect(() => {
-  //   const fetchBookingDetails = async () => {
-  //     if (data?.id) {
-  //       try {
-  //         const { data: bookingData, error } = await supabase
-  //           .from("servicebookings")
-  //           .select("*")
-  //           .eq("service_id", data.id)
-  //           .eq("created_by", user.id);
-  //         if (error) {
-  //           console.log("Error fetching booking details:", error.message);
-  //         } else {
-  //           console.log("Fetched booking details:", bookingData);
-  //           setBookingDetails(bookingData);
-  //         }
-  //       } catch (error) {
-  //         console.log("Error:", error.message);
-  //       }
-  //     }
-  //   };
-
-  //   fetchBookingDetails();
-  // }, [data?.id]);
-
-  // const handleViewDetails = (bookingId) => {
-  //   const url = `/booking-details?booking_id=${bookingId}&user_id=${user.id}`;
-  //   router.push(url); // Navigate to the booking details page
-  // };
+  if (!data) return null;
 
   return (
     <Card className={className}>
@@ -73,7 +44,7 @@ function FavoriteTripComponent({ data, className, likes }) {
           height={500}
           className=" rounded-t-xl h-64 object-cover w-[350px]"
           src={"/adventure.jpg"}
-          alt={data.title}
+          alt={data?.title}
           loading="lazy"
         />
         <div className="absolute z-10 top-4 right-4 cursor-pointer transition-transform duration-200 transform hover:scale-110">
@@ -97,14 +68,8 @@ function FavoriteTripComponent({ data, className, likes }) {
           <p className="text-lg font-semibold">${data?.price}</p>
         </div>
         <div className="flex items-center gap-2 text-muted-foreground">
-            <CalendarDays className="w-4 h-4 sm:w-5 sm:h-5" />
-            <p className="font-medium text-base">{data?.duration}</p>
-          {/* <div
-            className="hover:cursor-pointer"
-            onClick={() => handleViewDetails(bookingDetails?.[0]?.id)}
-          >
-            View Details
-          </div> */}
+          <CalendarDays className="w-4 h-4 sm:w-5 sm:h-5" />
+          <p className="font-medium text-base">{data?.duration}</p>
         </div>
       </div>
     </Card>

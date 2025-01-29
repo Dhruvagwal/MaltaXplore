@@ -34,25 +34,28 @@ export function MoreOffersComponent({
   const [promoCodes, setPromoCodes] = useState([]);
   const { totalPrice, setDiscountedPrice, discountedPrice } = useBooking();
   const originalPrice = totalPrice;
+  console.log("promocodes", promoCodes);
 
-  console.log(promoCodes);
   useEffect(() => {
     const fetchCodes = async () => {
       if (!originalPrice) return;
-      let { data: promocodes, error } = await supabase
-        .from("promocodes")
-        .select("*")
+      let { data, error } = await supabase
+        .from("service_promocodes")
+        .select("promocodes(*)")
         .eq("service_id", serviceId);
+
       if (error) {
         console.error("Error fetching promo codes:", error);
-      } else {
-        // Filter promo codes where originalPrice is greater than min_ticket_price
-        const applicableCodes = promocodes.filter(
-          (code) =>
-            !code.min_ticket_price || originalPrice >= code.min_ticket_price
-        );
-        setPromoCodes(applicableCodes);
+        return;
       }
+
+      const extractedPromoCodes = data.map((item) => item.promocodes);
+
+      const applicableCodes = extractedPromoCodes.filter(
+        (code) =>
+          !code.min_ticket_price || originalPrice >= code.min_ticket_price
+      );
+      setPromoCodes(applicableCodes);
     };
 
     fetchCodes();

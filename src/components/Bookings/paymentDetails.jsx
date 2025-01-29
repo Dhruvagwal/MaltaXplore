@@ -36,6 +36,8 @@ const PaymentDetailsPage = ({
   paymentIntentId,
   tourData,
   finalPrice,
+  taxRate,
+  discountAmount,
 }) => {
   const { session, user } = useAuthState();
 
@@ -85,6 +87,7 @@ const PaymentDetailsPage = ({
             service_id: id,
             supplier_id: tourData?.supplier_access_id,
             payment_status: false,
+            status: "failed",
             payment_intent_id: paymentIntentId,
             created_by: user?.id,
             pickup_location: pickupLocation,
@@ -96,46 +99,51 @@ const PaymentDetailsPage = ({
             country: "india",
             start_date: date,
             end_date: endDate,
+            service_base_price: totalPrice,
+            fees: taxRate,
+            discount_amount: discountAmount,
           },
         ])
         .select();
 
-      if (response.status === 201) {
-        const bookingId = response?.data[0]?.id;
+        console.log("response", response)
 
-        const serviceBookingPersons = [
-          ...userId.map((user) => ({
-            user_id: user,
-            service_id: id,
-            supplier_id: tourData?.supplier_access_id,
-            booking_id: bookingId,
-          })),
-          {
-            user_id: user?.id,
-            service_id: id,
-            supplier_id: tourData?.supplier_access_id,
-            booking_id: bookingId,
-          },
-        ];
+      // if (response.status === 201) {
+      //   const bookingId = response?.data[0]?.id;
 
-        const res = await supabase
-          .from("servicebookingperson")
-          .insert(serviceBookingPersons)
-          .select();
+      //   const serviceBookingPersons = [
+      //     ...userId.map((user) => ({
+      //       user_id: user,
+      //       service_id: id,
+      //       supplier_id: tourData?.supplier_access_id,
+      //       booking_id: bookingId,
+      //     })),
+      //     {
+      //       user_id: user?.id,
+      //       service_id: id,
+      //       supplier_id: tourData?.supplier_access_id,
+      //       booking_id: bookingId,
+      //     },
+      //   ];
 
-        console.log("Service Booking Persons Added:", res);
+      //   const res = await supabase
+      //     .from("servicebookingperson")
+      //     .insert(serviceBookingPersons)
+      //     .select();
 
-        const { error } = await stripe.confirmPayment({
-          elements,
-          confirmParams: {
-            return_url: `http://localhost:3000/complete?bookingId=${bookingId}`,
-          },
-        });
+      //   console.log("Service Booking Persons Added:", res);
 
-        if (error) {
-          console.log(error.message);
-        }
-      }
+      //   const { error } = await stripe.confirmPayment({
+      //     elements,
+      //     confirmParams: {
+      //       return_url: `http://localhost:3000/complete?bookingId=${bookingId}`,
+      //     },
+      //   });
+
+      //   if (error) {
+      //     console.log(error.message);
+      //   }
+      // }
     } catch (error) {
       console.error(error?.message || "Something went wrong");
     } finally {

@@ -217,3 +217,7 @@ export const filtersSchema = z.object({
 
   ratings: z.array(z.number().int().min(1).max(5)).optional(),
 });
+
+export const cancelBookingSchema = z.object({
+  message: z.string().min(1, "Message cannot be empty"),
+});

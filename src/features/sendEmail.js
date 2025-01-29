@@ -26,8 +26,8 @@ export const sendEmail = async (paymentDetails) => {
 };
 
 export const sendEmailToBookingPersons = async (templateDetails) => {
-  const bookingLink = `http://localhost:3000/booking-details?booking_id=${templateDetails?.Booking_id}&user_id=${templateDetails.id}`;
-console.log("templateDetails", templateDetails)
+  console.log("templateDetails", templateDetails)
+  const bookingLink = `${window.location.origin}/booking-details?booking_id=${templateDetails?.Booking_id}`;
   try {
     const templateParams = {
       user_email: templateDetails.email,

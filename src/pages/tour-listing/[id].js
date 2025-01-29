@@ -59,8 +59,7 @@ function TourismPage() {
   const [isLiked, setIsLiked] = useState(false);
   const [service, setService] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  console.log("Date", date);
-  console.log("endDate", endDate);
+
   useEffect(() => {
     const fetchService = async () => {
       setIsLoading(true);
@@ -114,18 +113,13 @@ function TourismPage() {
   }, [user, service]);
 
   const handleDateChange = (selectedDate) => {
-    console.log(selectedDate);
-
     const formattedDate = new Date(selectedDate);
     const formattedDateString = formattedDate.toISOString().split("T")[0];
 
-    console.log(formattedDateString);
     setDate(formattedDateString);
   };
 
   const handleEndDateChange = (selectedDate) => {
-    console.log(selectedDate);
-
     const formattedDate = new Date(selectedDate);
     const formattedDateString = formattedDate.toISOString().split("T")[0];
 
@@ -194,61 +188,94 @@ function TourismPage() {
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-3 md:gap-4 mb-4 md:mb-6">
-          {/* Large main image */}
-          <div className="md:col-span-2 relative group overflow-hidden rounded-2xl h-full">
-            {isLoading ? (
-              <Skeleton className="w-full h-[300px] sm:h-[350px] md:h-full" />
-            ) : (
-              <>
-                <img
-                  src={"/hero-1.jpg"}
-                  alt="Malta Ancient Ruins"
-                  className="w-full h-[300px] sm:h-[350px] md:h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-black/20" />
-              </>
-            )}
-          </div>
+          {service?.images?.map((image, index) => {
+            const parsedImage = JSON.parse(image);
+            {
+              /* Large main image */
+            }
+            if (index === 0) {
+              // Large main image (first image)
+              return (
+                <div
+                  key={index}
+                  className="md:col-span-2 relative group overflow-hidden rounded-2xl h-full"
+                >
+                  {isLoading ? (
+                    <Skeleton className="w-full h-[300px] sm:h-[350px] md:h-full" />
+                  ) : (
+                    <>
+                      <img
+                        src={parsedImage.url}
+                        alt={parsedImage.name}
+                        className="w-full h-[300px] sm:h-[350px] md:h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-black/20" />
+                    </>
+                  )}
+                </div>
+              );
+            }
+            if (index === 1) {
+              // Large main image (first image)
+              return (
+                <div
+                  key={index}
+                  className="relative group overflow-hidden rounded-2xl"
+                >
+                  {isLoading ? (
+                    <Skeleton className="w-full h-[140px] sm:h-[165px] md:h-full" />
+                  ) : (
+                    <>
+                      <img
+                        src={parsedImage.url}
+                        alt="Malta City"
+                        className="w-full h-[140px] sm:h-[165px] md:h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-black/20" />
+                    </>
+                  )}
+                </div>
+              );
+            }
 
-          {/* Right side images */}
-          <div className="relative group overflow-hidden rounded-2xl">
-            {isLoading ? (
-              <Skeleton className="w-full h-[140px] sm:h-[165px] md:h-full" />
-            ) : (
-              <>
-                <img
-                  src={"/hero-2.png"}
-                  alt="Malta City"
-                  className="w-full h-[140px] sm:h-[165px] md:h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-black/20" />
-              </>
-            )}
-          </div>
-          <div className="grid grid-rows-2 gap-3 md:gap-4">
-            <div className="relative group overflow-hidden rounded-2xl">
-              {isLoading ? (
-                <Skeleton className="w-full h-[140px] sm:h-[165px] md:h-full" />
-              ) : (
-                <>
-                  <img
-                    src={"/hero-3.png"}
-                    alt="Malta Coast"
-                    className="w-full h-[140px] sm:h-[165px] md:h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-black/20" />
-                </>
-              )}
-            </div>
-            <div className="relative group overflow-hidden rounded-2xl">
-              <img
-                src={"/hero-4.jpg"}
-                alt="Malta Architecture"
-                className="w-full h-[140px] sm:h-[165px] md:h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-black/20" />
-            </div>
-          </div>
+            {
+              /* Right side images */
+            }
+
+            if (index === 2) {
+              return (
+                <div
+                  key="right-images"
+                  className="grid grid-rows-2 gap-3 md:gap-4 h-full"
+                >
+                  {[2, 3].map((i) => {
+                    const img = JSON.parse(service?.images[i] || "{}"); // Handle possible undefined
+                    return (
+                      <div
+                        key={i}
+                        className="relative group overflow-hidden rounded-2xl"
+                      >
+                        {isLoading ? (
+                          <Skeleton className="w-full h-[140px] sm:h-[165px] md:h-full" />
+                        ) : (
+                          <>
+                            <img
+                              src={img.url}
+                              alt={img.name}
+                              className="w-full h-[140px] sm:h-[165px] md:h-full object-cover"
+                            />
+                            <div className="absolute inset-0 bg-black/20" />
+                          </>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            }
+
+            return null; // Skip rendering for any additional images
+          })}
         </div>
 
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">

@@ -3,16 +3,36 @@ import { useRouter } from "next/router";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { DotFilledIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { supabase } from "@/supabaseConfig";
+import { useAuthState } from "@/context/ueAuthContext";
+import { getUserFromDatabase } from "@/features/getUser";
+import { CancelBookingDialog } from "@/components/cui/cancel-booking-dialog";
 
 const BookingDetails = () => {
   const router = useRouter();
-  const { booking_id, user_id } = router.query;
+  const { booking_id } = router.query;
+  const { user, setUser, setSession } = useAuthState();
   const [users, setUsers] = useState([]);
   const [service, setService] = useState(null);
   const [bookingDetails, setBookingDetails] = useState(null);
-  console.log(bookingDetails);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const { data, error } = await supabase.auth.getUser();
+
+      if (error) {
+        console.error("Error fetching user data:", error);
+        return;
+      }
+      const user = await getUserFromDatabase(data?.user.id);
+      setUser(user);
+      setSession(data);
+    };
+
+    fetchUserData();
+  }, []);
+
   useEffect(() => {
     if (!booking_id) return;
 
@@ -66,7 +86,7 @@ const BookingDetails = () => {
     }
   }, [booking_id]);
 
-  console.log(service);
+  
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col py-8">
@@ -76,8 +96,12 @@ const BookingDetails = () => {
         <div className="md:w-[70%] space-y-8">
           {/* Booking Details */}
           <Card>
-            <CardHeader className="text-2xl font-bold text-gray-800">
-              Booking Details
+            <CardHeader className="text-2xl font-bold text-gray-800 flex justify-between items-center">
+              <span>Booking Details</span>
+
+              {bookingDetails?.status === "cancelled" && (
+                <span className="text-sm text-red-500 italic">Cancelled</span>
+              )}
             </CardHeader>
             <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {[
@@ -226,28 +250,76 @@ const BookingDetails = () => {
           </Card>
         </div>
 
-        {/* Left Sidebar */}
-        <Card className="md:w-[30%] flex-shrink-0 h-fit">
-          <div className="relative">
-            <Image
-              height={500}
-              width={400}
-              className="rounded-t-xl w-full object-cover"
-              src={`https://picsum.photos/500/400?random=${1}`}
-              alt="Service Image"
-            />
-            <div className="backdrop-blur-sm bg-white/80 absolute bottom-4 right-4 rounded-full p-2 px-4 flex items-center text-xs shadow-md">
-              <DotFilledIcon height={20} width={20} className="text-red-400" />
-              <span className="ml-2">{service?.name} & More Info</span>
+        <div className="md:w-[30%] ">
+          {/* Left Sidebar */}
+          <Card className="flex-shrink-0 h-fit">
+            <div className="relative">
+              <Image
+                height={500}
+                width={400}
+                className="rounded-t-xl w-full object-cover"
+                src={`https://picsum.photos/500/400?random=${1}`}
+                alt="Service Image"
+              />
+              <div className="backdrop-blur-sm bg-white/80 absolute bottom-4 right-4 rounded-full p-2 px-4 flex items-center text-xs shadow-md">
+                <DotFilledIcon
+                  height={20}
+                  width={20}
+                  className="text-red-400"
+                />
+                <span className="ml-2">{service?.name} & More Info</span>
+              </div>
             </div>
-          </div>
-          <CardContent className="p-6">
-            <h2 className="text-xl font-semibold text-gray-800">
-              {service?.name}
-            </h2>
-            <p className="text-gray-600 mt-4">{service?.description}</p>
-          </CardContent>
-        </Card>
+            <CardContent className="p-6">
+              <h2 className="text-xl font-semibold text-gray-800">
+                {service?.name}
+              </h2>
+              <p className="text-gray-600 mt-4">{service?.description}</p>
+            </CardContent>
+          </Card>
+
+          {/* Cancel Booking Card */}
+          <Card className="flex-shrink-0 h-fit mt-8">
+            <CardContent className="p-6">
+              <h2 className="text-xl font-semibold text-gray-800">
+                Cancel Booking
+              </h2>
+              <p className="text-gray-600 mt-4">
+                Are you sure you want to cancel your booking? Please consider
+                the following points:
+              </p>
+              <ul className="mt-4 text-gray-600 list-disc pl-6">
+                <li>
+                  Once canceled, you may lose your reservation and the
+                  availability of the service.
+                </li>
+                <li>
+                  Cancellation fees may apply depending on the service
+                  provider's policies.
+                </li>
+                <li>
+                  Ensure you check for any applicable refunds or credits before
+                  proceeding.
+                </li>
+                <li>
+                  If you cancel, you might not be able to rebook at the same
+                  time slot.
+                </li>
+                <li>
+                  Cancellation may affect any special offers or discounts you
+                  received.
+                </li>
+              </ul>
+              {bookingDetails?.status !== "cancelled" && (
+                <div className="mt-6 w-full flex justify-center">
+                  <CancelBookingDialog
+                    bookingDetails={bookingDetails}
+                  />
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
       </section>
     </div>
   );

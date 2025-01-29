@@ -44,10 +44,10 @@ export default function App({ Component, pageProps }) {
   useEffect(() => {
     const fetchData = async () => {
       let { data: services, error } = await supabase
-      .from("services")
-      .select("*")
-      .eq("status", "active")
-      console.log(services)
+        .from("services")
+        .select("*, supplieraccess(*)")
+        .eq("status", "active");
+      console.log(services);
       setServices(services);
     };
     fetchData();
@@ -79,7 +79,9 @@ export default function App({ Component, pageProps }) {
     fetchUserData();
   }, []);
 
-  const isDashboard = currentPath.split("/")[1] !== "user" && currentPath.split("/")[1] !== "admin";
+  const isDashboard =
+    currentPath.split("/")[1] !== "user" &&
+    currentPath.split("/")[1] !== "admin";
 
   return (
     <QueryClientProvider client={queryClient}>

@@ -104,7 +104,7 @@ const CompletePage = () => {
       if (paymentDetails?.status === "succeeded" && paymentDetails) {
         const { data, error } = await supabase
           .from("servicebookings")
-          .update({ payment_status: true })
+          .update({ payment_status: true, status: "confirmed" })
           .eq("payment_intent_id", paymentDetails.id);
 
         if (error) {
@@ -136,6 +136,7 @@ const CompletePage = () => {
               email: user.email,
               id: user.id,
             };
+            console.log("email sent");
             await sendEmailToBookingPersons(emailTemplate);
           }
         }

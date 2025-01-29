@@ -101,8 +101,9 @@ const PromCodeDialog = ({ serviceId, setAppliedCode, appliedCode }) => {
       const { error } = await supabase
         .from("promocodeusages")
         .delete()
-        .eq("promo_code_id", appliedCode);
+        .eq("promo_code_id", appliedCode?.id);
 
+        console.log(appliedCode)
       if (error) throw error;
 
       setDiscountedPrice(originalPrice);

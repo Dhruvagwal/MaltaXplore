@@ -354,7 +354,7 @@ function TourismPage() {
       {/* Booking Section */}
       {/* <section className="container mx-auto px-4 py-12"> */}
       <section className="mx-8 md:mx-20 py-12">
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="lg:grid lg:grid-cols-3 lg:gap-8">
           <div className="lg:col-span-2">
             <div>
               {isLoading ? (
@@ -380,7 +380,7 @@ function TourismPage() {
                 <>
                   <h2 className="text-3xl font-bold">About {service?.name}</h2>
 
-                  <div className="grid grid-cols-2 md:grid-cols-4 my-4 py-8 gap-4 bg-primary-foreground px-4 rounded-lg">
+                  <div className="grid grid-cols-2 md:grid-cols-4 my-4 py-8 md:gap-4 bg-primary-foreground px-4 rounded-lg">
                     {service?.features?.map((f, index) => (
                       <div className="flex gap-2">
                         <Clock5 className="text-[#e03837]" />

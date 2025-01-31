@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { motion } from "framer-motion";
 import Banner from "@/components/cui/banner";
 import ChatSection from "@/components/cui/ChatSection";
 import Faq from "@/components/cui/faq";
@@ -38,20 +39,53 @@ const ContactPage = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <main className="flex-1">
-        <div className="">
+        {/* Hero Banner */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1 }}
+        >
           <Banner url="/contact-us.png">
-            <h1 className="text-4xl font-bold text-white">Contact Us</h1>
+            <motion.h1 
+              initial={{ y: 30, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.5 }}
+              className="text-3xl md:text-4xl lg:text-5xl font-bold text-white"
+            >
+              Contact Us
+            </motion.h1>
           </Banner>
-        </div>
+        </motion.div>
 
-        <div className="py-12">
-          <ContactForm /> 
-        </div>
-        <div className="mx-8 md:mx-20 mt-16">
+        {/* Contact Form Section */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="py-8 md:py-12"
+        >
+          <ContactForm />
+        </motion.div>
+
+        {/* Chat Section */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mx-4 sm:mx-8 md:mx-20 mt-8 md:mt-16"
+        >
           <ChatSection />
-        </div>
+        </motion.div>
 
-        <Faq data={faqData} />
+        {/* FAQ Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.2 }}
+        >
+          <Faq data={faqData} />
+        </motion.div>
       </main>
     </div>
   );

@@ -15,7 +15,7 @@ const CategoryCard = ({ data, index }) => {
             height={400}
             width={400}
             className=" w-full group-hover:scale-125 transition-all ease-in-out object-cover"
-            src="/adventure.jpg"
+            src={data?.image}
           />
         </div>
         <Button

@@ -108,42 +108,42 @@ const PaymentDetailsPage = ({
 
         console.log("response", response)
 
-      // if (response.status === 201) {
-      //   const bookingId = response?.data[0]?.id;
+      if (response.status === 201) {
+        const bookingId = response?.data[0]?.id;
 
-      //   const serviceBookingPersons = [
-      //     ...userId.map((user) => ({
-      //       user_id: user,
-      //       service_id: id,
-      //       supplier_id: tourData?.supplier_access_id,
-      //       booking_id: bookingId,
-      //     })),
-      //     {
-      //       user_id: user?.id,
-      //       service_id: id,
-      //       supplier_id: tourData?.supplier_access_id,
-      //       booking_id: bookingId,
-      //     },
-      //   ];
+        const serviceBookingPersons = [
+          ...userId.map((user) => ({
+            user_id: user,
+            service_id: id,
+            supplier_id: tourData?.supplier_access_id,
+            booking_id: bookingId,
+          })),
+          {
+            user_id: user?.id,
+            service_id: id,
+            supplier_id: tourData?.supplier_access_id,
+            booking_id: bookingId,
+          },
+        ];
 
-      //   const res = await supabase
-      //     .from("servicebookingperson")
-      //     .insert(serviceBookingPersons)
-      //     .select();
+        const res = await supabase
+          .from("servicebookingperson")
+          .insert(serviceBookingPersons)
+          .select();
 
-      //   console.log("Service Booking Persons Added:", res);
+        console.log("Service Booking Persons Added:", res);
 
-      //   const { error } = await stripe.confirmPayment({
-      //     elements,
-      //     confirmParams: {
-      //       return_url: `http://localhost:3000/complete?bookingId=${bookingId}`,
-      //     },
-      //   });
+        const { error } = await stripe.confirmPayment({
+          elements,
+          confirmParams: {
+            return_url: `http://localhost:3000/complete?bookingId=${bookingId}`,
+          },
+        });
 
-      //   if (error) {
-      //     console.log(error.message);
-      //   }
-      // }
+        if (error) {
+          console.log(error.message);
+        }
+      }
     } catch (error) {
       console.error(error?.message || "Something went wrong");
     } finally {

@@ -119,6 +119,7 @@ const CompletePage = () => {
           service?.length > 0
         ) {
           await sendEmail(paymentDetails);
+          console.log("email sent");
 
           const templateDetails = {
             Booking_id: bookingId,
@@ -136,7 +137,6 @@ const CompletePage = () => {
               email: user.email,
               id: user.id,
             };
-            console.log("email sent");
             await sendEmailToBookingPersons(emailTemplate);
           }
         }

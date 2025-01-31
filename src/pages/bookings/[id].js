@@ -78,11 +78,13 @@ console.log("tourData", tourData);
   useEffect(() => {
     if (activeStep === 1 && totalPrice > 0 && user.email) {
       const fetchClientSecret = async () => {
+        console.log(finalPrice)
         const response = await axios.post("/api/create-payment-intent", {
           amount: finalPrice * 100,
           currency: "usd",
           email: user?.email,
         });
+        console.log(response)
         setPaymentIntentId(response?.data?.paymentIntent?.id);
         setClientSecret(response?.data?.clientSecret);
       };

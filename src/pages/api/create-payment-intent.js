@@ -3,6 +3,8 @@ import Stripe from "stripe";
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export default async function handler(req, res) {
+  console.log("API Route Hit: /api/create-payment-intent");
+
   if (req.method === "POST") {
     try {
       const { amount, currency, email } = req.body;      

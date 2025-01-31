@@ -34,14 +34,20 @@ export function MoreOffersComponent({
   const [promoCodes, setPromoCodes] = useState([]);
   const { totalPrice, setDiscountedPrice, discountedPrice } = useBooking();
   const originalPrice = totalPrice;
-  console.log("promocodes", promoCodes);
 
   useEffect(() => {
     const fetchCodes = async () => {
       if (!originalPrice) return;
+
       let { data, error } = await supabase
         .from("service_promocodes")
-        .select("promocodes(*)")
+        .select(
+          `
+          *,
+          promocode_id (*),  
+          service_id (*)
+        `
+        )
         .eq("service_id", serviceId);
 
       if (error) {
@@ -49,12 +55,14 @@ export function MoreOffersComponent({
         return;
       }
 
-      const extractedPromoCodes = data.map((item) => item.promocodes);
-
+      const extractedPromoCodes = data.map((item) => item.promocode_id);
       const applicableCodes = extractedPromoCodes.filter(
         (code) =>
-          !code.min_ticket_price || originalPrice >= code.min_ticket_price
+          !code?.min_ticket_price || originalPrice >= code.min_ticket_price
       );
+
+      console.log(applicableCodes);
+
       setPromoCodes(applicableCodes);
     };
 
@@ -103,14 +111,12 @@ export function MoreOffersComponent({
       }
 
       setDiscountedPrice(discountedPrice);
-      console.log("Promo code applied successfully!");
     } catch (error) {
       console.error("Error applying promo code:", error.message);
     }
   };
 
   const applyButton = async (promoCodee) => {
-    console.log("promoCodee", promoCodee);
     if (!promoCodee) {
       console.log("Please enter a promo code.");
       return;
@@ -119,8 +125,6 @@ export function MoreOffersComponent({
     const selectedCode = promoCodes.find(
       (code) => code.code === promoCodee?.code
     );
-
-    console.log("selectedCode", selectedCode);
 
     if (!selectedCode) {
       console.log("Invalid or inapplicable promo code.");
@@ -138,6 +142,8 @@ export function MoreOffersComponent({
           },
         ])
         .select();
+
+      console.log("promocodeusages", data);
 
       if (error) throw error;
 
@@ -157,9 +163,9 @@ export function MoreOffersComponent({
       }
 
       setDiscountedPrice(discountedPrice);
-      console.log("Promo code applied successfully!");
+      console.log("Promo code applied successfully!", discountedPrice);
     } catch (error) {
-      console.error("Error applying promo code:", error.message);
+      console.error("Error applying promo code:", error);
     }
   };
 

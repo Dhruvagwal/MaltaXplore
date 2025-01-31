@@ -415,7 +415,7 @@ function TourismPage() {
                   </div>
                 ) : (
                   <div className="prose prose-lg max-w-none">
-                    <p>{service?.description}</p>
+                    <p className="break-words">{service?.description}</p>
                     <div className="mt-8 space-y-6">
                       <div>
                         <h3 className="text-xl font-semibold mb-2">

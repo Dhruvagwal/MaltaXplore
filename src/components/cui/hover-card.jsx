@@ -15,13 +15,11 @@ export function HoverCardComponent({ title, data, heading }) {
           {title}
         </Button>
       </HoverCardTrigger>
-      <HoverCardContent className="w-80">
-        <div className="flex justify-between space-x-4">
+      <HoverCardContent className="w-[300px] p-4"> {/* Set fixed width here */}
           <div className="space-y-1">
             <h4 className="text-sm">{heading}</h4>
-            <p className="text-sm text-muted-foreground">{data}</p>
+            <p className="text-sm text-muted-foreground break-words">{data}</p>
           </div>
-        </div>
       </HoverCardContent>
     </HoverCard>
   );

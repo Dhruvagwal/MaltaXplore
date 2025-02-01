@@ -149,17 +149,16 @@ function TourismPage() {
       console.error("Error handling like/unlike:", error);
     }
   };
-  const HandleBookNowButton = () => {
+  const handleBookNowButton = () => {
     const selectedDate = new Date(date);
     const currentDate = new Date();
 
     selectedDate.setHours(0, 0, 0, 0);
     currentDate.setHours(0, 0, 0, 0);
-
+    
     if (isNaN(selectedDate.getTime())) {
       return;
     }
-
     if (selectedDate < currentDate) {
       return;
     }
@@ -390,67 +389,6 @@ function TourismPage() {
                   </div>
                 </>
               )}
-
-              <div className="prose prose-lg max-w-none">
-                {isLoading ? (
-                  <div className="prose prose-lg max-w-none">
-                    <Skeleton className="h-6 w-[60%]" />
-
-                    <Skeleton className="h-4 w-full mt-4" />
-
-                    <div className="mt-8 space-y-6">
-                      <div>
-                        <Skeleton className="h-6 w-[60%]" />
-                        <Skeleton className="h-4 w-full mt-2" />
-                      </div>
-                      <div>
-                        <Skeleton className="h-6 w-[60%]" />
-                        <Skeleton className="h-4 w-full mt-2" />
-                      </div>
-                      <div>
-                        <Skeleton className="h-6 w-[60%]" />
-                        <Skeleton className="h-4 w-full mt-2" />
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="prose prose-lg max-w-none">
-                    <p className="break-words">{service?.description}</p>
-                    <div className="mt-8 space-y-6">
-                      <div>
-                        <h3 className="text-xl font-semibold mb-2">
-                          Megalithic Temples:
-                        </h3>
-                        <p>
-                          Visit the Ġgantija Temples on Gozo, one of the world's
-                          oldest freestanding structures, recognized as a UNESCO
-                          World Heritage site.
-                        </p>
-                      </div>
-                      <div>
-                        <h3 className="text-xl font-semibold mb-2">
-                          Mdina - The Silent City:
-                        </h3>
-                        <p>
-                          Explore this ancient walled city, where quiet, winding
-                          streets and medieval architecture transport you back
-                          in time.
-                        </p>
-                      </div>
-                      <div>
-                        <h3 className="text-xl font-semibold mb-2">
-                          Stunning Fortifications:
-                        </h3>
-                        <p>
-                          Tour the iconic fortresses of Valletta, including the
-                          Grandmaster's Palace and Fort St. Elmo, testaments to
-                          Malta's storied past.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
             </div>
 
             <Separator className="my-10" />
@@ -679,7 +617,7 @@ function TourismPage() {
                   ) : (
                     <Button
                       className="w-full bg-[#E5484D] hover:bg-[#E5484D]/90 text-white transition-all duration-300 transform hover:scale-[1.02]"
-                      onClick={HandleBookNowButton}
+                      onClick={handleBookNowButton}
                     >
                       Book Now
                     </Button>
@@ -750,16 +688,6 @@ function TourismPage() {
           </div>
         </div>
       </section>
-
-      {/* Reviews Section */}
-      {/* <Reviews
-        heading={"What Our Guests Are Saying"}
-        title="Tour Experiences"
-        subtitle="Hear what our guests have to say about their unforgettable Malta tours"
-        reviews={reviews}
-      /> */}
-
-      {/* Top Picks */}
       <TopPicks />
     </main>
   );

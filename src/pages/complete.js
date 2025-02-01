@@ -119,8 +119,6 @@ const CompletePage = () => {
           service?.length > 0
         ) {
           await sendEmail(paymentDetails);
-          console.log("email sent");
-
           const templateDetails = {
             Booking_id: bookingId,
             service_name: service[0]?.name,

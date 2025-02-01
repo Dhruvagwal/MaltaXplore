@@ -17,10 +17,15 @@ import { useRouter } from "next/router";
 import { dbNames } from "@/utils/fetch";
 import { useSupabaseGetAllQuery } from "@/utils/query";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import useFirebase from "@/hooks/use-firebase";
 import { supabase } from "@/supabaseConfig";
 import { useAuthState } from "@/context/ueAuthContext";
 import { getUserFromDatabase } from "@/features/getUser";
+
+import dynamic from "next/dynamic";
+
+const CrispWithNoSSR = dynamic(() => import("@/features/crisp"), {
+  ssr: false,
+});
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -85,6 +90,7 @@ export default function App({ Component, pageProps }) {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <CrispWithNoSSR />
       <ScrollArea
         className={`${geistSans.variable} ${geistMono.variable} min-h-screen w-[100%] antialiased font-[family-name:var(--font-geist-sans)]`}
       >

@@ -27,32 +27,32 @@ import { getUserFromDatabase } from "@/features/getUser";
 const items = [
   {
     title: "User Management",
-    url: "/admin/user-dashboard",
+    url: "/user-dashboard",
     icon: Calendar,
   },
   {
     title: "Supplier Management",
-    url: "/admin/supplier-dashboard",
+    url: "/supplier-dashboard",
     icon: Calendar,
   },
   {
     title: "Service Management",
-    url: "/admin/services-dashboard",
+    url: "/services-dashboard",
     icon: Home,
   },
   {
     title: "Booking Management",
-    url: "/admin/booking-dashboard",
+    url: "/booking-dashboard",
     icon: Inbox,
   },
   {
     title: "Reviews Management",
-    url: "/admin/reviews-dashboard",
+    url: "/reviews-dashboard",
     icon: Search,
   },
   {
     title: "Contacts",
-    url: "/admin/contacts-dashboard",
+    url: "/contacts-dashboard",
     icon: Search,
   },
 ];

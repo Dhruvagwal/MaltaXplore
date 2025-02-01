@@ -19,13 +19,14 @@ export const sendEmail = async (paymentDetails) => {
     //   "XvpCI43kTo5rkOW7y"
     // );
 
+    console.log(templateParams)
     const response = await axios.post(
       "https://api.maltaxplore.com/send_email",
       {
         id: "confirmation-email-template",
         to: templateParams?.user_email,
         values: templateParams,
-        heaader: "Hello, this is a test email!",
+        heaader: "Confirmation Email",
       },
       {
         headers: {

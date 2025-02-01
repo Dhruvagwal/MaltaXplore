@@ -16,7 +16,7 @@ export function Footer() {
         className="w-screen max-md:hidden"
         src="/images/footer_back.svg"
       />
-      <div className="absolute bg-primary flex flex-col h-auto w-full py-16 px-8 md:px-32 top-0 left-0">
+      <div className="absolute flex flex-col w-full py-16 px-8 md:px-32 top-16 left-0">
         <div className="flex flex-col md:flex-row max-md:space-y-8 items-center justify-between">
           <p className="text-3xl text-white font-semibold uppercase leading-[1.3]">
             {" "}

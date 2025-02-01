@@ -14,7 +14,8 @@ import { supabase } from "@/supabaseConfig";
 import { useAuthState } from "@/context/ueAuthContext";
 
 const TopPicks = () => {
-  const { services, isLoading } = useServicesState();
+  const { services:all, isLoading } = useServicesState();
+  const services = all.slice(0,5)
   const { user } = useAuthState();
   const [likes, setLikes] = useState();
   useEffect(() => {
@@ -63,7 +64,13 @@ const TopPicks = () => {
         <CarouselContent className="max-md:mr-10">
           {services?.map((item, index) => (
             <CarouselItem index={index} className="md:basis-1/2 lg:basis-1/3">
-              <ServiceCard data={item} index={index} loading={isLoading} likes={likes} id={item?.id}/>
+              <ServiceCard
+                data={item}
+                index={index}
+                loading={isLoading}
+                likes={likes}
+                id={item?.id}
+              />
             </CarouselItem>
           ))}
 
@@ -76,6 +83,7 @@ const TopPicks = () => {
             className="md:basis-1/2 lg:basis-1/3"
           />
         </CarouselContent>
+        <div className="my-16"></div>
         <CarouselProgress length={services?.length} />
         <CarouselPrevious />
         <CarouselNext />

@@ -93,11 +93,11 @@ function TourismPage() {
   if (isLoading) {
     return (
       <div className="space-y-2 px-32">
-      <Skeleton className="h-6 w-full" />
-      <Skeleton className="h-6 w-[90%]" />
-      <Skeleton className="h-6 w-[70%]" />
-    </div>
-    )
+        <Skeleton className="h-6 w-full" />
+        <Skeleton className="h-6 w-[90%]" />
+        <Skeleton className="h-6 w-[70%]" />
+      </div>
+    );
   }
   return (
     <main className="min-h-screen bg-white">
@@ -217,115 +217,114 @@ function TourismPage() {
 
       {/* Booking Section */}
       {/* <section className="container mx-auto px-4 py-12"> */}
-      {!isLoading && (
-        <section className="mx-8 md:mx-20 py-12">
-          <div className="lg:grid lg:grid-cols-3 lg:gap-8">
-            <div className="lg:col-span-2">
-              <div>
-                <h2 className="text-3xl font-bold">About {service?.name}</h2>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 my-4 py-8 md:gap-4 bg-primary-foreground px-4 rounded-lg">
-                  {service?.features?.map((f, index) => (
-                    <div className="flex gap-2">
-                      <Clock5 className="text-[#e03837]" />
-                      <p>{f}</p>
-                    </div>
-                  ))}
-                </div>
+      <section className="mx-8 md:mx-20 py-12">
+        <div className="lg:grid lg:grid-cols-3 lg:gap-8">
+          <div className="lg:col-span-2">
+            <div>
+              <h2 className="text-3xl font-bold">About {service?.name}</h2>
 
+              <div className="grid grid-cols-2 md:grid-cols-4 my-4 py-8 md:gap-4 bg-primary-foreground px-4 rounded-lg">
+                {service?.features?.map((f, index) => (
+                  <div className="flex gap-2">
+                    <Clock5 className="text-[#e03837]" />
+                    <p>{f}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="prose prose-lg max-w-none">
                 <div className="prose prose-lg max-w-none">
-                  <div className="prose prose-lg max-w-none">
-                    <p className="break-words">{service?.description}</p>
-                    <div className="mt-8 space-y-6">
-                      <div>
-                        <h3 className="text-xl font-semibold mb-2">
-                          Megalithic Temples:
-                        </h3>
-                        <p>
-                          Visit the Ġgantija Temples on Gozo, one of the world's
-                          oldest freestanding structures, recognized as a UNESCO
-                          World Heritage site.
-                        </p>
-                      </div>
-                      <div>
-                        <h3 className="text-xl font-semibold mb-2">
-                          Mdina - The Silent City:
-                        </h3>
-                        <p>
-                          Explore this ancient walled city, where quiet, winding
-                          streets and medieval architecture transport you back
-                          in time.
-                        </p>
-                      </div>
-                      <div>
-                        <h3 className="text-xl font-semibold mb-2">
-                          Stunning Fortifications:
-                        </h3>
-                        <p>
-                          Tour the iconic fortresses of Valletta, including the
-                          Grandmaster's Palace and Fort St. Elmo, testaments to
-                          Malta's storied past.
-                        </p>
-                      </div>
+                  <p className="break-words">{service?.description}</p>
+                  <div className="mt-8 space-y-6">
+                    <div>
+                      <h3 className="text-xl font-semibold mb-2">
+                        Megalithic Temples:
+                      </h3>
+                      <p>
+                        Visit the Ġgantija Temples on Gozo, one of the world's
+                        oldest freestanding structures, recognized as a UNESCO
+                        World Heritage site.
+                      </p>
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold mb-2">
+                        Mdina - The Silent City:
+                      </h3>
+                      <p>
+                        Explore this ancient walled city, where quiet, winding
+                        streets and medieval architecture transport you back in
+                        time.
+                      </p>
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold mb-2">
+                        Stunning Fortifications:
+                      </h3>
+                      <p>
+                        Tour the iconic fortresses of Valletta, including the
+                        Grandmaster's Palace and Fort St. Elmo, testaments to
+                        Malta's storied past.
+                      </p>
                     </div>
                   </div>
                 </div>
               </div>
-
-              <Separator className="my-10" />
-
-              <div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-8">
-                  Special Benefit
-                </h2>
-
-                <div className="space-y-4">
-                  {service?.special_benefits?.map((benefit, index) => (
-                    <div key={index} className="flex items-center gap-3">
-                      <Check className="h-5 w-6 md:w-5 bg-green-500 text-white rounded-full p-1" />
-                      <span className="text-gray-600">{benefit}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <Separator className="my-10" />
-
-              <div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-8">
-                  "What Includes/Exclude"
-                </h2>
-
-                <div className="flex flex-col md:flex-row gap-16">
-                  <div className="space-y-4">
-                    {service?.includes.map((item, index) => (
-                      <div className="flex items-center gap-3" key={index}>
-                        <Check className="h-5 w-5 bg-green-500 text-white rounded-full p-1" />
-                        <span className="text-gray-600">{item}</span>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="space-y-4">
-                    {service?.excludes.map((item, index) => (
-                      <div className="flex items-center gap-3" key={index}>
-                        <Minus className="h-5 w-5 bg-red-500 text-white rounded-full p-1" />
-                        <span className="text-gray-600">{item}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              <Separator className="my-10" />
-
-              <ReviewsPage serviceId={id} />
             </div>
 
-            <BookingCard service={service} isLoading={isLoading} />
+            <Separator className="my-10" />
+
+            <div>
+              <h2 className="text-3xl font-bold text-gray-900 mb-8">
+                Special Benefit
+              </h2>
+
+              <div className="space-y-4">
+                {service?.special_benefits?.map((benefit, index) => (
+                  <div key={index} className="flex items-center gap-3">
+                    <Check className="h-5 w-6 md:w-5 bg-green-500 text-white rounded-full p-1" />
+                    <span className="text-gray-600">{benefit}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <Separator className="my-10" />
+
+            <div>
+              <h2 className="text-3xl font-bold text-gray-900 mb-8">
+                "What Includes/Exclude"
+              </h2>
+
+              <div className="flex flex-col md:flex-row gap-16">
+                <div className="space-y-4">
+                  {service?.includes.map((item, index) => (
+                    <div className="flex items-center gap-3" key={index}>
+                      <Check className="h-5 w-5 bg-green-500 text-white rounded-full p-1" />
+                      <span className="text-gray-600">{item}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="space-y-4">
+                  {service?.excludes.map((item, index) => (
+                    <div className="flex items-center gap-3" key={index}>
+                      <Minus className="h-5 w-5 bg-red-500 text-white rounded-full p-1" />
+                      <span className="text-gray-600">{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <Separator className="my-10" />
+
+            <ReviewsPage serviceId={id} />
           </div>
-        </section>
-      )}
+
+          <BookingCard service={service} isLoading={isLoading} />
+        </div>
+      </section>
 
       {/* Gallery Section */}
       <section className="py-12 md:py-24 bg-white">

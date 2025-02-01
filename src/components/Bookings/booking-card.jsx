@@ -42,8 +42,8 @@ const BookingCard = ({ service, isLoading }) => {
       return
     }
 
-  const HandleBookNowButton = () => {
-    console.log(date, endDate);
+  const HandleBookNowButton = (values) => {
+    console.log("values", values);
     if (!date || !endDate) {
       toast({
         variant: "destructive",

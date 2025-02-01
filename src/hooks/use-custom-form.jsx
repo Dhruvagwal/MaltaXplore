@@ -17,6 +17,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
+import { DatePicker } from "@/components/ui/datepicker";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -266,6 +268,34 @@ const useCustomForm = ({ defaultValues = {} }) => {
     />
   );
 
+  const FormDatePicker = ({ title, id, placeholder, required = false }) => (
+    <FormField
+      control={control}
+      name={id}
+      render={({ field, fieldState }) => (
+        <FormItem>
+          <FormLabel>
+            {title}
+            {required && <span className="text-red-500 ml-1">*</span>}
+          </FormLabel>
+          <FormControl>
+            <DatePicker
+              placeholder={placeholder}
+              {...field}
+              date={field.value}
+              required={required}
+              onChange={(date) => field.onChange(date)} // Handle date changes
+            />
+          </FormControl>
+          <FormMessage>
+            {fieldState.error && (
+              <span className="text-red-500">{fieldState.error.message}</span>
+            )}
+          </FormMessage>
+        </FormItem>
+      )}
+    />
+  );
   return {
     FormWrapper,
     FormInput,
@@ -277,6 +307,7 @@ const useCustomForm = ({ defaultValues = {} }) => {
     handleSubmit,
     FormSlider,
     FormCommand,
+    FormDatePicker,
     ...props,
   };
 };

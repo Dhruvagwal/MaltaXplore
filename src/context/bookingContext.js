@@ -11,11 +11,11 @@ export const useBooking = () => {
 export const BookingProvider = ({ children }) => {
   const [adults, setAdults] = useState(1);
   const [child, setChild] = useState(0);
-  const [totalPrice, setTotalPrice] = useState(0);
+  const [totalPrice, setTotalPrice] = useState();
   const [discountedPrice, setDiscountedPrice] = useState(0);
   const [date, setDate] = useState();
   const [endDate, setEndDate] = useState();
-
+  console.log(totalPrice);
   return (
     <BookingContext.Provider
       value={{

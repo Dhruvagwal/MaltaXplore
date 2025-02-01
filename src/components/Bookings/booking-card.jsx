@@ -14,6 +14,8 @@ import { useToast } from "@/hooks/use-toast";
 import useCustomForm from "@/hooks/use-custom-form";
 import { bookingSchema } from "@/lib/schema";
 import { currency } from "@/data/currency";
+import { endOfDay } from "date-fns";
+import { useEffect, useState } from "react";
 
 const Count = ({ onUpdate, count, heading }) => {
   return (
@@ -48,9 +50,6 @@ const Count = ({ onUpdate, count, heading }) => {
 const BookingCard = ({ service, isLoading }) => {
   const { toast } = useToast();
   const router = useRouter();
-  const { user, session, setSession, setUser } = useAuthState();
-  const { adults, setAdults, child, setChild, totalPrice, date, endDate } =
-    useBooking();
   const { FormWrapper, FormDatePicker, setValue, watch } = useCustomForm({
     schema: bookingSchema,
     defaultValues: {
@@ -58,28 +57,34 @@ const BookingCard = ({ service, isLoading }) => {
       child: 0,
     },
   });
+  const [disabled, setIsDisabled] = useState(true);
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const adults = watch("adults");
+  const child = watch("child");
+  const startDate = watch("startDate");
+  const endDate = watch("endDate");
 
-    if (session) {
-      if (session?.user) {
-        addUserToDatabase(session.user);
-        const fetchUserData = async () => {
-          const user = await getUserFromDatabase(session?.user.id);
-          if (user) {
-            setUser(user);
-          }
-        };
-        fetchUserData();
-      }
-
-      router.push(`${booking.replace("[id]", service?.id)}`);
-    } else {
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        setSession(session);
-      });
+  useEffect(() => {
+    const pStartDate = new Date(startDate).getTime();
+    const pEndDate = new Date(endDate).getTime();
+    if (pStartDate < pEndDate && adults >= 1) {
+      setIsDisabled(false);
+      return;
     }
+    setIsDisabled(true);
+  }, [startDate, endDate, adults]);
+
+  const totalPrice = service?.price * (adults + child / 2);
+
+  const onSubmit = (query) => {
+    console.log(query);
+    query.startDate = new Date(query.startDate).getTime();
+    query.endDate = new Date(query.endDate).getTime();
+
+    router.push({
+      pathname: `/bookings/${service?.id}`,
+      query,
+    });
   };
 
   const onError = (errors) => {
@@ -94,7 +99,6 @@ const BookingCard = ({ service, isLoading }) => {
   if (isLoading || !service) {
     return;
   }
-
   return (
     <div>
       <Card className="sticky top-24">
@@ -125,12 +129,12 @@ const BookingCard = ({ service, isLoading }) => {
               id="endDate"
             />
             <Count
-              count={watch("adults")}
+              count={adults}
               heading={"Adults"}
               onUpdate={(count) => setValue("adults", count)}
             />
             <Count
-              count={watch("child")}
+              count={child}
               heading={"Childrens"}
               onUpdate={(count) => setValue("child", count)}
             />
@@ -138,10 +142,16 @@ const BookingCard = ({ service, isLoading }) => {
             <div className="border-t pt-4">
               <div className="flex justify-between mb-2">
                 <span>Total</span>
-                <span className="font-bold">€{totalPrice}.00</span>
+                <span className="font-bold">
+                  {currency.sign}
+                  {totalPrice}
+                </span>
               </div>
 
-              <Button className="w-full bg-primary hover:bg-primary/90 text-white transition-all duration-300 transform hover:scale-[1.02]">
+              <Button
+                className="w-full bg-primary hover:bg-primary/90 text-white transition-all duration-300 transform hover:scale-[1.02]"
+                disabled={disabled}
+              >
                 Book Now
               </Button>
 

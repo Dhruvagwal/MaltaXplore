@@ -5,7 +5,6 @@ import { Toaster } from "@/components/ui/toaster";
 import localFont from "next/font/local";
 import Navbar from "@/components/ui/Navbar";
 import { Footer } from "@/components/cui/footer";
-import { BookingProvider } from "@/context/bookingContext";
 import { ContactDetailsProvider } from "@/context/contactDetailsContext";
 import { AddressProvider } from "@/context/addressContext";
 import {
@@ -95,14 +94,12 @@ export default function App({ Component, pageProps }) {
       >
         <Toaster />
         {isDashboard && <Navbar />}{" "}
-        <BookingProvider>
           <ContactDetailsProvider>
             <AddressProvider>
               <DataDownload />
               <Component {...pageProps} />
             </AddressProvider>
           </ContactDetailsProvider>
-        </BookingProvider>
         {isDashboard && <Footer />}{" "}
       </ScrollArea>
     </QueryClientProvider>

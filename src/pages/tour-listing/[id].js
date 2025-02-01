@@ -41,7 +41,6 @@ function TourismPage() {
   const { id } = router.query;
   const { user, session, setSession, setUser } = useAuthState();
   const { likeService, unlikeService } = useServicesState();
-  const { adults, child, setTotalPrice, date } = useBooking();
   const [isLiked, setIsLiked] = useState(false);
   const { data: service, isLoading, isError } = useService(id);
   const {
@@ -49,13 +48,6 @@ function TourismPage() {
     isLoadingReviews,
     isErrorReviews,
   } = useServiceReviews(id);
-
-  useEffect(() => {
-    if (service?.price) {
-      const calculatedPrice = service.price * (adults + child * 0.5);
-      setTotalPrice(calculatedPrice);
-    }
-  }, [service, adults, child]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -283,7 +275,7 @@ function TourismPage() {
               </div>
             </div>
             <Separator className="my-10" />
-            {allReviews.length > 0 && (
+            {allReviews?.length > 0 && (
               <ReviewsPage serviceId={id} allReviews={allReviews} />
             )}
           </div>

@@ -38,16 +38,18 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLISHABLE_KEY);
 const BookingPage = () => {
   const { user } = useAuthState();
   const router = useRouter();
-  const { id } = router.query;
+  const { id, adults, child, startDate, endDate } = router.query;
   const { services } = useServicesState();
-  const { adults, child, totalPrice, discountedPrice, date, endDate } =
-    useBooking();
+  // const { discountedPrice } = useBooking();
+  console.log(adults, child, startDate, endDate);
 
   const [activeStep, setActiveStep] = useState(0);
   const [clientSecret, setClientSecret] = useState("");
   const [paymentIntentId, setPaymentIntentId] = useState("");
   const [taxRate, setTaxRate] = useState(0);
   const tourData = services.find((service) => service.id === id);
+  const totalPrice = tourData?.price * (adults + child / 2);
+
   useEffect(() => {
     const fetchTaxRate = async () => {
       try {
@@ -65,12 +67,10 @@ const BookingPage = () => {
   }, []);
   const basePrice = Number(totalPrice);
   const taxesAndFees = basePrice * taxRate;
-  const discountAmount = discountedPrice
-    ? basePrice - Number(discountedPrice)
-    : 0;
-  const finalPrice = discountedPrice
-    ? Number(discountedPrice) + taxesAndFees
-    : basePrice + taxesAndFees;
+  const discountAmount =
+     basePrice - Number()
+
+  const finalPrice =
 
   useEffect(() => {
     if (activeStep === 1 && totalPrice > 0 && user.email) {
@@ -177,7 +177,7 @@ const BookingPage = () => {
                 <Separator className="" />
                 <div className="flex justify-between items-center text-sm my-4">
                   <span className="text-muted-foreground">Start Date</span>
-                  <span>{date?.toString()}</span>
+                  <span>{startDate?.toString()}</span>
                 </div>
                 <div className="flex justify-between items-center text-sm my-4">
                   <span className="text-muted-foreground">End Date</span>
@@ -202,7 +202,7 @@ const BookingPage = () => {
               <CardFooter className="bg-[#E5484D] text-white rounded-b-xl flex flex-col justify-between py-8 font-semibold">
                 <div className="flex justify-between items-center w-full">
                   <span className="text-white/90">Base Price</span>
-                  <span className="text-white/90">${basePrice.toFixed(2)}</span>
+                  <span className="text-white/90">${basePrice}</span>
                 </div>
 
                 <div className="flex justify-between items-center w-full mt-2">
@@ -215,20 +215,20 @@ const BookingPage = () => {
                     />
                   </span>
                   <span className="text-white/90">
-                    +${taxesAndFees.toFixed(2)}
+                    +${taxesAndFees}
                   </span>
                 </div>
                 <div className="flex justify-between items-center w-full mt-2">
                   <span className="text-white/90">Discount </span>
                   <span className="text-white/90">
-                    - ${discountAmount.toFixed(2)}
+                    - ${discountAmount}
                   </span>
                 </div>
                 <Separator className="my-4" />
                 <div className="flex justify-between items-center w-full">
                   <span className="text-white/90">Total</span>
                   <span className="text-white/90">
-                    ${finalPrice.toFixed(2)}
+                    ${finalPrice}
                   </span>
                 </div>
               </CardFooter>

@@ -179,8 +179,15 @@ class Weather extends React.Component {
 
   render() {
     return (
-      <Tilt>
-        <div className="flex flex-col bg-[#DF3B3B] rounded-[3rem] lg:w-[26.5vw] h-full lg:h-[560px] p-4 max-lg:space-y-8">
+      <Tilt
+        tiltMaxAngleX={10}
+        tiltMaxAngleY={10}
+        perspective={1000}
+        scale={1.02}
+        transitionSpeed={2000}
+        gyroscope={false}
+      >
+        <div className="flex flex-col bg-white rounded-[3rem] lg:w-[26.5vw] h-full lg:h-[560px] p-4 max-lg:space-y-8">
           {this.state.loading ? (
             <Skeleton className={"bg-gray-300 p-4 rounded-[3rem]"} />
           ) : (

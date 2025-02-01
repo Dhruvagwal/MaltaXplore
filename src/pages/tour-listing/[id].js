@@ -238,7 +238,7 @@ function TourismPage() {
                     <>
                       <img
                         src={parsedImage.url}
-                        alt="Malta City"
+                        alt={parsedImage.name}
                         className="w-full h-[140px] sm:h-[165px] md:h-full object-cover"
                       />
                       <div className="absolute inset-0 bg-black/20" />

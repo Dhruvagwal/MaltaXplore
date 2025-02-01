@@ -3,7 +3,6 @@ import React, { useState } from "react";
 
 import useCustomForm from "@/hooks/use-custom-form";
 import { useToast } from "@/hooks/use-toast";
-import useFirebase from "@/hooks/use-firebase";
 
 import {
   Accordion,

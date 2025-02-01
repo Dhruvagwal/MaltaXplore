@@ -62,7 +62,7 @@ const TopPicks = () => {
       >
         <CarouselContent className="max-md:mr-10">
           {services?.map((item, index) => (
-            <CarouselItem index={index} className="md:basis-1/2 lg:basis-1/3">
+            <CarouselItem key={index} index={index} className="md:basis-1/2 lg:basis-1/3">
               <ServiceCard data={item} index={index} loading={isLoading} likes={likes} id={item?.id}/>
             </CarouselItem>
           ))}

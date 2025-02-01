@@ -17,7 +17,6 @@ import { useRouter } from "next/router";
 import { dbNames } from "@/utils/fetch";
 import { useSupabaseGetAllQuery } from "@/utils/query";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import useFirebase from "@/hooks/use-firebase";
 import { supabase } from "@/supabaseConfig";
 import { useAuthState } from "@/context/ueAuthContext";
 import { getUserFromDatabase } from "@/features/getUser";
@@ -47,7 +46,6 @@ export default function App({ Component, pageProps }) {
         .from("services")
         .select("*, supplieraccess(*)")
         .eq("status", "active");
-      console.log(services);
       setServices(services);
     };
     fetchData();

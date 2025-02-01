@@ -48,7 +48,6 @@ const BookingPage = () => {
   const [paymentIntentId, setPaymentIntentId] = useState("");
   const [taxRate, setTaxRate] = useState(0);
   const tourData = services.find((service) => service.id === id);
-  console.log("tourData", tourData);
   useEffect(() => {
     const fetchTaxRate = async () => {
       try {
@@ -76,7 +75,6 @@ const BookingPage = () => {
   useEffect(() => {
     if (activeStep === 1 && totalPrice > 0 && user.email) {
       const fetchClientSecret = async () => {
-        console.log(finalPrice);
         const response = await axios.post("/api/create-payment-intent", {
           amount: finalPrice * 100,
           currency: "usd",

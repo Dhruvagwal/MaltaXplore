@@ -4,7 +4,6 @@ import { useServiceTypeState } from "@/context/servicesContext";
 
 const CCategories = () => {
   const { serviceType } = useServiceTypeState();
-
   return (
     <div className="p-16 px-8 md:px-20 relative text-center bg-red-100 mt-32 r_cut_corner">
       <div className="text-center">

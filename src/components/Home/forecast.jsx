@@ -40,7 +40,7 @@ function Forcast(props) {
       {props?.data?.loading ? (
         <Skeleton className={"bg-gray-300 h-full rounded-3xl my-4"} />
       ) : (
-        <Tilt>
+        
           <div className="p-6 h-full flex flex-col justify-center bg-gradient-to-r from-red-800 to-red-500 mt-2.5 rounded-3xl">
             <ul>
               <div className="text-white">
@@ -80,7 +80,7 @@ function Forcast(props) {
               </div>
             </ul>
           </div>
-        </Tilt>
+        
       )}
     </>
   );

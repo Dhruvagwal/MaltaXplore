@@ -141,7 +141,7 @@ const ContactForm = () => {
                 >
                   <Button
                     type="submit"
-                    className="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-4 md:py-5 text-lg transition-all duration-300"
+                    className="w-fit self-end bg-red-600 hover:bg-red-700 text-white font-medium py-4 md:py-5 text-lg transition-all duration-300"
                   >
                     {loading ? "Sending..." : "Send Now"}
                   </Button>

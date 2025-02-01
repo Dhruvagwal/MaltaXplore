@@ -8,9 +8,10 @@ import { tourListing } from "@/data/link";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuthState } from "@/context/ueAuthContext";
 import { useServicesState } from "@/context/servicesContext";
-import { Heart } from "lucide-react";
+import { Euro, Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/supabaseConfig";
+import { currency } from "@/data/currency";
 
 export const ServiceCard = ({
   index,
@@ -52,7 +53,10 @@ export const ServiceCard = ({
             width={400}
             className="rounded-t-xl w-full h-[300px] object-cover"
             // src={`https://picsum.photos/500/400?random=${index}`}
-            src={JSON.parse(data.images?.[0]??"{}")?.url??`https://picsum.photos/500/400?random=${index}`}
+            src={
+              JSON.parse(data.images?.[0] ?? "{}")?.url ??
+              `https://picsum.photos/500/400?random=${index}`
+            }
           />
         )}
         <div className="absolute z-10 top-4 right-4 cursor-pointer transition-transform duration-200 transform hover:scale-110">
@@ -86,24 +90,25 @@ export const ServiceCard = ({
               {data.name}
             </p>
           )}
-          <span>
+          <p className="flex gap-2">
             {loading ? (
               <Skeleton className="w-[100px] h-[20px]" />
             ) : (
               <>
                 Starting at:{" "}
-                <span className="text-primary font-bold text-base">
-                  ${data.price}
+                <span className="text-primary items-center font-bold text-base">
+                  {currency.sign}
+                  {data.price}
                 </span>
               </>
             )}
-          </span>
+          </p>
         </div>
         <br />
         {loading ? (
           <Skeleton className="w-full h-[50px] text-muted-foreground text-ellipsis text-sm" />
         ) : (
-          <p className="text-muted-foreground text-ellipsis text-sm  line-clamp-3">
+          <p className="text-muted-foreground truncate text-sm  line-clamp-3">
             {data.description}
           </p>
         )}

@@ -15,7 +15,7 @@ function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <div className="py-6 bg-gradient-to-br from-primary-foreground to-transparent relative z-50 w-full">
+    <div className="py-6 relative z-50 w-full">
       <nav className="flex uppercase items-center justify-between md:mx-20 mx-8">
         <div className="flex gap-16">
           <div className="flex items-center">

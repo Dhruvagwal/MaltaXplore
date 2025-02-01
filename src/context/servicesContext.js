@@ -41,6 +41,7 @@ export const useServicesState = create((set) => ({
   },
 }));
 
+
 export const useServiceTypeState = create((set) => ({
   serviceType: [],
   isLoading: false,

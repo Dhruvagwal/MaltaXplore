@@ -179,11 +179,18 @@ class Weather extends React.Component {
 
   render() {
     return (
-      <div className="flex flex-col bg-white rounded-[3rem] lg:w-[26.5vw] h-full lg:h-[560px] p-4 max-lg:space-y-8">
-        {this.state.loading ? (
-          <Skeleton className={"bg-gray-300 p-4 rounded-[3rem]"} />
-        ) : (
-          <Tilt>
+      <Tilt
+        tiltMaxAngleX={10}
+        tiltMaxAngleY={10}
+        perspective={1000}
+        scale={1.02}
+        transitionSpeed={2000}
+        gyroscope={false}
+      >
+        <div className="flex flex-col bg-red-200 rounded-[3rem] lg:w-[26.5vw] h-full lg:h-[560px] p-4 max-lg:space-y-8">
+          {this.state.loading ? (
+            <Skeleton className={"bg-gray-300 p-4 rounded-[3rem]"} />
+          ) : (
             <div className="bg-gradient-to-r from-red-800 to-red-500 items-center text-white flex justify-between p-4 rounded-2xl">
               <span className="text-sm md:text-xl">
                 {this.state.city}, {this.state.country}
@@ -192,13 +199,11 @@ class Weather extends React.Component {
                 {dateBuilder(new Date())}
               </div>
             </div>
-          </Tilt>
-        )}
-        <Forcast data={this.state} />
-        {this.state.loading ? (
-          <Skeleton className={"bg-gray-300 h-full rounded-3xl"} />
-        ) : (
-          <Tilt>
+          )}
+          <Forcast data={this.state} />
+          {this.state.loading ? (
+            <Skeleton className={"bg-gray-300 h-full rounded-3xl"} />
+          ) : (
             <div className="bg-gradient-to-r from-black to-green-800 flex-col flex justify-center h-full rounded-3xl text-white lg:mt-5">
               <h2 className="text-xl font-md pl-4">Today</h2>
               <div className="grid grid-cols-4">
@@ -222,9 +227,9 @@ class Weather extends React.Component {
                 ))}
               </div>
             </div>
-          </Tilt>
-        )}
-      </div>
+          )}
+        </div>
+      </Tilt>
     );
   }
 }

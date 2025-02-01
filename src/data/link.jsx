@@ -9,3 +9,7 @@ export const contactUs = "/contact-us"
 export const aboutUs = "/about-us"
 export const tourListing = "/tour-listing/[id]";
 export const booking = "/bookings/[id]";
+export const login = "/user/login";
+export const signup = "/user/signup";
+export const forgotPassword = "/user/forget-password";
+export const dashboard = "/user/dashboard";

@@ -5,24 +5,21 @@ import {
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarTrigger,
   SidebarHeader,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { AppHeader } from "@/components/dashboard/app-header";
-import { useEffect, useState } from "react";
-import { Auth } from "@supabase/auth-ui-react";
+import { useEffect } from "react";
 import { supabase } from "@/supabaseConfig";
-import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { useAuthState } from "@/context/ueAuthContext";
 import addUserToDatabase from "@/features/addUser";
 import { getUserFromDatabase } from "@/features/getUser";
+import Auth from "@/components/auth";
 // Menu items.
 const items = [
   {
@@ -87,11 +84,7 @@ export default function UserWrapper({ children, pageProps }) {
   }, []);
 
   if (!session) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }} />
-      </div>
-    );
+    return <Auth />;
   }
 
   return (
@@ -112,7 +105,6 @@ export default function UserWrapper({ children, pageProps }) {
             </SidebarHeader>
             <SidebarContent>
               <SidebarGroup>
-                {/* <SidebarGroupLabel>Application</SidebarGroupLabel> */}
                 <SidebarGroupContent>
                   <SidebarMenu>
                     {items.map((item) => (

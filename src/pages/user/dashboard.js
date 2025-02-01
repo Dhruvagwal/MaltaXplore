@@ -18,9 +18,6 @@ const Dashboard = () => {
   const [upcomingBookings, setUpcomingBookings] = useState([]);
   const [cancelledBookings, setCancelledBookings] = useState([]);
 
-  console.log("pastBookings", pastBookings);
-  console.log("upcomingBookings", upcomingBookings);
-
   useEffect(() => {
     const fetchedBookings = async () => {
       try {

@@ -20,7 +20,7 @@ function Navbar() {
         <div className="flex gap-16">
           <div className="flex items-center">
             <Link href={home}>
-              <Image src="images/black_logo.svg" height={150} width={200} />
+              <Image src="images/logo.svg" height={150} width={200} />
             </Link>
           </div>
 

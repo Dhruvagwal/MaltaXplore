@@ -21,10 +21,8 @@ import {
 import { DatePicker } from "@/components/ui/datepicker";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
-import { useForm, Path, DefaultValues } from "react-hook-form";
-import { z, ZodSchema } from "zod";
+import { useForm } from "react-hook-form";
 import { cn } from "@/lib/utils";
 import { Slider } from "@/components/ui/slider";
 import {

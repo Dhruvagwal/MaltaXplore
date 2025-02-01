@@ -34,6 +34,7 @@ import Tilt from "react-parallax-tilt";
 import { getUserLikes } from "@/features/getUserLikes";
 import { useService } from "@/features/getServiceById";
 import BookingCard from "@/components/Bookings/booking-card";
+import { useServiceReviews } from "@/features/reviews/getServiceReviews";
 
 function TourismPage() {
   const router = useRouter();
@@ -43,6 +44,11 @@ function TourismPage() {
   const { adults, child, setTotalPrice, date } = useBooking();
   const [isLiked, setIsLiked] = useState(false);
   const { data: service, isLoading, isError } = useService(id);
+  const {
+    data: allReviews,
+    isLoadingReviews,
+    isErrorReviews,
+  } = useServiceReviews(id);
 
   useEffect(() => {
     if (service?.price) {
@@ -277,7 +283,9 @@ function TourismPage() {
               </div>
             </div>
             <Separator className="my-10" />
-            <ReviewsPage serviceId={id} />
+            {allReviews.length > 0 && (
+              <ReviewsPage serviceId={id} allReviews={allReviews} />
+            )}
           </div>
 
           <BookingCard service={service} isLoading={isLoading} />

@@ -1,21 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Star } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import useCustomForm from "@/hooks/use-custom-form";
 import { reviewsSchema } from "@/lib/schema";
-import { Button } from "../ui/button";
-import FileUpload from "../ui/filepond";
 import { useAuthState } from "@/context/ueAuthContext";
-import { addReview } from "@/features/reviews/addServiceReview";
-import {
-  getServiceReviews,
-  useServiceReviews,
-} from "@/features/reviews/getServiceReviews";
+// import { addReview } from "@/features/reviews/addServiceReview";
 
-export default function ReviewsPage({ serviceId }) {
+export default function ReviewsPage({ serviceId,allReviews }) {
   const { user } = useAuthState();
   const {
     FormWrapper,
@@ -27,10 +21,6 @@ export default function ReviewsPage({ serviceId }) {
   });
   const [userRating, setUserRating] = useState(0);
   const [currentPage, setCurrentPage] = useState(3);
-
-  const { data: allReviews, isLoading, isError } = useServiceReviews(serviceId);
-  console.log("allReviews", allReviews);
-
 
   // const handleSubmit = async (data) => {
   //   try {
@@ -61,9 +51,9 @@ export default function ReviewsPage({ serviceId }) {
     console.error(errors);
   };
 
-  const totalReviews = allReviews.length;
+  const totalReviews = allReviews?.length;
   const ratingCounts = [5, 4, 3, 2, 1].reduce((acc, star) => {
-    acc[star] = allReviews.filter((review) => review.rating === star).length;
+    acc[star] = allReviews?.filter((review) => review.rating === star).length;
     return acc;
   }, {});
 

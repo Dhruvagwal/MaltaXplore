@@ -29,7 +29,7 @@ const BookingCard = ({ service, isLoading }) => {
     return;
   }
 
-  const HandleBookNowButton = (values) => {
+  const handleBookNowButton = (values) => {
     console.log("values", values);
     if (!date || !endDate) {
       toast({

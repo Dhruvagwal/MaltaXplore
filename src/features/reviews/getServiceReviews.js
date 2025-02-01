@@ -1,4 +1,5 @@
 import { supabase } from "@/supabaseConfig";
+import { useQuery } from "@tanstack/react-query";
 
 
 export const getServiceReviews = async (serviceId) => {
@@ -26,7 +27,7 @@ export const useServiceReviews = (serviceId) => {
   return useQuery({
     queryKey: ["serviceReviews", serviceId],
     queryFn: () => getServiceReviews(serviceId),
-    enabled: !!id,
+    enabled: !!serviceId,
   });
 };
 

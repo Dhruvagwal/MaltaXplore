@@ -3,6 +3,7 @@ import Link from "next/link";
 import { search } from "@/data/link";
 import { Button } from "@/components/ui/button";
 import { Component1Icon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
+import { motion } from "framer-motion";
 import {
   Select,
   SelectContent,
@@ -17,6 +18,12 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/router";
 import { useServiceTypeState } from "@/context/servicesContext";
+
+const searchItemVariants = {
+  initial: { y: 20, opacity: 0 },
+  animate: { y: 0, opacity: 1 },
+  transition: { duration: 0.4, ease: "easeOut" }
+};
 
 export const HeroSearch = ({ className }) => {
     const router = useRouter();
@@ -41,19 +48,30 @@ export const HeroSearch = ({ className }) => {
     }, [query.category]);
   
     return (
-      <div
+      <motion.div
+        initial="initial"
+        animate="animate"
         className={cn(
-          "flex gap-2 md:gap-6 p-12 md:p-4 border bg-white w-full shadow-lg rounded-2xl max-md:space-y-1s",
+          "flex flex-col md:flex-row gap-4 md:gap-6 p-6 md:p-8 border bg-white w-full shadow-lg rounded-2xl",
           className
         )}
       >
-        <div>
-          <p className="text-sm text-muted-foreground p-1 flex items-center gap-1 text-primary-foreground0 py-2">
+        <motion.div 
+          variants={searchItemVariants}
+          className="flex-1 min-w-0"
+          custom={0}
+        >
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="text-sm text-muted-foreground flex items-center gap-1 mb-2"
+          >
             <Component1Icon />
             Categories
-          </p>
+          </motion.p>
           <Select value={category} onValueChange={setCategory}>
-            <SelectTrigger className="h-16 rounded-2xl">
+            <SelectTrigger className="h-12 md:h-16 rounded-xl md:rounded-2xl">
               <SelectValue placeholder="Select Category" />
             </SelectTrigger>
             <SelectContent>
@@ -66,43 +84,76 @@ export const HeroSearch = ({ className }) => {
               </SelectGroup>
             </SelectContent>
           </Select>
-        </div>
-        <div>
-          <p className="text-sm text-muted-foreground p-1 flex items-center gap-1 text-primary-foreground0 py-2">
+        </motion.div>
+        <motion.div 
+          variants={searchItemVariants}
+          className="flex-1 min-w-0"
+          custom={1}
+        >
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="text-sm text-muted-foreground flex items-center gap-1 mb-2"
+          >
             <Component1Icon />
             Date
-          </p>
+          </motion.p>
           <DatePicker
             date={date}
             setDate={setDate}
-            className="h-16 rounded-2xl"
+            className="h-12 md:h-16 rounded-xl md:rounded-2xl"
           />
-        </div>
-        <div>
-          <p className="text-sm text-muted-foreground p-1 flex items-center gap-1 text-primary-foreground0 py-2">
+        </motion.div>
+        <motion.div 
+          variants={searchItemVariants}
+          className="flex-1 min-w-0"
+          custom={2}
+        >
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            className="text-sm text-muted-foreground flex items-center gap-1 mb-2"
+          >
             <Component1Icon />
             Add Guest
-          </p>
+          </motion.p>
           <Input
             onChange={(e) => setGuest(e.target.value)}
-            placeholder="Search Here..."
+            placeholder="Number of guests"
             type="number"
-            className="h-16 rounded-2xl"
+            className="h-12 md:h-16 rounded-xl md:rounded-2xl"
           />
-        </div>
-        <Button
-          asChild
-          className="p-8 mt-12 flex items-center gap-2 text-xl rounded-full"
+        </motion.div>
+        <motion.div
+          variants={searchItemVariants}
+          custom={3}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
         >
-          <Link
-            href={{
-              pathname: search,
-              query: buildQuery(),
-            }}
+          <Button
+            asChild
+            className="h-12 md:h-16 px-6 md:px-8 mt-0 md:mt-6 flex items-center gap-2 text-base md:text-xl rounded-xl md:rounded-full"
           >
-            <MagnifyingGlassIcon /> Search
-          </Link>
-        </Button>
-      </div>
+            <Link
+              href={{
+                pathname: search,
+                query: buildQuery(),
+              }}
+            >
+              <motion.div
+                initial={{ x: -5 }}
+                animate={{ x: 0 }}
+                whileHover={{ x: 5 }}
+                className="flex items-center gap-2"
+              >
+                <MagnifyingGlassIcon className="w-5 h-5" /> 
+                <span>Search</span>
+              </motion.div>
+            </Link>
+          </Button>
+        </motion.div>
+      </motion.div>
     );
   };

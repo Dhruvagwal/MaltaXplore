@@ -3,6 +3,7 @@ import Banner from "@/components/cui/banner";
 import ContactForm from "@/components/cui/contactForm";
 import { LinkedinIcon, TwitterIcon, InstagramIcon } from "lucide-react";
 import Tilt from "react-parallax-tilt";
+import { motion } from "framer-motion";
 
 const teamMembers = [
   {
@@ -44,24 +45,89 @@ const teamMembers = [
 ];
 
 const Aboutus = () => {
+  const fadeInUp = {
+    initial: { opacity: 0, y: 60 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.6 }
+  };
+
+  const slideIn = {
+    initial: { x: -100, opacity: 0 },
+    animate: { x: 0, opacity: 1 },
+    transition: { duration: 0.8, ease: "easeOut" }
+  };
+
+  const cardHover = {
+    hover: { 
+      scale: 1.05,
+      boxShadow: "0px 10px 20px rgba(0,0,0,0.1)",
+      transition: { type: "spring", stiffness: 300 }
+    }
+  };
+
+  const imageHover = {
+    hover: { 
+      scale: 1.1,
+      transition: { type: "spring", stiffness: 300 }
+    }
+  };
+
+  const floatingAnimation = {
+    animate: {
+      y: [0, -10, 0],
+      transition: {
+        duration: 3,
+        repeat: Infinity,
+        ease: "easeInOut"
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#fff5f5]">
       <main>
-        {/* Hero Banner */}
-        <div className="">
+        {/* Hero Banner with enhanced animation */}
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.5 }}
+        >
           <Banner url="/about-us-banner.jpg">
-            <h1 className="text-3xl md:text-4xl md:text-5xl lg:text-6xl font-bold text-white">
+            <motion.h1 
+              initial={{ y: 50, opacity: 0, scale: 0.5 }}
+              animate={{ y: 0, opacity: 1, scale: 1 }}
+              transition={{ 
+                duration: 0.8, 
+                delay: 0.5,
+                type: "spring",
+                stiffness: 200 
+              }}
+              className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white"
+            >
               About Us
-            </h1>
+            </motion.h1>
           </Banner>
-        </div>
+        </motion.div>
 
-        {/* Welcome Section */}
-        <section className="relative py-12 md:py-24">
-          <div className="mx-8 md:mx-20 max-md:px-4 flex flex-col lg:flex-row lg:justify-center lg:items-center gap-2 ">
-            {/* Left content */}
-            <div className="w-full lg:w-1/2 md:pr-8 md:mb-28">
-              <h1 className="text-3xl md:text-4xl md:text-5xl font-bold mb-6">
+        {/* Welcome Section with enhanced animations */}
+        <motion.section 
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="relative py-12 md:py-24"
+        >
+          <div className="mx-4 md:mx-8 lg:mx-20 flex flex-col lg:flex-row lg:justify-between lg:items-center gap-8 lg:gap-16">
+            {/* Left content with enhanced animations */}
+            <motion.div 
+              variants={slideIn}
+              initial="initial"
+              whileInView="animate"
+              viewport={{ once: true }}
+              whileHover={{ scale: 1.02 }}
+              transition={{ type: "spring", stiffness: 200 }}
+              className="w-full lg:w-1/2"
+            >
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
                 Welcome to MaltaXplore
               </h1>
               <p className="text-lg md:text-xl text-gray-700 mb-6">
@@ -76,128 +142,181 @@ const Aboutus = () => {
               <p className="text-gray-600">
                 As a team of passionate locals and travel enthusiasts, we bring
                 together firsthand knowledge and insider tips to help you
-                explore Malta like never before. From iconic landmarks to hidden
-                gems, from culinary delights to thrilling experiences, we aim to
-                connect you with the very best Malta has to offer.
+                explore Malta like never before.
               </p>
-            </div>
+            </motion.div>
 
-            {/* Right images grid */}
-
-            <div className="w-full lg:w-1/2 relative h-[600px] mt-16">
+            {/* Right images grid with enhanced animations */}
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="w-full lg:w-1/2 relative h-[400px] md:h-[600px] mt-8 lg:mt-0"
+            >
               {/* Top right image */}
-              <div className="absolute right-0 top-0 w-[80%] h-[80%] md:w-[70%] md:h-[90%] rounded-2xl overflow-hidden z-20">
-                <img
+              <motion.div 
+                initial={{ x: 100, opacity: 0 }}
+                whileInView={{ x: 0, opacity: 1 }}
+                whileHover={imageHover.hover}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3 }}
+                className="absolute right-0 top-0 w-[80%] h-[80%] md:w-[70%] md:h-[90%] rounded-2xl overflow-hidden z-20"
+              >
+                <motion.img
                   src="/malta-arial-view.png"
                   alt="Malta aerial view"
                   className="w-full h-full object-cover"
+                  whileHover={{ scale: 1.1 }}
+                  transition={{ duration: 0.3 }}
                 />
-              </div>
-              {/* Top left floating image */}
-              <div className="absolute left-0 md:left-16 top-[10%] w-[45%] h-[40%] md:w-[40%] md:h-[30%] rounded-2xl overflow-hidden z-30 shadow-xl bg-white p-2">
-                <Tilt>
-                  <img
+              </motion.div>
+              
+              {/* Floating images with enhanced animations */}
+              <motion.div 
+                variants={floatingAnimation}
+                animate="animate"
+                className="absolute left-0 md:left-16 top-[10%] w-[45%] h-[40%] md:w-[40%] md:h-[30%] rounded-2xl overflow-hidden z-30 shadow-xl bg-white p-2"
+              >
+                <Tilt tiltMaxAngleX={10} tiltMaxAngleY={10} scale={1.05}>
+                  <motion.img
                     src="/malta-church.png"
                     alt="Malta church"
                     className="w-full h-full object-cover rounded-xl"
+                    whileHover={{ scale: 1.15 }}
+                    transition={{ duration: 0.3 }}
                   />
                 </Tilt>
-              </div>
+              </motion.div>
 
-              {/* Bottom left floating image */}
-              <div className="absolute left-[10%] md:left-[0%] bottom-[10%] md:bottom-[18%] w-[45%] h-[40%] rounded-2xl overflow-hidden z-30 shadow-xl bg-white p-2">
-                <Tilt>
-                  <img
+              <motion.div 
+                variants={floatingAnimation}
+                animate="animate"
+                className="absolute left-[10%] md:left-[0%] bottom-[10%] md:bottom-[18%] w-[45%] h-[40%] rounded-2xl overflow-hidden z-30 shadow-xl bg-white p-2"
+              >
+                <Tilt tiltMaxAngleX={10} tiltMaxAngleY={10} scale={1.05}>
+                  <motion.img
                     src="malta-harbor.png"
                     alt="Malta harbor"
                     className="w-full h-full object-cover rounded-xl"
+                    whileHover={{ scale: 1.15 }}
+                    transition={{ duration: 0.3 }}
                   />
                 </Tilt>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           </div>
-        </section>
+        </motion.section>
 
         {/* Our Story Section */}
         <section className="relative py-12 md:py-24 bg-gray-50">
-          {/* <div className="container mx-auto px-4"> */}
-          <div className="mx-auto md:mx-20 max-md:px-4">
-            <div className="flex flex-col lg:flex-row items-start gap-8">
+          <div className="mx-4 md:mx-8 lg:mx-20">
+            <div className="flex flex-col lg:flex-row items-start gap-8 lg:gap-16">
               {/* Left side with image */}
-              <div className="w-full lg:w-1/2 relative">
-                <h2 className="text-xl md:text-3xl md:text-4xl font-bold absolute left-0 py-2 px-4 rounded-tr-2xl z-10">
+              <motion.div 
+                variants={fadeInUp}
+                initial="initial"
+                whileInView="animate"
+                viewport={{ once: true }}
+                className="w-full lg:w-1/2 relative"
+              >
+                <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold absolute left-0 py-2 px-4 rounded-tr-2xl z-10">
                   Our Story
                 </h2>
                 <div className="rounded-2xl overflow-hidden">
                   <img
                     src={"/images/ourstory.png"}
                     alt="Malta coastal village"
-                    className="w-full h-[300px] md:h-[400px] lg:h-[500px] object-cover"
+                    className="w-full h-[300px] md:h-[400px] lg:h-[500px] object-cover transform hover:scale-105 transition-transform duration-500"
                   />
                 </div>
-              </div>
+              </motion.div>
 
               {/* Right side with text */}
-              <div className="w-full lg:w-1/2 bg-white p-6 md:p-8 rounded-2xl shadow-sm mt-2 lg:mt-12">
+              <motion.div 
+                variants={slideIn}
+                initial="initial"
+                whileInView="animate"
+                viewport={{ once: true }}
+                className="w-full lg:w-1/2 bg-white p-6 md:p-8 rounded-2xl shadow-sm mt-8 lg:mt-12"
+              >
                 <p className="text-lg md:text-xl text-gray-800 mb-6">
                   MaltaXplore began with a simple idea: to share the unmatched
-                  beauty and rich culture of Malta with the world. What started
-                  as a passion project by a group of avid travelers and proud
-                  locals has grown into a trusted platform for exploring
-                  everything the Maltese Islands have to offer.
+                  beauty and rich culture of Malta with the world.
                 </p>
                 <p className="text-base md:text-lg text-gray-600">
                   Driven by a love for Malta's history, stunning vistas, and
                   warm hospitality, we set out to create a space where visitors
-                  can find authentic insights and practical advice to make their
-                  trip unforgettable. Our story is one of connection,
-                  inspiration, and a deep commitment to showcasing the heart of
-                  Malta to travelers from all walks of life.
+                  can find authentic insights and practical advice.
                 </p>
-              </div>
+              </motion.div>
             </div>
           </div>
         </section>
+
         {/* CEO Section */}
-        <section className="max-md:py-12 md:pt-24 relative">
-          {/* <div className="container mx-auto px-4"> */}
-          <div className="mx-2 md:mx-20 max-md:px-4">
+        <motion.section 
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="py-16 md:py-24 relative"
+        >
+          <div className="mx-4 md:mx-20">
             <div className="flex flex-col items-center text-center max-w-4xl mx-auto md:mb-24">
-              <div className="flex items-center gap-4 mb-8">
-                <span className="text-[#E5484D] text-6xl font-serif">"</span>
-                <h2 className="text-2xl md:text-4xl font-bold">
+              <div className="flex flex-col md:flex-row items-center gap-4 mb-8">
+                <span className="text-[#E5484D] text-4xl md:text-6xl font-serif">"</span>
+                <h2 className="text-xl md:text-2xl lg:text-4xl font-bold px-4">
                   At MaltaXplore, we aim to inspire and guide travelers,
                   ensuring every visit to Malta is unforgettable and authentic.
                 </h2>
-                <span className="text-[#E5484D] text-6xl font-serif rotate-180 mb-12">
+                <span className="text-[#E5484D] text-4xl md:text-6xl font-serif rotate-180 mb-0 md:mb-12">
                   "
                 </span>
               </div>
 
-              <div className="flex flex-col items-center">
+              <motion.div 
+                initial={{ scale: 0.8, opacity: 0 }}
+                whileInView={{ scale: 1, opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3 }}
+                className="flex flex-col items-center"
+              >
                 <img
                   src="/founder.png"
                   alt="Cleven D'amato"
-                  className="w-24 h-24 rounded-full object-cover mb-4"
+                  className="w-24 h-24 rounded-full object-cover mb-4 hover:scale-110 transition-transform duration-300"
                 />
                 <h3 className="text-xl font-semibold">Cleven D'amato</h3>
                 <p className="text-gray-600">CEO & Founder</p>
-              </div>
+              </motion.div>
             </div>
           </div>
-        </section>
+        </motion.section>
 
-        {/* Our Mission Section */}
+        {/* Our Mission Section with enhanced animations */}
         <section className="relative py-12 md:py-16">
-          <div className="relative max-w-[1400px] mx-8 md:mx-auto md:px-6">
-            {/* Background Image */}
-            <div className="w-full h-[260px] md:h-[500px] rounded-[2rem] overflow-hidden">
-              <img
+          <motion.div 
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="relative max-w-[1400px] mx-8 md:mx-auto md:px-6"
+          >
+            {/* Background Image with parallax effect */}
+            <motion.div 
+              initial={{ scale: 1.1 }}
+              whileInView={{ scale: 1 }}
+              transition={{ duration: 1.5 }}
+              className="w-full h-[260px] md:h-[500px] rounded-[2rem] overflow-hidden"
+            >
+              <motion.img
                 src={"/images/ourmission.jpg"}
                 alt="Malta coastline"
                 className="w-full h-full object-cover max-md:hidden"
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.5 }}
               />
-            </div>
+            </motion.div>
 
             {/* Overlay Title */}
             <div className="absolute left-1/2 -translate-x-1/2 top-0 px-12 md:mt-[-2rem] py-11 rounded-2xl">
@@ -206,63 +325,91 @@ const Aboutus = () => {
               </h2>
             </div>
 
-            {/* Mission and Vision Cards */}
+            {/* Mission and Vision Cards with enhanced animations */}
             <div className="max-w-6xl mx-auto md:px-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24 -mt-32 relative z-10">
-                {/* Mission Card */}
-                <Tilt>
-                  <div className="bg-white p-8 rounded-2xl shadow-lg">
-                    <h3 className="text-2xl md:text-3xl font-bold mb-6">
-                      Our Mission
-                    </h3>
-                    <p className="text-gray-600 leading-relaxed">
-                      At MaltaXplore, our mission is to inspire and empower
-                      travelers by providing reliable, in-depth information
-                      about Malta's attractions, activities, and accommodations.
-                      We are committed to being your trusted resource, ensuring
-                      every visitor to Malta has access to accurate, up-to-date,
-                      and personalized travel insights.
-                    </p>
-                  </div>
-                </Tilt>
+                <motion.div
+                  variants={cardHover}
+                  whileHover="hover"
+                  initial={{ opacity: 0, x: -50 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                >
+                  <Tilt tiltMaxAngleX={5} tiltMaxAngleY={5} scale={1.02}>
+                    <div className="bg-white p-8 rounded-2xl shadow-lg">
+                      <h3 className="text-2xl md:text-3xl font-bold mb-6">Our Mission</h3>
+                      <p className="text-gray-600 leading-relaxed">
+                        At MaltaXplore, our mission is to inspire and empower
+                        travelers by providing reliable, in-depth information
+                        about Malta's attractions, activities, and accommodations.
+                        We are committed to being your trusted resource, ensuring
+                        every visitor to Malta has access to accurate, up-to-date,
+                        and personalized travel insights.
+                      </p>
+                    </div>
+                  </Tilt>
+                </motion.div>
 
-                {/* Vision Card */}
-
-                <Tilt>
-                  <div className="bg-white p-8 rounded-2xl shadow-lg h-full">
-                    <h3 className="text-2xl md:text-3xl font-bold mb-6">
-                      Our Vision
-                    </h3>
-                    <p className="text-gray-600 leading-relaxed">
-                      To become the leading platform for exploring Malta,
-                      recognized globally for fostering meaningful travel
-                      experiences, promoting sustainable tourism, and
-                      celebrating the unique beauty of the Maltese Islands.
-                    </p>
-                  </div>
-                </Tilt>
+                <motion.div
+                  variants={cardHover}
+                  whileHover="hover"
+                  initial={{ opacity: 0, x: 50 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                >
+                  <Tilt tiltMaxAngleX={5} tiltMaxAngleY={5} scale={1.02}>
+                    <div className="bg-white p-8 rounded-2xl shadow-lg h-full">
+                      <h3 className="text-2xl md:text-3xl font-bold mb-6">Our Vision</h3>
+                      <p className="text-gray-600 leading-relaxed">
+                        To become the leading platform for exploring Malta,
+                        recognized globally for fostering meaningful travel
+                        experiences, promoting sustainable tourism, and
+                        celebrating the unique beauty of the Maltese Islands.
+                      </p>
+                    </div>
+                  </Tilt>
+                </motion.div>
               </div>
             </div>
-          </div>
+          </motion.div>
         </section>
 
-        {/* Team Section */}
+        {/* Team Section with enhanced animations */}
         <Section>
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-16 text-gray-900 max-md:mx-8">
+          <motion.h2 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-3xl md:text-4xl font-bold text-center mb-16 text-gray-900 max-md:mx-8"
+          >
             Meet with our smart team
-          </h2>
+          </motion.h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-16 md:gap-8 max-w-6xl mx-4 md:mx-auto">
-            {teamMembers.map((member) => (
-              <div key={member.id} className="group">
-                <div className="aspect-[3/4] rounded-2xl overflow-hidden mb-4">
-                  <img
-                    src={member.image}
-                    alt={member.name}
-                    width={400}
-                    height={533}
-                    className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
-                  />
-                </div>
+            {teamMembers.map((member, index) => (
+              <motion.div
+                key={member.id}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.2 }}
+                whileHover={{ y: -10 }}
+                className="group"
+              >
+                <Tilt tiltMaxAngleX={10} tiltMaxAngleY={10}>
+                  <motion.div 
+                    className="aspect-[3/4] rounded-2xl overflow-hidden mb-4"
+                    whileHover={{ scale: 1.03 }}
+                  >
+                    <motion.img
+                      src={member.image}
+                      alt={member.name}
+                      width={400}
+                      height={533}
+                      className="h-full w-full object-cover transition duration-300"
+                      whileHover={{ scale: 1.1 }}
+                    />
+                  </motion.div>
+                </Tilt>
                 <div className="space-y-2">
                   <h3 className="text-xl font-semibold text-gray-900">
                     {member.name}
@@ -292,7 +439,7 @@ const Aboutus = () => {
                     </a>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </Section>

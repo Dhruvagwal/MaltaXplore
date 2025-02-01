@@ -11,6 +11,7 @@ import CCategories from "@/components/Home/cCategories";
 import DiscoverMalta from "@/components/Home/discoverMalta";
 import Link from "next/link";
 import Image from "next/image";
+import { motion } from "framer-motion";
 import { search } from "@/data/link";
 import { Button } from "@/components/ui/button";
 import { Component1Icon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
@@ -34,64 +35,109 @@ import { ListingEveryDay } from "@/components/Home/listing-everyday";
 import { HeroSearch } from "@/components/Home/hero-search";
 import Weather from "@/components/Home/Weather";
 
+const fadeInUp = {
+  initial: { y: 60, opacity: 0 },
+  animate: { y: 0, opacity: 1 },
+  transition: { duration: 0.6, ease: "easeOut" }
+};
+
+const staggerContainer = {
+  animate: {
+    transition: {
+      staggerChildren: 0.2
+    }
+  }
+};
+
 export default function Home() {
   return (
     <div>
       <div className="bg-gradient-to-br from-primary-foreground to-transparent">
-        {/* <Navbar /> */}
         <main className="relative pt-16">
-          <div className="lg:relative h-[100vh]">
-            {/* <Image
-              src={"/hero-bg.png"}
-              width={200}
-              height={200}
-              className="w-full max-lg:hidden absolute top-0"
-            /> */}
-            <div className="lg:absolute w-full flex flex-col z-10 h-full top-0">
-              <div className="w-full  flex justify-around">
-                <div className="">
-                  <div className="mx-12 md:mx-0 space-y-4">
-                    <p className="font-semibold text-xl text-primary">
-                      Discover Malta In One Place
-                    </p>
-                    <br />
-                    <h1 className="text-5xl md:text-6xl lg:text-7xl leading-[1.3] font-bold">
-                      Discover Malta's <br />
-                      Best Experiences
-                    </h1>
+          <div className="min-h-[100vh] relative">
+            <motion.div 
+              initial="initial"
+              animate="animate"
+              variants={staggerContainer}
+              className="w-full flex flex-col lg:flex-row justify-between items-start px-4 md:px-8 lg:px-12"
+            >
+              {/* Left Content */}
+              <div className="w-full lg:w-2/3 space-y-6 md:space-y-8 pt-8 md:pt-12">
+                <motion.div 
+                  className="space-y-4 md:space-y-6"
+                  variants={staggerContainer}
+                >
+                  <motion.p 
+                    variants={fadeInUp}
+                    className="font-semibold text-lg md:text-xl text-primary"
+                  >
+                    Discover Malta In One Place
+                  </motion.p>
+                  <motion.h1 
+                    variants={fadeInUp}
+                    className="text-4xl md:text-6xl lg:text-7xl leading-[1.2] md:leading-[1.3] font-bold"
+                  >
+                    Discover Malta's<br />
+                    Best Experiences
+                  </motion.h1>
+                  <motion.p 
+                    variants={fadeInUp}
+                    className="text-base md:text-lg lg:text-xl leading-[1.5] max-w-2xl"
+                  >
+                    From tours and adventures to dining and relaxation,
+                    find everything you need for the perfect trip to Malta - all
+                    in one place
+                  </motion.p>
+                </motion.div>
 
-                    <p className="text-lg lg:text-xl leading-[1.5]">
-                      From tours and adventures to dining and relaxation, <br />
-                      find everything you need for the perfect trip to Malta -
-                      all
-                      <br />
-                      in one place
-                    </p>
-                    <br />
-                  </div>
-                  {/* <HeroCarousel className="" /> */}
-                  <HeroSearch className="" />
-                  <br />
+                {/* Search Section */}
+                <motion.div 
+                  variants={fadeInUp}
+                  className="w-full max-w-4xl"
+                >
+                  <HeroSearch className="transform-gpu" />
+                </motion.div>
 
-                  <div className="flex flex-col md:flex-row justify-center gap-6">
+                {/* Stats Section */}
+                <motion.div 
+                  variants={fadeInUp}
+                  className="flex flex-col md:flex-row gap-4 md:gap-6 pt-4 md:pt-8"
+                >
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                  >
                     <HappyCustomers />
+                  </motion.div>
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                  >
                     <ListingEveryDay />
-                  </div>
-                </div>
-                <Weather className="" />
+                  </motion.div>
+                </motion.div>
               </div>
-            </div>
+
+              {/* Right Content - Weather */}
+              <motion.div 
+                variants={{
+                  initial: { x: 100, opacity: 0 },
+                  animate: { x: 0, opacity: 1 },
+                  transition: { duration: 0.8, ease: "easeOut", delay: 0.4 }
+                }}
+                className="w-full lg:w-1/3 mt-8 lg:mt-0"
+              >
+                <Weather className="max-w-sm mx-auto lg:ml-auto" />
+              </motion.div>
+            </motion.div>
           </div>
-          {/* Discover Malta Best Experiences */}
-          {/* <DiscoverMalta /> */}
-          {/* Categories Search */}
-          {/* Phone Features */}
+
+          {/* Rest of the sections */}
           <PhoneFeatures />
-          {/* Top Picks */}
           <TopPicks />
-          {/* Categories */}
           <CCategories />
-          {/* Itenary */}
           <Iteneray />
           <Events />
           <MaltaPass />

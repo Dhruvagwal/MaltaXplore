@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Reviews from "@/components/cui/review";
@@ -39,50 +40,169 @@ const reviews = [
 ];
 
 function maltapass() {
+  // Animation variants
+  const fadeInUp = {
+    initial: { opacity: 0, y: 60 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.6 }
+  };
+
+  const slideIn = {
+    initial: { x: -100, opacity: 0 },
+    animate: { x: 0, opacity: 1 },
+    transition: { duration: 0.8, ease: "easeOut" }
+  };
+
+  const scaleIn = {
+    initial: { scale: 0.8, opacity: 0 },
+    animate: { scale: 1, opacity: 1 },
+    transition: { duration: 0.6 }
+  };
+
+  const staggerContainer = {
+    animate: {
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const discountBadgeAnimation = {
+    initial: { scale: 0, rotate: -180 },
+    animate: { scale: 1, rotate: 0 },
+    transition: { 
+      type: "spring",
+      stiffness: 260,
+      damping: 20,
+      delay: 0.3
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="relative bg-[#E5484D] max-md:px-0 grid md:grid-cols-2 md:gap-28 mx-8 md:mx-20 items-center max-md:rounded-md">
-          <div className="text-white space-y-6 py-32 relative z-10 md:pl-24 max-md:px-8">
-            <span className="text-sm font-medium">MaltaPass</span>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-              Unlock the Best of Malta with One Pass
-            </h1>
-            <p className="text-lg opacity-90">
-              The MaltaPass is your ultimate key to discovering Malta's rich
-              history, stunning landscapes, and vibrant culture—all while saving
-              money and making your journey hassle-free.
-            </p>
+        <motion.section 
+          initial="initial"
+          animate="animate"
+          variants={staggerContainer}
+          className="relative bg-[#E5484D] mx-4 md:mx-8 lg:mx-20 rounded-lg overflow-hidden"
+        >
+          <div className="grid md:grid-cols-2 items-center">
+            {/* Left Content */}
+            <motion.div 
+              variants={slideIn}
+              className="text-white space-y-4 md:space-y-6 p-8 md:p-12 lg:p-16 xl:pl-24 relative z-10"
+            >
+              <motion.span 
+                variants={fadeInUp}
+                className="text-sm md:text-base font-medium inline-block"
+              >
+                MaltaPass
+              </motion.span>
+              <motion.h1 
+                variants={fadeInUp}
+                className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight"
+              >
+                Unlock the Best of
+                <br /> Malta with One Pass
+              </motion.h1>
+              <motion.p 
+                variants={fadeInUp}
+                className="text-base md:text-lg opacity-90 max-w-xl"
+              >
+                The MaltaPass is your ultimate key to discovering Malta's rich
+                history, stunning landscapes, and vibrant culture—all while saving
+                money and making your journey hassle-free.
+              </motion.p>
+            </motion.div>
+
+            {/* Right Content with Image and Discount Badge */}
+            <motion.div 
+              variants={scaleIn}
+              className="relative h-full min-h-[300px] md:min-h-[500px]"
+            >
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+              >
+                <Image
+                  src="/images/metapasshero.svg"
+                  alt="Malta Harbor"
+                  fill
+                  className="object-cover"
+                  priority
+                />
+              </motion.div>
+              
+              {/* Animated Discount Badge */}
+              <motion.div
+                variants={discountBadgeAnimation}
+                whileHover={{ scale: 1.1 }}
+                className="absolute right-4 top-4 md:right-[85%] md:top-[29%] w-[120px] h-[120px] md:w-[180px] md:h-[180px] bg-white rounded-full flex flex-col items-center justify-center text-[#E5484D] font-bold shadow-lg"
+              >
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.8 }}
+                  className="text-4xl md:text-7xl leading-none"
+                >
+                  30%
+                </motion.div>
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1 }}
+                  className="text-xs md:text-sm mt-1"
+                >
+                  UP TO OFF
+                </motion.div>
+              </motion.div>
+            </motion.div>
           </div>
-          <div className="relative h-full w-full">
-            <Image
-              width={1000}
-              height={1000}
-              src="/images/metapasshero.svg"
-              alt="Malta Harbor"
-              className="md:absolute right-0 top-0 inset-0 w-full h-full object-cover max-md:rounded-b-md"
-            />
-            <div className="absolute right-4 top-4 md:right-[85%] md:top-[29%] w-[150px] h-[150px] md:w-[180px] md:h-[180px] bg-white rounded-full flex flex-col items-center justify-center text-[#E5484D] font-bold">
-              <div className="text-5xl md:text-7xl">30%</div>
-              <div className="text-sm">UP TO OFF</div>
-            </div>
-          </div>
-        </section>
+
+          {/* Animated gradient overlay */}
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 0.5 }}
+            className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-white/10 to-transparent"
+          />
+        </motion.section>
 
         {/* What is MaltaPass Section */}
-        <section className="py-16 md:py-24">
-          {/* <div className="container mx-auto px-4"> */}
+        <motion.section 
+          initial="initial"
+          whileInView="animate"
+          viewport={{ once: true }}
+          variants={staggerContainer}
+          className="py-16 md:py-24"
+        >
           <div className="mx-auto md:mx-20 max-md:px-8">
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-                <div className="place-items-center">
-                  <img src="/group.png" className="w-full h-full" />
-                </div>
+            <motion.div 
+              variants={fadeInUp}
+              className="grid md:grid-cols-2 gap-12 items-center"
+            >
+              <motion.div 
+                variants={scaleIn}
+                whileHover={{ scale: 1.02 }}
+                transition={{ type: "spring", stiffness: 300 }}
+                className="place-items-center"
+              >
+                <img src="/group.png" className="w-full h-full" alt="Group" />
+              </motion.div>
 
-              <div className="max-md:mx-8 space-y-8">
-                <h2 className="text-3xl md:text-4xl font-bold">
+              <motion.div 
+                variants={slideIn}
+                className="max-md:mx-8 space-y-8"
+              >
+                <motion.h2 
+                  variants={fadeInUp}
+                  className="text-3xl md:text-4xl font-bold"
+                >
                   What is the MaltaPass?
-                </h2>
+                </motion.h2>
                 <p className="text-gray-600">
                   The MaltaPass is an all-inclusive travel pass designed to
                   offer you:
@@ -124,10 +244,10 @@ function maltapass() {
                   MaltaPass ensures you enjoy everything the island has to offer
                   without overspending.
                 </p>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           </div>
-        </section>
+        </motion.section>
 
         {/* Benefits Overview Section */}
         <section className="py-16 md:py-24 bg-[#FFF1F2]">

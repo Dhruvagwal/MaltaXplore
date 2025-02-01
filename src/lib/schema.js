@@ -242,21 +242,18 @@ export const cancelBookingSchema = z.object({
   message: z.string().min(1, "Message cannot be empty"),
 });
 
-export const bookingSchema = z.object({
-  date: z.date({
-    required_error: "Start date is required",
-    invalid_type_error: "Invalid date format",
-  }),
-  endDate: z.date({
-    required_error: "End date is required",
-    invalid_type_error: "Invalid date format",
-  }).refine((endDate, ctx) => {
-    if (ctx.parent.date && endDate <= ctx.parent.date) {
-      return false;
-    }
-    return true;
-  }, {
-    message: "End date must be after the start date",
-    path: ["endDate"],
-  }),
-});
+export const bookingSchema = z
+  .object({
+    startDate: z.coerce.date(),
+    endDate: z.coerce.date(),
+    adults: z.coerce
+      .number()
+      .min(1, "Adults must be greater than or equal to 1"),
+    child: z.coerce
+      .number()
+      .min(0, "Childrens must be greater than or equal to 1"),
+  })
+  .refine((data) => data.startDate < data.endDate, {
+    message: "startDate must be before endDate",
+    path: ["startDate"],
+  });

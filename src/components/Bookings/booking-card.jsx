@@ -15,57 +15,71 @@ import useCustomForm from "@/hooks/use-custom-form";
 import { bookingSchema } from "@/lib/schema";
 import { currency } from "@/data/currency";
 
+const Count = ({ onUpdate, count, heading }) => {
+  return (
+    <div>
+      <label className="text-sm font-medium mb-1 block">{heading}</label>
+
+      <div className="flex items-center gap-2">
+        <Button
+          type="button"
+          variant="outline"
+          size="icon"
+          onClick={() => onUpdate(Math.max(0, count - 1))}
+          className="hover:bg-primary-foreground hover:text-primary transition-colors"
+        >
+          -
+        </Button>
+        <span className="w-12 text-center">{count}</span>
+        <Button
+          type="button"
+          variant="outline"
+          size="icon"
+          onClick={() => onUpdate(count + 1)}
+          className="hover:bg-primary-foreground hover:text-primary transition-colors"
+        >
+          +
+        </Button>
+      </div>
+    </div>
+  );
+};
+
 const BookingCard = ({ service, isLoading }) => {
   const { toast } = useToast();
   const router = useRouter();
   const { user, session, setSession, setUser } = useAuthState();
   const { adults, setAdults, child, setChild, totalPrice, date, endDate } =
     useBooking();
-  const { FormWrapper, FormDatePicker } = useCustomForm({
+  const { FormWrapper, FormDatePicker, setValue, watch } = useCustomForm({
     schema: bookingSchema,
+    defaultValues: {
+      adults: 1,
+      child: 0,
+    },
   });
 
-  if (isLoading || !service) {
-    return;
-  }
-
-  const handleBookNowButton = (data) => {
+  const onSubmit = (data) => {
     console.log(data);
-    // const selectedDate = new Date(date);
-    // const currentDate = new Date();
 
-    // selectedDate.setHours(0, 0, 0, 0);
-    // currentDate.setHours(0, 0, 0, 0);
+    if (session) {
+      if (session?.user) {
+        addUserToDatabase(session.user);
+        const fetchUserData = async () => {
+          const user = await getUserFromDatabase(session?.user.id);
+          if (user) {
+            setUser(user);
+          }
+        };
+        fetchUserData();
+      }
 
-    // if (isNaN(selectedDate.getTime())) {
-    //   return;
-    // }
-
-    // if (selectedDate < currentDate) {
-    //   toast({
-    //     variant: "destructive",
-    //     title: "Invalid Form Submission",
-    //     description: "Please check the form for errors and try again.",
-    //   });
-    // }
-    // if (session) {
-    //   if (session?.user) {
-    //     addUserToDatabase(session.user);
-    //     const fetchUserData = async () => {
-    //       const user = await getUserFromDatabase(session?.user.id);
-    //       if (user) {
-    //         setUser(user);
-    //       }
-    //     };
-    //     fetchUserData();
-    //   }
-
-    //   router.push(`${booking.replace("[id]", service?.id)}`);
-    // } else {
-    //   supabase.auth.getSession().then(({ data: { session } }) => {
-    //     setSession(session);
-    //   });
-    // }
+      router.push(`${booking.replace("[id]", service?.id)}`);
+    } else {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        setSession(session);
+      });
+    }
   };
 
   const onError = (errors) => {
@@ -76,6 +90,10 @@ const BookingCard = ({ service, isLoading }) => {
     });
     console.error(errors);
   };
+
+  if (isLoading || !service) {
+    return;
+  }
 
   return (
     <div>
@@ -91,78 +109,31 @@ const BookingCard = ({ service, isLoading }) => {
         <CardContent className="p-6 space-y-6">
           <FormWrapper
             className="flex flex-col gap-6"
-            onSubmit={handleBookNowButton}
+            onSubmit={onSubmit}
             onError={onError}
           >
-            <div className="space-y-4">
-              <div>
-                <FormDatePicker
-                  required
-                  title={"Start Date"}
-                  id={"startdate"}
-                  placeholder={"Start Date"}
-                />
-              </div>
-
-              <div>
-                <FormDatePicker
-                  required
-                  title={"End Date"}
-                  id={"endDate"}
-                  placeholder={"End Date"}
-                />{" "}
-              </div>
-
-              <div>
-                <label className="text-sm font-medium mb-1 block">Adults</label>
-
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => setAdults(Math.max(1, adults - 1))}
-                    className="hover:bg-primary-foreground hover:text-primary transition-colors"
-                  >
-                    -
-                  </Button>
-                  <span className="w-12 text-center">{adults}</span>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => setAdults(adults + 1)}
-                    className="hover:bg-primary-foreground hover:text-primary transition-colors"
-                  >
-                    +
-                  </Button>
-                </div>
-              </div>
-
-              <div>
-                <label className="text-sm font-medium mb-1 block">
-                  Children
-                </label>
-
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => setChild(Math.max(0, child - 1))}
-                    className="hover:bg-primary-foreground hover:text-primary transition-colors"
-                  >
-                    -
-                  </Button>
-                  <span className="w-12 text-center">{child}</span>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => setChild(child + 1)}
-                    className="hover:bg-primary-foreground hover:text-primary transition-colors"
-                  >
-                    +
-                  </Button>
-                </div>
-              </div>
-            </div>
+            <FormDatePicker
+              placeholder="Start Date"
+              required
+              title={"Start Date"}
+              id="startDate"
+            />
+            <FormDatePicker
+              placeholder="End Date"
+              required
+              title={"End Date"}
+              id="endDate"
+            />
+            <Count
+              count={watch("adults")}
+              heading={"Adults"}
+              onUpdate={(count) => setValue("adults", count)}
+            />
+            <Count
+              count={watch("child")}
+              heading={"Childrens"}
+              onUpdate={(count) => setValue("child", count)}
+            />
 
             <div className="border-t pt-4">
               <div className="flex justify-between mb-2">

@@ -279,9 +279,9 @@ const useCustomForm = ({ defaultValues = {} }) => {
           <FormControl>
             <DatePicker
               placeholder={placeholder}
+              required={required}
               {...field}
               date={field.value}
-              required={required}
               onChange={(date) => field.onChange(date)} // Handle date changes
             />
           </FormControl>

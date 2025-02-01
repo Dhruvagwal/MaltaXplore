@@ -13,79 +13,59 @@ import { contactUs, booking } from "@/data/link";
 import { useToast } from "@/hooks/use-toast";
 import useCustomForm from "@/hooks/use-custom-form";
 import { bookingSchema } from "@/lib/schema";
+import { currency } from "@/data/currency";
 
 const BookingCard = ({ service, isLoading }) => {
   const { toast } = useToast();
   const router = useRouter();
   const { user, session, setSession, setUser } = useAuthState();
-  const {
-    adults,
-    setAdults,
-    child,
-    setChild,
-    totalPrice,
-    date,
-    setDate,
-    endDate,
-    setEndDate,
-  } = useBooking();
-
-  const {
-    FormWrapper,
-    formState: { isSubmitting },
-    FormDatePicker,
-  } = useCustomForm({
+  const { adults, setAdults, child, setChild, totalPrice, date, endDate } =
+    useBooking();
+  const { FormWrapper, FormDatePicker } = useCustomForm({
     schema: bookingSchema,
   });
 
-    if (isLoading || !service) {
-      return
-    }
+  if (isLoading || !service) {
+    return;
+  }
 
-  const HandleBookNowButton = () => {
-    console.log(date, endDate);
-    if (!date || !endDate) {
-      toast({
-        variant: "destructive",
-        title: "Invalid Form Submission",
-        description: "Please Select Start And End Date.",
-      });
-    }
-    const selectedDate = new Date(date);
-    const currentDate = new Date();
+  const handleBookNowButton = (data) => {
+    console.log(data);
+    // const selectedDate = new Date(date);
+    // const currentDate = new Date();
 
-    selectedDate.setHours(0, 0, 0, 0);
-    currentDate.setHours(0, 0, 0, 0);
+    // selectedDate.setHours(0, 0, 0, 0);
+    // currentDate.setHours(0, 0, 0, 0);
 
-    if (isNaN(selectedDate.getTime())) {
-      return;
-    }
+    // if (isNaN(selectedDate.getTime())) {
+    //   return;
+    // }
 
-    if (selectedDate < currentDate) {
-      toast({
-        variant: "destructive",
-        title: "Invalid Form Submission",
-        description: "Please check the form for errors and try again.",
-      });
-    }
-    if (session) {
-      if (session?.user) {
-        addUserToDatabase(session.user);
-        const fetchUserData = async () => {
-          const user = await getUserFromDatabase(session?.user.id);
-          if (user) {
-            setUser(user);
-          }
-        };
-        fetchUserData();
-      }
+    // if (selectedDate < currentDate) {
+    //   toast({
+    //     variant: "destructive",
+    //     title: "Invalid Form Submission",
+    //     description: "Please check the form for errors and try again.",
+    //   });
+    // }
+    // if (session) {
+    //   if (session?.user) {
+    //     addUserToDatabase(session.user);
+    //     const fetchUserData = async () => {
+    //       const user = await getUserFromDatabase(session?.user.id);
+    //       if (user) {
+    //         setUser(user);
+    //       }
+    //     };
+    //     fetchUserData();
+    //   }
 
-      router.push(`${booking.replace("[id]", service?.id)}`);
-    } else {
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        setSession(session);
-      });
-    }
+    //   router.push(`${booking.replace("[id]", service?.id)}`);
+    // } else {
+    //   supabase.auth.getSession().then(({ data: { session } }) => {
+    //     setSession(session);
+    //   });
+    // }
   };
 
   const onError = (errors) => {
@@ -100,28 +80,33 @@ const BookingCard = ({ service, isLoading }) => {
   return (
     <div>
       <Card className="sticky top-24">
-        <CardHeader className="bg-[#E5484D] text-white rounded-t-lg">
-          <CardTitle className="text-3xl">${service?.price}</CardTitle>
+        <CardHeader className="bg-primary text-white rounded-t-lg">
+          <CardTitle className="text-3xl">
+            {currency.sign}
+            {service?.price}
+          </CardTitle>
           <div className="text-white/90">per person</div>
         </CardHeader>
 
         <CardContent className="p-6 space-y-6">
           <FormWrapper
             className="flex flex-col gap-6"
-            onSubmit={HandleBookNowButton}
+            onSubmit={handleBookNowButton}
             onError={onError}
           >
             <div className="space-y-4">
               <div>
                 <FormDatePicker
+                  required
                   title={"Start Date"}
-                  id={"date"}
+                  id={"startdate"}
                   placeholder={"Start Date"}
                 />
               </div>
 
               <div>
                 <FormDatePicker
+                  required
                   title={"End Date"}
                   id={"endDate"}
                   placeholder={"End Date"}
@@ -136,7 +121,7 @@ const BookingCard = ({ service, isLoading }) => {
                     variant="outline"
                     size="icon"
                     onClick={() => setAdults(Math.max(1, adults - 1))}
-                    className="hover:bg-[#FFE4E5] hover:text-[#E5484D] transition-colors"
+                    className="hover:bg-primary-foreground hover:text-primary transition-colors"
                   >
                     -
                   </Button>
@@ -145,7 +130,7 @@ const BookingCard = ({ service, isLoading }) => {
                     variant="outline"
                     size="icon"
                     onClick={() => setAdults(adults + 1)}
-                    className="hover:bg-[#FFE4E5] hover:text-[#E5484D] transition-colors"
+                    className="hover:bg-primary-foreground hover:text-primary transition-colors"
                   >
                     +
                   </Button>
@@ -162,7 +147,7 @@ const BookingCard = ({ service, isLoading }) => {
                     variant="outline"
                     size="icon"
                     onClick={() => setChild(Math.max(0, child - 1))}
-                    className="hover:bg-[#FFE4E5] hover:text-[#E5484D] transition-colors"
+                    className="hover:bg-primary-foreground hover:text-primary transition-colors"
                   >
                     -
                   </Button>
@@ -171,7 +156,7 @@ const BookingCard = ({ service, isLoading }) => {
                     variant="outline"
                     size="icon"
                     onClick={() => setChild(child + 1)}
-                    className="hover:bg-[#FFE4E5] hover:text-[#E5484D] transition-colors"
+                    className="hover:bg-primary-foreground hover:text-primary transition-colors"
                   >
                     +
                   </Button>
@@ -185,7 +170,7 @@ const BookingCard = ({ service, isLoading }) => {
                 <span className="font-bold">€{totalPrice}.00</span>
               </div>
 
-              <Button className="w-full bg-[#E5484D] hover:bg-[#E5484D]/90 text-white transition-all duration-300 transform hover:scale-[1.02]">
+              <Button className="w-full bg-primary hover:bg-primary/90 text-white transition-all duration-300 transform hover:scale-[1.02]">
                 Book Now
               </Button>
 

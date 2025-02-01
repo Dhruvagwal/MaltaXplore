@@ -1,18 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Star } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import useCustomForm from "@/hooks/use-custom-form";
 import { reviewsSchema } from "@/lib/schema";
-import { Button } from "../ui/button";
-import FileUpload from "../ui/filepond";
 import { useAuthState } from "@/context/ueAuthContext";
-import { addReview } from "@/features/reviews/addServiceReview";
-import { getServiceReviews } from "@/features/reviews/getServiceReviews";
+// import { addReview } from "@/features/reviews/addServiceReview";
 
-export default function ReviewsPage({ serviceId }) {
+export default function ReviewsPage({ serviceId,allReviews }) {
   const { user } = useAuthState();
   const {
     FormWrapper,
@@ -24,43 +21,26 @@ export default function ReviewsPage({ serviceId }) {
   });
   const [userRating, setUserRating] = useState(0);
   const [currentPage, setCurrentPage] = useState(3);
-  const [isLoading, setIsLoading] = useState(false);
-  const [allReviews, setAllReviews] = useState([]);
 
-  const fetchReviews = async () => {
-    try {
-      const fetchedReviews = await getServiceReviews(serviceId);
-      setAllReviews(fetchedReviews);
-    } catch (error) {
-      console.log("Failed to fetch reviews.", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchReviews();
-  }, [serviceId]);
-
-  const handleSubmit = async (data) => {
-    setIsLoading(true);
-    try {
-      const newReview = {
-        rating: userRating,
-        description: data?.reviews,
-        service_id: serviceId,
-        user_id: user?.id,
-        location: "Malta",
-      };
-      await addReview(newReview);
-      reset();
-      fetchReviews();
-      setUserRating(0);
-    } catch (error) {
-      console.error("An unexpected error occurred:", error.message || error);
-    } finally {
-      setIsLoading(false);
-      reset();
-    }
-  };
+  // const handleSubmit = async (data) => {
+  //   try {
+  //     const newReview = {
+  //       rating: userRating,
+  //       description: data?.reviews,
+  //       service_id: serviceId,
+  //       user_id: user?.id,
+  //       location: "Malta",
+  //     };
+  //     await addReview(newReview);
+  //     reset();
+  //     fetchReviews();
+  //     setUserRating(0);
+  //   } catch (error) {
+  //     console.error("An unexpected error occurred:", error.message || error);
+  //   } finally {
+  //     reset();
+  //   }
+  // };
 
   const onError = (errors) => {
     toast({
@@ -71,9 +51,9 @@ export default function ReviewsPage({ serviceId }) {
     console.error(errors);
   };
 
-  const totalReviews = allReviews.length;
+  const totalReviews = allReviews?.length;
   const ratingCounts = [5, 4, 3, 2, 1].reduce((acc, star) => {
-    acc[star] = allReviews.filter((review) => review.rating === star).length;
+    acc[star] = allReviews?.filter((review) => review.rating === star).length;
     return acc;
   }, {});
 
@@ -87,7 +67,7 @@ export default function ReviewsPage({ serviceId }) {
 
   return (
     <div className="max-w-6xl mx-auto px-0 sm:px-0 lg:px-0 py-8 sm:py-0">
-    {/* <div className="min-h-screen max-w-6xl mx-auto px-0 sm:px-0 lg:px-0 py-8 sm:py-0"> */}
+      {/* <div className="min-h-screen max-w-6xl mx-auto px-0 sm:px-0 lg:px-0 py-8 sm:py-0"> */}
       {/* <h1 className="text-3xl sm:text-4xl font-bold text-center mb-8 sm:mb-12">Reviews & Testimonials</h1> */}
 
       {/* Rating Overview */}
@@ -114,26 +94,31 @@ export default function ReviewsPage({ serviceId }) {
 
           {/* Right side - Rating bars */}
           <div className="flex-1 space-y-4">
-        {[5, 4, 3, 2, 1].map((stars) => {
-          const count = ratingCounts[stars] || 0;
-          const percentage = totalReviews > 0 ? (count / totalReviews) * 100 : 0;
+            {[5, 4, 3, 2, 1].map((stars) => {
+              const count = ratingCounts[stars] || 0;
+              const percentage =
+                totalReviews > 0 ? (count / totalReviews) * 100 : 0;
 
-          return (
-            <div key={stars} className="flex items-center gap-4">
-              <span className="w-16 text-sm text-gray-600">{stars} star</span>
-              <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-red-500 rounded-full"
-                  style={{
-                    width: `${percentage}%`,
-                  }}
-                />
-              </div>
-              <span className="w-8 text-sm text-gray-600 text-right">{count}</span>
-            </div>
-          );
-        })}
-      </div>
+              return (
+                <div key={stars} className="flex items-center gap-4">
+                  <span className="w-16 text-sm text-gray-600">
+                    {stars} star
+                  </span>
+                  <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-red-500 rounded-full"
+                      style={{
+                        width: `${percentage}%`,
+                      }}
+                    />
+                  </div>
+                  <span className="w-8 text-sm text-gray-600 text-right">
+                    {count}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
 

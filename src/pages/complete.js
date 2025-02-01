@@ -15,9 +15,7 @@ import Link from "next/link";
 import { sendEmail, sendEmailToBookingPersons } from "@/features/sendEmail";
 import getPaymentDetails from "@/features/getPaymentDetails";
 import { supabase } from "@/supabaseConfig";
-const stripePromise = loadStripe(
-  "pk_test_51QeatsDk75aWHW4POpFQMr6DEc6Vg8MNxdR0La3Q7QTNKm9ej2fgSYaZhhSpTTf93dav99IkTt6QuINLkfpaZrAI00wF7qXy50"
-);
+const stripePromise = loadStripe(process.env.NEXT_PUBLISHABLE_KEY);
 
 const CompletePage = () => {
   const router = useRouter();

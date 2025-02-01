@@ -33,9 +33,7 @@ import { useAuthState } from "@/context/ueAuthContext";
 import { HoverCardComponent } from "@/components/cui/hover-card";
 import { getTaxRate } from "@/features/getTaxAndRate";
 
-const stripePromise = loadStripe(
-  "pk_test_51QeatsDk75aWHW4POpFQMr6DEc6Vg8MNxdR0La3Q7QTNKm9ej2fgSYaZhhSpTTf93dav99IkTt6QuINLkfpaZrAI00wF7qXy50"
-); // Use the publishable key
+const stripePromise = loadStripe(process.env.NEXT_PUBLISHABLE_KEY);
 
 const BookingPage = () => {
   const { user } = useAuthState();
@@ -82,7 +80,7 @@ const BookingPage = () => {
           currency: "usd",
           email: user?.email,
         });
-        console.log(response)
+        console.log(response);
         setPaymentIntentId(response?.data?.paymentIntent?.id);
         setClientSecret(response?.data?.clientSecret);
       };

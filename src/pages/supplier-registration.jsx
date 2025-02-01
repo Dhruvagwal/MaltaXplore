@@ -3,7 +3,6 @@
 import React from "react";
 
 import useCustomForm from "@/hooks/use-custom-form";
-import useFirebase from "@/hooks/use-firebase";
 import { useToast } from "@/hooks/use-toast";
 
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
@@ -15,9 +14,7 @@ import Banner from "@/components/cui/banner";
 
 function SupplierRegistration() {
   const { toast } = useToast();
-  const {
-    crud: { writeData },
-  } = useFirebase();
+
   const {
     FormWrapper,
     FormInput,
@@ -40,16 +37,16 @@ function SupplierRegistration() {
   };
 
   const handleSubmit = async (data) => {
-    try {
-      await writeData(`/supplier-queries/${v4()}`, data);
-      toast({
-        variant: "success",
-        title: "Form Submitted",
-        description: "Registration Successfull!",
-      });
-    } catch (error) {
-      console.error("Error submitting the form: ", error);
-    }
+    // try {
+    //   await writeData(`/supplier-queries/${v4()}`, data);
+    //   toast({
+    //     variant: "success",
+    //     title: "Form Submitted",
+    //     description: "Registration Successfull!",
+    //   });
+    // } catch (error) {
+    //   console.error("Error submitting the form: ", error);
+    // }
   };
 
   return (

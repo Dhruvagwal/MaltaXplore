@@ -1,4 +1,5 @@
 import { supabase } from "@/supabaseConfig";
+import { useQuery } from "@tanstack/react-query";
 
 export const getServiceById = async (id) => {
   try {
@@ -6,11 +7,20 @@ export const getServiceById = async (id) => {
       .from("services")
       .select("*")
       .eq("id", id)
-      .single(); 
+      .single();
+
     if (error) throw error;
     return service;
   } catch (error) {
     console.error(`Error fetching service with ID ${id}:`, error.message);
-    return null;
+    throw error;
   }
+};
+
+export const useService = (id) => {
+  return useQuery({
+    queryKey: ["service", id],
+    queryFn: () => getServiceById(id),
+    enabled: !!id,
+  });
 };

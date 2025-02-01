@@ -65,7 +65,7 @@ const ReviewSection = ({ heading, allReviews }) => {
                 <div className="flex items-start gap-2 mb-4">
                   <span className="text-4xl text-gray-300 font-serif">"</span>
                   <div className="flex gap-1">
-                  {[1, 2, 3, 4, 5].map((star,i) => (
+                    {[1, 2, 3, 4, 5].map((star, i) => (
                       <Star
                         key={i}
                         className={`w-5 h-5 ${
@@ -84,8 +84,8 @@ const ReviewSection = ({ heading, allReviews }) => {
                   <Avatar>
                     <AvatarImage
                       src={review?.user?.avatar}
-                      alt={review?.user?.name}
-                    />
+                      alt={review?.user?.name || "User Avatar" }
+                    /> 
                     <AvatarFallback>
                       {" "}
                       {review?.users.name.charAt(0)}

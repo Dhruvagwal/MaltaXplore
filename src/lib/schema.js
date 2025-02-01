@@ -241,3 +241,22 @@ export const filtersSchema = z.object({
 export const cancelBookingSchema = z.object({
   message: z.string().min(1, "Message cannot be empty"),
 });
+
+export const bookingSchema = z.object({
+  date: z.date({
+    required_error: "Start date is required",
+    invalid_type_error: "Invalid date format",
+  }),
+  endDate: z.date({
+    required_error: "End date is required",
+    invalid_type_error: "Invalid date format",
+  }).refine((endDate, ctx) => {
+    if (ctx.parent.date && endDate <= ctx.parent.date) {
+      return false;
+    }
+    return true;
+  }, {
+    message: "End date must be after the start date",
+    path: ["endDate"],
+  }),
+});

@@ -52,7 +52,6 @@ export default function App({ Component, pageProps }) {
         .from("services")
         .select("*, supplieraccess(*)")
         .eq("status", "active");
-      console.log(services);
       setServices(services);
     };
     fetchData();

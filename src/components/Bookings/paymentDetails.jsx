@@ -20,6 +20,11 @@ import {
 import { cardSchema } from "@/lib/schema";
 import { useRouter } from "next/router";
 import { supabase } from "@/supabaseConfig";
+import { loadStripe } from "@stripe/stripe-js";
+
+
+const stripePromise = loadStripe(process.env.NEXT_PUBLISHABLE_KEY);
+
 //payment page
 const PaymentDetails = ({
   clientSecret,
@@ -194,22 +199,8 @@ const PaymentDetails = ({
 };
 
 const PaymentDetailsPage = ({ nextStep = () => {} }) => {
-  
-  const [clientSecret, setClientSecret] = useState("");
-  const [paymentIntentId, setPaymentIntentId] = useState("");
-  useEffect(() => {
-    const fetchClientSecret = async () => {
-      const response = await axios.post("/api/create-payment-intent", {
-        amount: finalPrice * 100,
-        currency: "usd",
-        email: user?.email,
-      });
-      console.log(response);
-      setPaymentIntentId(response?.data?.paymentIntent?.id);
-      setClientSecret(response?.data?.clientSecret);
-    };
-    fetchClientSecret();
-  }, []);
+  const { finalPrice, paymentIntentId, clientSecret } = useBooking();
+
   return (
     <Elements stripe={stripePromise} options={{ clientSecret }}>
       <PaymentDetails nextStep={nextStep} />

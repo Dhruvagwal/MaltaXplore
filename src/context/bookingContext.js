@@ -2,7 +2,9 @@ import { useRouter } from "next/router";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useAuthState } from "./ueAuthContext";
 import { useService } from "@/features/getServiceById";
-import { getTaxRate, useTaxRate } from "@/features/getTaxAndRate";
+import { useTaxRate } from "@/features/getTaxAndRate";
+import axios from "axios";
+import { currency } from "@/data/currency";
 
 const BookingContext = createContext();
 
@@ -26,6 +28,9 @@ export const BookingProvider = ({ children }) => {
   const { data: taxRate } = useTaxRate();
   const { data: tourData } = useService(id);
 
+  const [clientSecret, setClientSecret] = useState("");
+  const [paymentIntentId, setPaymentIntentId] = useState("");
+
   const adults = sadults ? Number(sadults) : 1;
   const child = schild ? Number(schild) : 0;
 
@@ -36,6 +41,19 @@ export const BookingProvider = ({ children }) => {
   const discountAmount = basePrice - Number(100);
 
   const finalPrice = basePrice + taxesAndFees - discountAmount;
+
+  useEffect(() => {
+    const fetchClientSecret = async () => {
+      const response = await axios.post("/api/create-payment-intent", {
+        amount: finalPrice * 100,
+        currency: currency.type,
+        email: user?.email,
+      });
+      setPaymentIntentId(response?.data?.paymentIntent?.id);
+      setClientSecret(response?.data?.clientSecret);
+    };
+    fetchClientSecret();
+  }, []);
 
   // error management - invalid data, not logged in
   // useEffect(() => {
@@ -70,6 +88,8 @@ export const BookingProvider = ({ children }) => {
         discountAmount,
         basePrice,
         finalPrice,
+        clientSecret,
+        paymentIntentId,
       }}
     >
       {children}

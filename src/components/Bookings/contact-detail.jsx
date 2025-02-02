@@ -19,6 +19,7 @@ const ContactDetailsPage = ({ nextStep }) => {
   const { setUserId, setUserEmail } = useContactDetails();
   const { adults, child } = useBooking();
   const totalForms = adults + child;
+
   const { FormWrapper, FormInput } = useCustomForm({
     schema: contactDetailsSchema,
   });
@@ -107,7 +108,6 @@ const ContactDetailsPage = ({ nextStep }) => {
       description: errors,
     });
   };
-
   return (
     <div>
       <div className="mt-16 pt-1">
@@ -190,11 +190,7 @@ const ContactDetailsPage = ({ nextStep }) => {
           </div>
 
           <div className="flex justify-center">
-            <Button
-              variant="destructive"
-              className="w-3/5 h-12 
-     rounded-full"
-            >
+            <Button variant="destructive" className="w-3/5 h-12 rounded-full">
               Next
             </Button>
           </div>

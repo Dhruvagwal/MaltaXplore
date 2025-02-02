@@ -12,7 +12,6 @@ import { getBookingByServiceId } from "@/features/getBookingDetailsByServiceId";
 import { useRouter } from "next/router";
 
 function BookingCardComponent({ data, className, likes, bookingId }) {
-  console.log("datadatadatadata", data);
   const router = useRouter();
   const { user } = useAuthState();
   const { likeService, unlikeService } = useServicesState();

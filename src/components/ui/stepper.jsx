@@ -41,7 +41,7 @@ const StepperComponent = ({ activeStep, nextStep }) => {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto flex justify-center items-center">
+    <div className="flex justify-start items-center">
       <Steps activeStep={activeStep}>
         {steps.map((step, index) => (
           <Step key={index} index={index} {...step}>

@@ -1,4 +1,8 @@
-import { createContext, useContext, useState } from "react";
+import { useRouter } from "next/router";
+import { createContext, useContext, useEffect, useState } from "react";
+import { useAuthState } from "./ueAuthContext";
+import { useService } from "@/features/getServiceById";
+import { getTaxRate, useTaxRate } from "@/features/getTaxAndRate";
 
 const BookingContext = createContext();
 
@@ -9,28 +13,63 @@ export const useBooking = () => {
 
 // Provider component
 export const BookingProvider = ({ children }) => {
-  const [adults, setAdults] = useState(1);
-  const [child, setChild] = useState(0);
-  const [totalPrice, setTotalPrice] = useState();
-  const [discountedPrice, setDiscountedPrice] = useState(0);
-  const [date, setDate] = useState();
-  const [endDate, setEndDate] = useState();
-  console.log(totalPrice);
+  const router = useRouter();
+  const { user } = useAuthState();
+  const {
+    id,
+    adults: sadults,
+    child: schild,
+    startDate,
+    endDate,
+  } = router.query;
+
+  const { data: taxRate } = useTaxRate();
+  const { data: tourData } = useService(id);
+
+  const adults = sadults ? Number(sadults) : 1;
+  const child = schild ? Number(schild) : 0;
+
+  const totalPrice = tourData?.price * (adults + child / 2);
+
+  const basePrice = Number(totalPrice);
+  const taxesAndFees = basePrice * taxRate?.[0]?.tax_rate;
+  const discountAmount = basePrice - Number(100);
+
+  const finalPrice = basePrice + taxesAndFees - discountAmount;
+
+  // error management - invalid data, not logged in
+  // useEffect(() => {
+  //   const pStartDate = new Date(startDate).getTime();
+  //   const pEndDate = new Date(endDate).getTime();
+  //   if (
+  //     pStartDate > new Date().getTime() &&
+  //     pStartDate < pEndDate &&
+  //     adults >= 1
+  //   ) {
+  //   } else {
+  //     router.replace("/404");
+  //   }
+
+  //   // if (!user) {
+  //   //   router.push(dashboard);
+  //   // }
+  // }, []);
+
   return (
     <BookingContext.Provider
       value={{
+        id,
         adults,
-        setAdults,
         child,
-        setChild,
-        totalPrice,
-        setTotalPrice,
-        date,
-        setDate,
-        discountedPrice,
-        setDiscountedPrice,
+        startDate,
         endDate,
-        setEndDate,
+        taxRate,
+        totalPrice,
+        tourData,
+        taxesAndFees,
+        discountAmount,
+        basePrice,
+        finalPrice,
       }}
     >
       {children}

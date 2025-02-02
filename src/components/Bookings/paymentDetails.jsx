@@ -1,18 +1,10 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import useCustomForm from "@/hooks/use-custom-form";
 import { useToast } from "@/hooks/use-toast";
 
-import {
-  Accordion,
-  AccordionTrigger,
-  AccordionContent,
-  AccordionItem,
-} from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-
 import { useContactDetails } from "@/context/contactDetailsContext";
 import { useAddress } from "@/context/addressContext";
 import { useBooking } from "@/context/bookingContext";
@@ -22,15 +14,14 @@ import {
   useStripe,
   useElements,
   PaymentElement,
+  Elements,
 } from "@stripe/react-stripe-js";
 
 import { cardSchema } from "@/lib/schema";
-import { ClockAlert } from "lucide-react";
-import { v4 } from "uuid";
 import { useRouter } from "next/router";
 import { supabase } from "@/supabaseConfig";
 //payment page
-const PaymentDetailsPage = ({
+const PaymentDetails = ({
   clientSecret,
   paymentIntentId,
   tourData,
@@ -104,8 +95,6 @@ const PaymentDetailsPage = ({
           },
         ])
         .select();
-
-      console.log("response", response);
 
       if (response.status === 201) {
         const bookingId = response?.data[0]?.id;
@@ -201,6 +190,30 @@ const PaymentDetailsPage = ({
         </form>
       )}
     </div>
+  );
+};
+
+const PaymentDetailsPage = ({ nextStep = () => {} }) => {
+  
+  const [clientSecret, setClientSecret] = useState("");
+  const [paymentIntentId, setPaymentIntentId] = useState("");
+  useEffect(() => {
+    const fetchClientSecret = async () => {
+      const response = await axios.post("/api/create-payment-intent", {
+        amount: finalPrice * 100,
+        currency: "usd",
+        email: user?.email,
+      });
+      console.log(response);
+      setPaymentIntentId(response?.data?.paymentIntent?.id);
+      setClientSecret(response?.data?.clientSecret);
+    };
+    fetchClientSecret();
+  }, []);
+  return (
+    <Elements stripe={stripePromise} options={{ clientSecret }}>
+      <PaymentDetails nextStep={nextStep} />
+    </Elements>
   );
 };
 

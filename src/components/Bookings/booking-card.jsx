@@ -67,7 +67,11 @@ const BookingCard = ({ service, isLoading }) => {
   useEffect(() => {
     const pStartDate = new Date(startDate).getTime();
     const pEndDate = new Date(endDate).getTime();
-    if (pStartDate < pEndDate && adults >= 1) {
+    if (
+      pStartDate > new Date().getTime() &&
+      pStartDate < pEndDate &&
+      adults >= 1
+    ) {
       setIsDisabled(false);
       return;
     }
@@ -82,8 +86,11 @@ const BookingCard = ({ service, isLoading }) => {
     query.endDate = new Date(query.endDate).getTime();
 
     router.push({
-      pathname: `/bookings/${service?.id}`,
-      query,
+      pathname: `/bookings/[id]`,
+      query: {
+        ...query,
+        id: service?.id,
+      },
     });
   };
 

@@ -18,7 +18,7 @@ const PromCodeDialog = ({ serviceId, setAppliedCode, appliedCode }) => {
   const { user } = useAuthState();
   const [promoCode, setPromoCode] = useState("");
   const [promoCodes, setPromoCodes] = useState([]);
-  const { totalPrice, setDiscountedPrice, discountedPrice } = useBooking();
+  const { totalPrice, setDiscountedPrice } = useBooking();
   const originalPrice = totalPrice;
   useEffect(() => {
     const fetchCodes = async () => {

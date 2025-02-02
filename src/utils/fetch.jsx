@@ -13,7 +13,6 @@ function useFetchData() {
     data: { user: null },
   };
 
-  console.log(user)
   const { data: userInfo } = queryClient.getQueryData[
     (dbNames.supplieraccess, "auth_id", user?.id ?? "")
   ] ?? {

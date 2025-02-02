@@ -15,8 +15,7 @@ import Link from "next/link";
 import { sendEmail, sendEmailToBookingPersons } from "@/features/sendEmail";
 import getPaymentDetails from "@/features/getPaymentDetails";
 import { supabase } from "@/supabaseConfig";
-const stripePromise = loadStripe(process.env.NEXT_PUBLISHABLE_KEY);
-
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_PUBLISHABLE_KEY);
 const CompletePage = () => {
   const router = useRouter();
   const [session, setSession] = useState();
@@ -110,7 +109,6 @@ const CompletePage = () => {
         } else {
           console.log("Payment status updated successfully:", data);
         }
-
         if (
           paymentDetails &&
           paymentDetails.status === "succeeded" &&

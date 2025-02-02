@@ -1,6 +1,7 @@
 // import emailjs from "@emailjs/browser";
 import axios from "axios";
 export const sendEmail = async (paymentDetails) => {
+
   try {
     const date = new Date(paymentDetails.created * 1000).toLocaleString();
     const price = (paymentDetails.amount / 100).toFixed(2);
@@ -18,15 +19,13 @@ export const sendEmail = async (paymentDetails) => {
     //   templateParams,
     //   "XvpCI43kTo5rkOW7y"
     // );
-
-    console.log(templateParams)
     const response = await axios.post(
       "https://api.maltaxplore.com/send_email",
       {
-        id: "confirmation-email-template",
+        id: "booking-email-template",
         to: templateParams?.user_email,
         values: templateParams,
-        heaader: "Confirmation Email",
+        header: "Confirmation Email",
       },
       {
         headers: {
@@ -35,15 +34,12 @@ export const sendEmail = async (paymentDetails) => {
         },
       }
     );
-
-    console.log("Email sent successfully:", response);
   } catch (error) {
     console.error("Error sending email:", error);
   }
 };
 
 export const sendEmailToBookingPersons = async (templateDetails) => {
-  console.log("templateDetails", templateDetails);
   const bookingLink = `${window.location.origin}/booking-details?booking_id=${templateDetails?.Booking_id}`;
   try {
     const templateParams = {
@@ -59,20 +55,13 @@ export const sendEmailToBookingPersons = async (templateDetails) => {
       booking_link: bookingLink,
     };
 
-    // const response = await emailjs.send(
-    //   "service_w7ii0wa",
-    //   "template_x6lvoim",
-    //   templateParams,
-    //   "XvpCI43kTo5rkOW7y"
-    // );
-
     const response = await axios.post(
-      "https://api.maltaxplore.com/send_email",
+      "http://127.0.0.1:5000/send_email",
       {
-        id: "booking-email-template",
+        id: "confirmation-email-template",
         to: templateParams?.user_email,
         values: templateParams,
-        heaader: "Hello, this is a test email!",
+        header: "Hello, this is a test email!",
       },
       {
         headers: {
@@ -81,10 +70,7 @@ export const sendEmailToBookingPersons = async (templateDetails) => {
         },
       }
     );
-
-    console.log(response.data);
-
-    console.log("Email sent successfully:", response.status, response.text);
+    console.log(response)
   } catch (error) {
     console.error("Error sending email:", error);
   }

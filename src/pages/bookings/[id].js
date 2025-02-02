@@ -6,10 +6,7 @@ import ActivityDetailsPage from "@/components/Bookings/activity-detail";
 import PaymentDetailsPage from "@/components/Bookings/paymentDetails";
 import { BookingProvider, useBooking } from "@/context/bookingContext";
 import { ChevronRight } from "lucide-react";
-import { loadStripe } from "@stripe/stripe-js";
 import BookingDetailCard from "@/components/Bookings/booking-detail-card";
-
-const stripePromise = loadStripe(process.env.NEXT_PUBLISHABLE_KEY);
 
 const BookingPage = () => {
   const [activeStep, setActiveStep] = useState(0);

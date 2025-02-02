@@ -1,4 +1,4 @@
 export const currency = {
   sign: "€",
-  type: "euro",
+  type: "eur",
 };

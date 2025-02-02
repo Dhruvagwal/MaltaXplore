@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 
 import useCustomForm from "@/hooks/use-custom-form";
-import { useToast } from "@/hooks/use-toast";
+import { toast, useToast } from "@/hooks/use-toast";
 
 import { Button } from "@/components/ui/button";
 import { useContactDetails } from "@/context/contactDetailsContext";
@@ -20,49 +20,37 @@ import {
 import { cardSchema } from "@/lib/schema";
 import { useRouter } from "next/router";
 import { supabase } from "@/supabaseConfig";
-//payment page
-const PaymentDetails = ({
-  clientSecret,
-  paymentIntentId,
-  tourData,
-  finalPrice,
-  taxRate,
-  discountAmount,
-}) => {
-  const { session, user } = useAuthState();
+import { loadStripe } from "@stripe/stripe-js";
 
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_PUBLISHABLE_KEY);
+
+//payment page
+const PaymentDetails = () => {
   const router = useRouter();
   const { id } = router.query;
+
   const stripe = useStripe();
   const elements = useElements();
-  const { toast } = useToast();
-  const {
-    FormWrapper,
-    FormInput,
-    FormSelect,
-    formState: { isSubmitting },
-    watch,
-  } = useCustomForm({
-    schema: cardSchema,
-  });
 
-  const { adults, child, totalPrice, date, endDate } = useBooking();
+  const { user } = useAuthState();
   const { userId } = useContactDetails();
   const { pickupLocation, city, state, postalCode, addLine1, addLine2 } =
     useAddress();
   const [isProcessing, setIsProcessing] = useState(false);
-
+  const {
+    paymentIntentId,
+    tourData,
+    finalPrice,
+    taxRate,
+    discountAmount,
+    totalPrice,
+    startDate,
+    endDate,
+    clientSecret,
+  } = useBooking();
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (
-      !session ||
-      !user ||
-      !clientSecret ||
-      !stripe ||
-      !elements ||
-      isProcessing
-    ) {
+    if (!user || !clientSecret || !stripe || !elements || isProcessing) {
       console.error("Stripe.js or clientSecret has not loaded yet.");
       return;
     }
@@ -87,8 +75,8 @@ const PaymentDetails = ({
             state,
             postal_code: postalCode,
             country: "india",
-            start_date: date,
-            end_date: endDate,
+            start_date: new Date(startDate),
+            end_date: new Date(endDate),
             service_base_price: totalPrice,
             fees: taxRate,
             discount_amount: discountAmount,
@@ -96,41 +84,49 @@ const PaymentDetails = ({
         ])
         .select();
 
-      if (response.status === 201) {
-        const bookingId = response?.data[0]?.id;
-
-        const serviceBookingPersons = [
-          ...userId.map((user) => ({
-            user_id: user,
-            service_id: id,
-            supplier_id: tourData?.supplier_access_id,
-            booking_id: bookingId,
-          })),
-          {
-            user_id: user?.id,
-            service_id: id,
-            supplier_id: tourData?.supplier_access_id,
-            booking_id: bookingId,
-          },
-        ];
-
-        const res = await supabase
-          .from("servicebookingperson")
-          .insert(serviceBookingPersons)
-          .select();
-
-        console.log("Service Booking Persons Added:", res);
-
-        const { error } = await stripe.confirmPayment({
-          elements,
-          confirmParams: {
-            return_url: `${window.location.origin}/complete?bookingId=${bookingId}`,
-          },
+      console.log(response);
+      if (response.status !== 201) {
+        toast({
+          variant: "destructive",
+          title: "Payment Failed",
+          description: "Payment Failed, try again",
         });
+        return;
+      }
 
-        if (error) {
-          console.log(error.message);
-        }
+      const bookingId = response?.data[0]?.id;
+
+      const serviceBookingPersons = [
+        ...userId.map((user) => ({
+          user_id: user,
+          service_id: id,
+          supplier_id: tourData?.supplier_access_id,
+          booking_id: bookingId,
+        })),
+        {
+          user_id: user?.id,
+          service_id: id,
+          supplier_id: tourData?.supplier_access_id,
+          booking_id: bookingId,
+        },
+      ];
+
+      const res = await supabase
+        .from("servicebookingperson")
+        .insert(serviceBookingPersons)
+        .select();
+
+      console.log("Service Booking Persons Added:", res);
+
+      const { error } = await stripe.confirmPayment({
+        elements,
+        confirmParams: {
+          return_url: `${window.location.origin}/complete?bookingId=${bookingId}`,
+        },
+      });
+
+      if (error) {
+        console.log(error.message);
       }
     } catch (error) {
       console.error(error?.message || "Something went wrong");
@@ -160,7 +156,6 @@ const PaymentDetails = ({
                     className="bg-[#f1b203] text-black font-semibold text-base w-3/5 h-12 rounded-full"
                     id="submit"
                     disabled={!stripe || !elements || isProcessing}
-                    // onClick={handleSubmit}
                   >
                     {isProcessing ? "Processing..." : "Complete Booking"}
                   </Button>

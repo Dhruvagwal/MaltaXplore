@@ -25,6 +25,8 @@ export const BookingProvider = ({ children }) => {
 
   const { data: taxRate } = useTaxRate();
   const { data: tourData } = useService(id);
+  const [clientSecret, setClientSecret] = useState("");
+  const [paymentIntentId, setPaymentIntentId] = useState("");
 
   const adults = sadults ? Number(sadults) : 1;
   const child = schild ? Number(schild) : 0;
@@ -36,6 +38,21 @@ export const BookingProvider = ({ children }) => {
   const discountAmount = basePrice - Number(100);
 
   const finalPrice = basePrice + taxesAndFees - discountAmount;
+
+
+  useEffect(() => {
+    const fetchClientSecret = async () => {
+      const response = await axios.post("/api/create-payment-intent", {
+        amount: finalPrice * 100,
+        currency: "usd",
+        email: user?.email,
+      });
+      console.log(response);
+      setPaymentIntentId(response?.data?.paymentIntent?.id);
+      setClientSecret(response?.data?.clientSecret);
+    };
+    fetchClientSecret();
+  }, []);
 
   // error management - invalid data, not logged in
   // useEffect(() => {
@@ -69,7 +86,9 @@ export const BookingProvider = ({ children }) => {
         taxesAndFees,
         discountAmount,
         basePrice,
+        clientSecret,
         finalPrice,
+        paymentIntentId
       }}
     >
       {children}

@@ -121,7 +121,7 @@ const PaymentDetails = () => {
       const { error } = await stripe.confirmPayment({
         elements,
         confirmParams: {
-          return_url: `${window.location.origin}/complete?bookingId=${bookingId}`,
+          return_url: `${window.location.origin}/verify?bookingId=${bookingId}`,
         },
       });
 

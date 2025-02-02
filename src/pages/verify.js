@@ -10,7 +10,7 @@ function verify() {
     redirect_status,
   } = router.query;
   useEffect(() => {
-    // router.push({
+    // router.replace({
     //   pathname: `/complete`,
     //   query: {
     //     bookingId,

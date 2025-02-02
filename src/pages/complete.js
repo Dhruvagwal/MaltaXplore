@@ -114,7 +114,7 @@ const CompletePage = () => {
           paymentDetails.status === "succeeded" &&
           service?.length > 0
         ) {
-          await sendEmail(paymentDetails);
+          sendEmail(paymentDetails);
           const templateDetails = {
             Booking_id: bookingId,
             service_name: service[0]?.name,
@@ -131,7 +131,7 @@ const CompletePage = () => {
               email: user.email,
               id: user.id,
             };
-            await sendEmailToBookingPersons(emailTemplate);
+            sendEmailToBookingPersons(emailTemplate);
           }
         }
       }

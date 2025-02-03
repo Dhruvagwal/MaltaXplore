@@ -35,6 +35,9 @@ import { getUserLikes } from "@/features/getUserLikes";
 import { useService } from "@/features/getServiceById";
 import BookingCard from "@/components/Bookings/booking-card";
 import { useServiceReviews } from "@/features/reviews/getServiceReviews";
+import { useServicesBySupplier } from "@/features/getServicesBySupplierId";
+import { Avatar, AvatarFallback } from "@radix-ui/react-avatar";
+import { Card } from "@/components/ui/card";
 
 function TourismPage() {
   const router = useRouter();
@@ -43,6 +46,9 @@ function TourismPage() {
   const { likeService, unlikeService } = useServicesState();
   const [isLiked, setIsLiked] = useState(false);
   const { data: service, isLoading, isError } = useService(id);
+  const { data: supplierServices } = useServicesBySupplier(
+    service?.supplier_access_id
+  );
   const {
     data: allReviews,
     isLoadingReviews,
@@ -112,8 +118,6 @@ function TourismPage() {
           totalReviews
         ).toFixed(1)
       : 0;
-
-  console.log(service);
 
   return (
     <main className="min-h-screen bg-white">
@@ -300,6 +304,93 @@ function TourismPage() {
                 </div>
               </div>
             </div>
+
+            <Separator className="my-10" />
+            {/* Supplier and Company Details */}
+            {service?.supplieraccess && (
+              <div className="mb-12">
+                <h2 className="text-3xl font-bold text-gray-900 mb-6">
+                  Supplier Information
+                </h2>
+                <Card className="p-6 rounded-lg shadow-md border border-gray-200">
+                  {/* Card Header */}
+                  <div className="flex gap-6 items-center border-b pb-4 mb-4">
+                    <Avatar>
+                      <AvatarFallback>
+                        {service.supplieraccess.name
+                          ? service.supplieraccess.name.charAt(0)
+                          : "S"}
+                      </AvatarFallback>
+                    </Avatar>
+                    <h3 className="text-xl font-semibold text-gray-800">
+                      {service.supplieraccess.name}
+                    </h3>
+                  </div>
+
+                  <div className="space-y-2">
+                    <p className="text-sm text-gray-600">
+                      <span className="font-semibold">Email:</span>{" "}
+                      {service.supplieraccess.email}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      <span className="font-semibold">Phone:</span>{" "}
+                      {service.supplieraccess.phone}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      <span className="font-semibold">
+                        Total Services List:
+                      </span>{" "}
+                      {supplierServices ? supplierServices?.length : 0}
+                    </p>
+                  </div>
+                </Card>
+              </div>
+            )}
+
+            {service?.supplieraccess?.supplier_company_id && (
+              <div className="mb-12">
+                <h2 className="text-3xl font-bold text-gray-900 mb-6">
+                  Company Information
+                </h2>
+                <Card className="p-6 rounded-lg shadow-md border border-gray-200">
+                  {/* Card Header */}
+                  <div className="flex gap-6 items-center border-b pb-4 mb-4">
+                    <Avatar>
+                      <AvatarFallback>
+                        {service.supplieraccess.supplier_company_id.name
+                          ? service.supplieraccess.supplier_company_id.name.charAt(
+                              0
+                            )
+                          : "S"}
+                      </AvatarFallback>
+                    </Avatar>
+                    <h3 className="text-xl font-semibold text-gray-800">
+                      {service.supplieraccess.supplier_company_id.name}
+                    </h3>
+                  </div>
+
+                  <div className="space-y-2">
+                    <p className="text-sm text-gray-600">
+                      <span className="font-semibold">Address:</span>{" "}
+                      {
+                        service.supplieraccess.supplier_company_id
+                          .address_line_1
+                      }
+                      , {service.supplieraccess.supplier_company_id.city}{" "}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      <span className="font-semibold">Country:</span>{" "}
+                      {service.supplieraccess.supplier_company_id.country}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      <span className="font-semibold">Postal Code: </span>{" "}
+                      {service.supplieraccess.supplier_company_id.postal_code}
+                    </p>
+                  </div>
+                </Card>
+              </div>
+            )}
+
             <Separator className="my-10" />
             {allReviews?.length > 0 && <ReviewsPage allReviews={allReviews} />}
           </div>

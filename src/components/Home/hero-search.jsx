@@ -101,7 +101,7 @@ export const HeroSearch = ({ className }) => {
           </motion.p>
           <DatePicker
             date={date}
-            setDate={setDate}
+            onChange={setDate}
             className="h-12 md:h-16 rounded-xl md:rounded-2xl"
             placeholder={"Select Date"}
           />

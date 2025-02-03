@@ -74,7 +74,7 @@ function Signup({ redirect = () => {} }) {
   return (
     <ScrollArea className="h-full w-full">
       {/* Signup Form */}
-      <div className="flex flex-col p-32 py-16">
+      <div className="flex flex-col p-8">
         {showVerificationAlert && (
           <Alert className="mb-6">
             <AlertCircle className="h-4 w-4" />
@@ -88,15 +88,8 @@ function Signup({ redirect = () => {} }) {
           </Alert>
         )}
 
-        <Button
-          className="self-end"
-          variant="link"
-          onClick={() => redirect("login")}
-        >
-          Login
-        </Button>
         <FormWrapper onSubmit={onSubmit} onError={onError}>
-          <div className="flex py-16 flex-col gap-2">
+          <div className="flex flex-col gap-2">
             <h1 className="text-2xl font-semibold">Create An Account</h1>
             <h3 className="text-sm text-muted-foreground">
               Join Malta's Leading Tourism Platform
@@ -150,6 +143,14 @@ function Signup({ redirect = () => {} }) {
                 "Create Account"
               )}
             </Button>
+            <Button
+              type="button"
+              className="self-center"
+              variant="link"
+              onClick={() => redirect("login")}
+            >
+              Login
+            </Button>
             {isSubmitting && (
               <p className="text-sm text-center text-muted-foreground mt-2">
                 Please wait while we set up your account. This may take a few
@@ -158,7 +159,7 @@ function Signup({ redirect = () => {} }) {
             )}
           </div>
         </FormWrapper>
-        <p className="text-sm text-center mt-16 text-muted-foreground">
+        <p className="text-sm text-center text-muted-foreground">
           By clicking continue, you agree to our{" "}
           <Button className="p-0 text-muted-foreground" variant="link">
             Terms of Service

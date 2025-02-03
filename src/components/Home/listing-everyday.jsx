@@ -3,13 +3,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 
 export const ListingEveryDay = ({ className, services }) => {
+  console.log(services);
   return (
     <Card className={`rounded-full md:w-96 h-16 ${className}`}>
       <CardContent className="flex items-center justify-center gap-4 p-2">
         <Avatar className="">
           <AvatarImage
             src={
-              JSON.parse(services?.[0]?.images?.[0] ?? "{}")?.url ??
+              JSON.parse(services?.[2]?.images?.[0] ?? "{}")?.url ??
               `https://picsum.photos/500/400?random=${1}`
             }
             alt={`Random image`}

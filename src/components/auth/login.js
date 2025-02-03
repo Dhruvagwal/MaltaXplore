@@ -51,14 +51,7 @@ function Login({ redirect = () => {} }) {
   };
 
   return (
-    <div className="p-16 flex flex-col">
-      <Button
-        className="self-end"
-        variant="link"
-        onClick={() => redirect("signup")}
-      >
-        Create an account
-      </Button>
+    <div className="p-8 flex flex-col">
       <FormWrapper onSubmit={onSubmit} onError={onError}>
         <div className="h-full grid place-content-center">
           <div className="flex flex-col gap-1">
@@ -92,6 +85,14 @@ function Login({ redirect = () => {} }) {
             </Button>
             <Button disabled={isSubmitting} type="submit" className="w-full">
               {isSubmitting ? "Signing in..." : "Sign In With Email"}
+            </Button>
+            <Button
+              type="button"
+              className="self-center"
+              variant="link"
+              onClick={() => redirect("signup")}
+            >
+              Create an account
             </Button>
             <p className="text-sm text-center text-muted-foreground mt-4">
               By clicking continue, you agree to our{" "}

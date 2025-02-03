@@ -7,7 +7,6 @@ import { useEvents } from "@/features/getEvents";
 
 const Events = () => {
   const { data: events, isLoading, isError, error } = useEvents();
-  console.log(events);
   return (
     <div className="px-8 md:px-20 my-48 relative">
       <div className="text-center">

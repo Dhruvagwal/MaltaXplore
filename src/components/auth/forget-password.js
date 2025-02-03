@@ -42,13 +42,6 @@ function ForgotPassword({ redirect = () => {} }) {
 
   return (
     <div className="p-16 flex flex-col">
-      <Button
-        className="self-end"
-        variant="link"
-        onClick={() => redirect("login")}
-      >
-        Login
-      </Button>
       <FormWrapper onSubmit={onSubmit} onError={onError}>
         <div className="h-full grid place-content-center">
           <div className="flex w-[30vw] flex-col gap-1">
@@ -69,6 +62,14 @@ function ForgotPassword({ redirect = () => {} }) {
               type="submit"
             >
               Sign In With Email
+            </Button>
+            <Button
+              type="button"
+              className="self-center"
+              variant="link"
+              onClick={() => redirect("login")}
+            >
+              Login
             </Button>
           </div>
         </div>

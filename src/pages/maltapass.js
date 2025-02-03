@@ -140,7 +140,7 @@ function maltapass() {
               <motion.div
                 variants={discountBadgeAnimation}
                 whileHover={{ scale: 1.1 }}
-                className="absolute right-4 top-4 md:right-[85%] md:top-[29%] w-[120px] h-[120px] md:w-[180px] md:h-[180px] bg-white rounded-full flex flex-col items-center justify-center text-[#E5484D] font-bold shadow-lg"
+                className="absolute right-4 top-4 md:right-[85%] md:top-[25%] w-[120px] h-[120px] md:w-[180px] md:h-[180px] bg-white rounded-full flex flex-col items-center justify-center text-[#E5484D] font-bold shadow-lg"
               >
                 <motion.div 
                   initial={{ opacity: 0, y: 20 }}
@@ -267,7 +267,6 @@ function maltapass() {
             </div>
 
             <div className="grid md:grid-cols-2 gap-8">
-              <Tilt>
                 <Card className="bg-white">
                   <CardContent className="p-6">
                     <h3 className="text-2xl font-bold mb-6">
@@ -312,8 +311,6 @@ function maltapass() {
                     </div>
                   </CardContent>
                 </Card>
-              </Tilt>
-              <Tilt>
                 <Card className="bg-white">
                   <CardContent className="p-6">
                     <h3 className="text-2xl font-bold mb-6">
@@ -357,7 +354,6 @@ function maltapass() {
                     </div>
                   </CardContent>
                 </Card>
-              </Tilt>
             </div>
           </div>
         </section>

@@ -335,7 +335,7 @@ const Aboutus = () => {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                 >
-                  <Tilt tiltMaxAngleX={5} tiltMaxAngleY={5} scale={1.02}>
+                  {/* <Tilt tiltMaxAngleX={5} tiltMaxAngleY={5} scale={1.02}> */}
                     <div className="bg-white p-8 rounded-2xl shadow-lg">
                       <h3 className="text-2xl md:text-3xl font-bold mb-6">Our Mission</h3>
                       <p className="text-gray-600 leading-relaxed">
@@ -347,7 +347,7 @@ const Aboutus = () => {
                         and personalized travel insights.
                       </p>
                     </div>
-                  </Tilt>
+                  {/* </Tilt> */}
                 </motion.div>
 
                 <motion.div
@@ -357,7 +357,7 @@ const Aboutus = () => {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                 >
-                  <Tilt tiltMaxAngleX={5} tiltMaxAngleY={5} scale={1.02}>
+                  {/* <Tilt tiltMaxAngleX={5} tiltMaxAngleY={5} scale={1.02}> */}
                     <div className="bg-white p-8 rounded-2xl shadow-lg h-full">
                       <h3 className="text-2xl md:text-3xl font-bold mb-6">Our Vision</h3>
                       <p className="text-gray-600 leading-relaxed">
@@ -367,7 +367,7 @@ const Aboutus = () => {
                         celebrating the unique beauty of the Maltese Islands.
                       </p>
                     </div>
-                  </Tilt>
+                  {/* </Tilt> */}
                 </motion.div>
               </div>
             </div>

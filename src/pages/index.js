@@ -13,6 +13,8 @@ import { HappyCustomers } from "@/components/Home/happy-customer";
 import { ListingEveryDay } from "@/components/Home/listing-everyday";
 import { HeroSearch } from "@/components/Home/hero-search";
 import Weather from "@/components/Home/Weather";
+import useFetchServices from "@/features/getAllServices";
+import useFetchServiceBookingPersons from "@/features/getAllBookingPerson";
 
 const fadeInUp = {
   initial: { y: 60, opacity: 0 },
@@ -29,11 +31,14 @@ const staggerContainer = {
 };
 
 export default function Home() {
+  const { data: services } = useFetchServices();
+  const { data: serviceBookingPersons } = useFetchServiceBookingPersons();
+
   return (
     <div>
       <div className="">
         <main className="relative pt-16">
-          <div className="relative px-32">
+          <div className="relative px-20">
             <motion.div
               initial="initial"
               animate="animate"
@@ -85,14 +90,16 @@ export default function Home() {
                     whileTap={{ scale: 0.95 }}
                     transition={{ type: "spring", stiffness: 400, damping: 17 }}
                   >
-                    <HappyCustomers />
+                    <HappyCustomers
+                      serviceBookingPersons={serviceBookingPersons?.length}
+                    />
                   </motion.div>
                   <motion.div
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     transition={{ type: "spring", stiffness: 400, damping: 17 }}
                   >
-                    <ListingEveryDay />
+                    <ListingEveryDay services={services} />
                   </motion.div>
                 </motion.div>
               </div>

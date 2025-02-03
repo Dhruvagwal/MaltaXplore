@@ -26,6 +26,7 @@ function verify() {
   const [session, setSession] = useState();
   const [users, setUsers] = useState([]);
   const [service, setService] = useState(null);
+  const [bookingData, setBookingData] = useState(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -46,14 +47,14 @@ function verify() {
       try {
         const { data: bookingData, error: bookingError } = await supabase
           .from("servicebookingperson")
-          .select("user_id, service_id")
+          .select(`user_id, service_id, booking_id(*, created_by(*))`)
           .eq("booking_id", bookingId);
 
         if (bookingError) {
           console.log(bookingError);
           return;
         }
-
+        setBookingData(bookingData);
         if (bookingData.length > 0) {
           const userIds = bookingData.map((booking) => booking.user_id);
           const serviceIds = bookingData.map((booking) => booking.service_id);
@@ -104,14 +105,15 @@ function verify() {
           paymentDetails.status === "succeeded" &&
           service?.length > 0
         ) {
-          sendEmail(paymentDetails);
           const templateDetails = {
             booking_id: bookingId,
             service_name: service[0]?.name,
             service_date: "-",
             service_location: service[0]?.location,
-            booker_name: session?.user.id,
+            booker_name: bookingData?.[0]?.booking_id?.created_by?.name,
             total_tickets_booked: users.length,
+            booking_start_date: bookingData?.booking_id?.start_date,
+            booking_end_date: bookingData?.booking_id?.start_date,
           };
 
           for (const user of users) {
@@ -121,7 +123,8 @@ function verify() {
               email: user.email,
               id: user.id,
             };
-            sendEmailToBookingPersons(emailTemplate);
+            sendEmail(paymentDetails, templateDetails);
+            sendEmailToBookingPersons(templateDetails, emailTemplate);
           }
         }
         router.replace({
@@ -137,7 +140,7 @@ function verify() {
     };
 
     updatePaymentStatus();
-  }, [paymentDetails, service]);
+  }, [paymentDetails, service, bookingData]);
 }
 
 export default verify;

@@ -79,7 +79,6 @@ const ContactDetailsPage = ({ nextStep }) => {
             .select("id")
             .single();
 
-          console.log("insertedUser", insertedUser);
 
           if (insertError)
             throw new Error(`Error inserting user into users table: ${email}`);

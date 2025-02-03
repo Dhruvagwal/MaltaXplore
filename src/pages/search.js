@@ -25,6 +25,7 @@ import { supabase } from "@/supabaseConfig";
 import { filtersSchema } from "@/lib/schema";
 import { useAuthState } from "@/context/ueAuthContext";
 import { getUserLikes } from "@/features/getUserLikes";
+import { HeroSearch } from "@/components/Home/hero-search";
 
 const chunkArray = (array, size) => {
   const result = [];
@@ -59,7 +60,6 @@ function ExploreCategories() {
   const [checkedServiceTypeIds, setCheckedServiceTypeIds] = useState([]);
   const [serviceSubType, setServiceSubType] = useState([]);
 
-console.log(services)
   const range = watch("range");
   const min = watch("min");
   const max = watch("max");
@@ -110,7 +110,10 @@ console.log(services)
   useEffect(() => {
     const fetchFilteredData = async () => {
       try {
-        let queryBuilder = supabase.from("services").select("*").eq("status", "active");
+        let queryBuilder = supabase
+          .from("services")
+          .select("*")
+          .eq("status", "active");
         if (category) {
           queryBuilder = queryBuilder.eq("service_type", category);
         }
@@ -129,8 +132,7 @@ console.log(services)
         }
 
         if (formattedDate) {
-          console.log("formattedDate", formattedDate);
-          queryBuilder = queryBuilder.eq("date", formattedDate);
+          queryBuilder = queryBuilder.eq("start_date", formattedDate);
         }
 
         const { data, error } = await queryBuilder;
@@ -157,7 +159,6 @@ console.log(services)
 
   // Split the data into chunks (4 items per page)
   const chunkedData = chunkArray(filteredData, SIZE);
-  console.log("filteredData", filteredData)
 
   useEffect(() => {
     if (currentPage >= chunkedData.length) {
@@ -179,7 +180,6 @@ console.log(services)
   };
 
   const onSubmit = async (data) => {
-    console.log("data", data);
     try {
       let queryBuilder = supabase.from("services").select("*");
 
@@ -201,10 +201,7 @@ console.log(services)
         queryBuilder = queryBuilder.in("service_type", selectedIds);
       }
 
-      console.log("selectedIds", selectedIds);
-
       const { data: filterData, error } = await queryBuilder;
-
 
       if (error) {
         console.error("Error fetching filtered data:", error);
@@ -227,7 +224,7 @@ console.log(services)
             <p className="text-2xl md:text-3xl font-bold text-white">
               Explore Experiences
             </p>
-            <Categories />
+            <HeroSearch className="transform-gpu" />
           </div>
         </Banner>
         <div className="px-8 md:px-32 grid grid-cols-1 gap-8 md:grid-cols-6 py-16 mt-16">

@@ -46,7 +46,7 @@ export const BookingProvider = ({ children }) => {
   useEffect(() => {
     if (!user?.email || !finalPrice) return;
     const fetchClientSecret = async () => {
-      const response = await axios.post("/api/create-payment-intent", {
+      const response = await axios.post("https://api.maltaxplore.com/create-payment-intent", {
         amount: finalPrice * 100,
         currency: currency.type,
         email: user?.email,

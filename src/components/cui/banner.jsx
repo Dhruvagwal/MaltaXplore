@@ -35,7 +35,7 @@ function Banner({ url, children }) {
 
   return (
     <motion.div 
-      className="mx-4 sm:mx-8 md:mx-20 relative rounded-xl overflow-hidden shadow-lg"
+      className="mx-4 sm:mx-8 md:mx-20 h-fit relative rounded-xl shadow-lg"
       variants={bannerVariants}
       initial="hidden"
       animate="visible"
@@ -43,7 +43,7 @@ function Banner({ url, children }) {
     >
       {/* Background Overlay */}
       <motion.div 
-        className="absolute inset-0 bg-black/30 z-10"
+        className="absolute inset-0 bg-black/30 z-10 rounded-xl overflow-clip"
         variants={overlayVariants}
       />
 
@@ -55,7 +55,7 @@ function Banner({ url, children }) {
         <Image
           width={1920}
           height={1080}
-          className="w-full h-[200px] sm:h-[300px] md:h-[400px] object-cover"
+          className="w-full h-full md:h-[400px] object-cover rounded-xl"
           src={url}
           alt="Banner background"
           priority

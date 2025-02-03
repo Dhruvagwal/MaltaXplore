@@ -37,7 +37,7 @@ export const CancelBookingDialog = ({ bookingDetails }) => {
     setIsCancelling(true);
 
     try {
-      const response = await axios.post("/api/refund", {
+      const response = await axios.post("https://api.maltaxplore.com/refund", {
         paymentIntentId: bookingDetails?.payment_intent_id,
       });
       console.log("response", response);

@@ -37,7 +37,6 @@ export function MoreOffersComponent() {
     removePromoCode,
     setAppliedCode,
   } = useBooking();
-  console.log("appliedCode", appliedCode);
   // const { data: promoCodes } = usePromoCodes(id, totalPrice);
 
   const onSubmit = async (data) => {

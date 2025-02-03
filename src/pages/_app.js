@@ -69,7 +69,6 @@ export default function App({ Component, pageProps }) {
   useEffect(() => {
     const fetchUserData = async () => {
       const { data, error } = await supabase.auth.getUser();
-
       if (error) {
         console.error("Error fetching user data:", error);
         return;
@@ -90,7 +89,7 @@ export default function App({ Component, pageProps }) {
     <QueryClientProvider client={queryClient}>
       <CrispWithNoSSR />
       <ScrollArea
-        className={`${geistSans.variable} ${geistMono.variable} min-h-screen w-[100%] antialiased font-[family-name:var(--font-geist-sans)]`}
+        className={`${geistSans.variable} ${geistMono.variable} h-screen w-[100%] antialiased font-[family-name:var(--font-geist-sans)]`}
       >
         <Toaster />
         {isDashboard && <Navbar />}{" "}

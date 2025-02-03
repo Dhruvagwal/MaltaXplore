@@ -59,7 +59,6 @@ function ExploreCategories() {
   const [filteredData, setFilteredData] = useState([]);
   const [checkedServiceTypeIds, setCheckedServiceTypeIds] = useState([]);
   const [serviceSubType, setServiceSubType] = useState([]);
-
   const range = watch("range");
   const min = watch("min");
   const max = watch("max");
@@ -159,7 +158,6 @@ function ExploreCategories() {
 
   // Split the data into chunks (4 items per page)
   const chunkedData = chunkArray(filteredData, SIZE);
-
   useEffect(() => {
     if (currentPage >= chunkedData.length) {
       handlePageChange(chunkedData.length - 1);
@@ -242,7 +240,7 @@ function ExploreCategories() {
                   <Separator />
                   {serviceType?.map((cat) => (
                     <FormCheckbox
-                      id={cat.id}
+                      id={`sub.${cat.id}`}
                       title={cat?.name}
                       key={cat.id}
                       onCheckboxChange={handleServiceTypeCheckboxChange}
@@ -258,7 +256,7 @@ function ExploreCategories() {
                     {" "}
                     {serviceSubType?.map((subCat) => (
                       <div key={subCat.id} className="flex flex-col gap-4">
-                        <FormCheckbox id={subCat.id} title={subCat.name} />
+                        <FormCheckbox id={`sub.${subCat.id}`} title={subCat.name} />
                       </div>
                     ))}
                   </div>
@@ -269,30 +267,10 @@ function ExploreCategories() {
                   <Separator />
                   {[5, 4, 3, 2, 1].map((key) => (
                     <FormCheckbox
-                      id={String(key)}
+                      id={`ratings.${key}`}
                       title={<CommentRatings rating={key} name="ratings" />}
                     />
                   ))}
-                </div>
-                <div className="flex bg-primary-foreground p-4 rounded-lg flex-col gap-4">
-                  <p className="font-bold text-xl">Filter Price</p>
-                  <Separator />
-                  <FormSlider id="range" min={10} max={500} />
-                  <div className="flex items-center gap-4">
-                    <FormInput
-                      className={"bg-white"}
-                      placeholder="Minimum"
-                      type="number"
-                      id="min"
-                    />
-                    <Separator className="w-10 pt-1 rounded-full bg-primary" />
-                    <FormInput
-                      className={"bg-white"}
-                      placeholder="Maximum"
-                      type="number"
-                      id="max"
-                    />
-                  </div>
                 </div>
                 <div className="flex bg-primary-foreground p-4 rounded-lg flex-col gap-4">
                   <p className="font-bold text-xl">Select Location</p>

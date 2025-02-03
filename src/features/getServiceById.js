@@ -5,7 +5,7 @@ export const getServiceById = async (id) => {
   try {
     const { data: service, error } = await supabase
       .from("services")
-      .select("*")
+      .select(`*, supplieraccess(*)`)
       .eq("id", id)
       .single();
 

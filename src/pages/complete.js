@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useRouter } from "next/router";
 import Lottie from "lottie-react";
 import success from "../../public/success.json";
@@ -12,13 +12,10 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import Link from "next/link";
-import { sendEmail, sendEmailToBookingPersons } from "@/features/sendEmail";
-import getPaymentDetails from "@/features/getPaymentDetails";
-import { supabase } from "@/supabaseConfig";
+import { usePaymentDetails } from "@/features/getPaymentDetails";
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_PUBLISHABLE_KEY);
 const CompletePage = () => {
   const router = useRouter();
-  const [session, setSession] = useState();
   const {
     bookingId,
     payment_intent,
@@ -26,119 +23,10 @@ const CompletePage = () => {
     redirect_status,
   } = router.query;
 
-  const [paymentDetails, setPaymentDetails] = useState(null);
-  const [users, setUsers] = useState([]);
-  const [service, setService] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      const { data, error } = await supabase.auth.getUser();
-
-      if (error) {
-        console.error("Error fetching user data:", error);
-        return;
-      }
-      setSession(data);
-    };
-
-    fetchUserData();
-  }, []);
-
-  useEffect(() => {
-    const fetchBookingPersons = async () => {
-      try {
-        const { data: bookingData, error: bookingError } = await supabase
-          .from("servicebookingperson")
-          .select("user_id, service_id")
-          .eq("booking_id", bookingId);
-
-        if (bookingError) {
-          console.log(bookingError);
-          return;
-        }
-
-        if (bookingData.length > 0) {
-          const userIds = bookingData.map((booking) => booking.user_id);
-          const serviceIds = bookingData.map((booking) => booking.service_id);
-
-          const [usersRes, servicesRes] = await Promise.all([
-            supabase.from("users").select("*").in("id", userIds),
-            supabase.from("services").select("*").in("id", serviceIds),
-          ]);
-
-          if (usersRes.error || servicesRes.error) {
-            console.log(usersRes.error || servicesRes.error);
-            return;
-          }
-
-          const filteredUsers = usersRes.data.filter(
-            (user) => user.auth_id !== session?.user.id
-          );
-
-          setUsers(filteredUsers);
-          setService(servicesRes.data);
-        }
-      } catch (err) {}
-    };
-
-    if (bookingId) {
-      fetchBookingPersons();
-    }
-  }, [bookingId]);
-
-  useEffect(() => {
-    const details = getPaymentDetails(
-      stripePromise,
-      payment_intent_client_secret,
-      setLoading
-    );
-    details.then((d) => setPaymentDetails(d));
-  }, [payment_intent_client_secret]);
-
-  useEffect(() => {
-    const updatePaymentStatus = async () => {
-      if (paymentDetails?.status === "succeeded" && paymentDetails) {
-        const { data, error } = await supabase
-          .from("servicebookings")
-          .update({ payment_status: true, status: "confirmed" })
-          .eq("payment_intent_id", paymentDetails.id);
-
-        if (error) {
-          console.error("Error updating payment status:", error);
-        } else {
-          console.log("Payment status updated successfully:", data);
-        }
-        if (
-          paymentDetails &&
-          paymentDetails.status === "succeeded" &&
-          service?.length > 0
-        ) {
-          sendEmail(paymentDetails);
-          const templateDetails = {
-            Booking_id: bookingId,
-            service_name: service[0]?.name,
-            service_date: "-",
-            service_location: service[0]?.location,
-            booker_name: session?.user.id,
-            total_tickets_booked: users.length + 1,
-          };
-
-          for (const user of users) {
-            const emailTemplate = {
-              ...templateDetails,
-              guest_name: user.name,
-              email: user.email,
-              id: user.id,
-            };
-            sendEmailToBookingPersons(emailTemplate);
-          }
-        }
-      }
-    };
-
-    updatePaymentStatus();
-  }, [paymentDetails]);
+  const { data: paymentDetails, loading } = usePaymentDetails(
+    stripePromise,
+    payment_intent_client_secret
+  );
 
   if (loading) {
     return (

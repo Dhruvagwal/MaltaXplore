@@ -78,13 +78,11 @@ const PaymentDetails = () => {
             start_date: new Date(startDate),
             end_date: new Date(endDate),
             service_base_price: totalPrice,
-            fees: taxRate,
+            fees: taxRate?.[0]?.tax_rate,
             discount_amount: discountAmount,
           },
         ])
         .select();
-
-      console.log(response);
       if (response.status !== 201) {
         toast({
           variant: "destructive",

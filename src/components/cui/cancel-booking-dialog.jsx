@@ -13,6 +13,10 @@ import { cancelBookingSchema } from "@/lib/schema";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { updateBookingStatus } from "@/features/updateBookingStatus";
 import axios from "axios";
+import { useAuthState } from "@/context/ueAuthContext";
+import { supabase } from "@/supabaseConfig";
+import { sendCancellationEmail } from "@/features/sendEmail";
+import { currency } from "@/data/currency";
 
 export const CancelBookingDialog = ({ bookingDetails }) => {
   const {
@@ -24,25 +28,46 @@ export const CancelBookingDialog = ({ bookingDetails }) => {
   } = useCustomForm({
     schema: cancelBookingSchema,
   });
+  const { user } = useAuthState();
+  const [isCancelling, setIsCancelling] = useState(false);
 
   const handleCancelBooking = async (state) => {
-    console.log("Booking ID:", bookingDetails?.id);
+    if (!user || !bookingDetails) return;
+
+    setIsCancelling(true);
 
     try {
       const response = await axios.post("/api/refund", {
         paymentIntentId: bookingDetails?.payment_intent_id,
       });
+      console.log("response", response);
+
+      const basePrice = Number(bookingDetails?.service_base_price);
+      const taxRate = bookingDetails?.fees ? Number(bookingDetails.fees) : 0;
+      const taxesAndFees = (basePrice * taxRate) / 100;
+      const discountAmount = Number(bookingDetails?.discount_amount) || 0;
+      const finalPrice = basePrice + taxesAndFees - discountAmount;
+
+      const templateDetails = {
+        user_email: user?.email,
+        guest_name: user?.name,
+        service_name: bookingDetails?.service_id?.name,
+        booking_id: bookingDetails?.id,
+        refund_amount: currency.sign + finalPrice,
+        company_name: "MaltaXplore",
+      };
 
       if (response.data && response.data.status === "succeeded") {
+        await sendCancellationEmail(templateDetails);
         console.log("Updating DB to cancelled!", bookingDetails?.id);
 
         const updatedBooking = await updateBookingStatus(bookingDetails?.id);
 
         const paymentData = {
           booking_id: bookingDetails?.id,
-          user_id: bookingDetails?.created_by,
+          user_id: bookingDetails?.created_by?.id,
           supplier_id: bookingDetails?.supplier_id,
-          service_id: bookingDetails?.service_id,
+          service_id: bookingDetails?.service_id?.id,
           amount: bookingDetails?.service_base_price,
           payment_intent_id: bookingDetails?.payment_intent_id,
           message: state?.message,
@@ -53,18 +78,23 @@ export const CancelBookingDialog = ({ bookingDetails }) => {
           .from("payments")
           .insert([paymentData]);
 
-        console.log(error);
-
-        console.log(
-          "Booking successfully cancelled! and payments inserted",
-          data
-        );
+        if (error) {
+          console.error("Error inserting payment data:", error);
+        } else {
+          console.log(
+            "Booking successfully cancelled! and payments inserted",
+            data
+          );
+        }
+        window.location.reload();
       }
     } catch (error) {
       console.error(
         "Error occurred during refund:",
         error.response ? error.response.data : error.message
       );
+    } finally {
+      setIsCancelling(false);
     }
   };
 
@@ -108,8 +138,8 @@ export const CancelBookingDialog = ({ bookingDetails }) => {
                   Close
                 </Button>
               </DialogClose>
-              <Button type="submit" variant={"default"}>
-                Cancel{" "}
+              <Button type="submit" variant={"default"} disabled={isCancelling}>
+                {isCancelling ? "Cancelling..." : "Cancel"}{" "}
               </Button>
             </DialogFooter>
           </FormWrapper>

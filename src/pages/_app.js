@@ -94,12 +94,12 @@ export default function App({ Component, pageProps }) {
       >
         <Toaster />
         {isDashboard && <Navbar />}{" "}
-          <ContactDetailsProvider>
-            <AddressProvider>
-              <DataDownload />
-              <Component {...pageProps} />
-            </AddressProvider>
-          </ContactDetailsProvider>
+        <ContactDetailsProvider>
+          <AddressProvider>
+            <DataDownload />
+            <Component {...pageProps} />
+          </AddressProvider>
+        </ContactDetailsProvider>
         {isDashboard && <Footer />}{" "}
       </ScrollArea>
     </QueryClientProvider>

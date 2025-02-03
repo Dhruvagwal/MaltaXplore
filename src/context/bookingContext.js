@@ -5,6 +5,8 @@ import { useService } from "@/features/getServiceById";
 import { useTaxRate } from "@/features/getTaxAndRate";
 import axios from "axios";
 import { currency } from "@/data/currency";
+import { usePromoCodes } from "@/features/getPromoCodes";
+import { supabase } from "@/supabaseConfig";
 
 const BookingContext = createContext();
 
@@ -29,16 +31,17 @@ export const BookingProvider = ({ children }) => {
   const { data: tourData } = useService(id);
   const [clientSecret, setClientSecret] = useState("");
   const [paymentIntentId, setPaymentIntentId] = useState("");
-
+  const [discountedPrice, setDiscountedPrice] = useState();
+  const [appliedCode, setAppliedCode] = useState("");
   const adults = sadults ? Number(sadults) : 1;
   const child = schild ? Number(schild) : 0;
 
   const totalPrice = tourData?.price * (adults + child / 2);
-
   const basePrice = Number(totalPrice);
-  const taxesAndFees = basePrice * taxRate?.[0]?.tax_rate;
-  const discountAmount = basePrice - Number(100);
-
+  const taxesAndFees = (basePrice * taxRate?.[0]?.tax_rate) / 100;
+  const discountAmount = discountedPrice
+    ? basePrice - Number(discountedPrice)
+    : 0;
   const finalPrice = basePrice + taxesAndFees - discountAmount;
   useEffect(() => {
     if (!user?.email || !finalPrice) return;
@@ -53,6 +56,8 @@ export const BookingProvider = ({ children }) => {
     };
     fetchClientSecret();
   }, [finalPrice]);
+
+  const { data: promoCodes } = usePromoCodes(id, totalPrice);
 
   // error management - invalid data, not logged in
   // useEffect(() => {
@@ -72,6 +77,75 @@ export const BookingProvider = ({ children }) => {
   //   // }
   // }, []);
 
+  const applyPromoCode = async (promoCode) => {
+    console.log("promoCode", promoCode);
+
+    if (!promoCode) {
+      console.log("Please enter a promo code.");
+      return;
+    }
+
+    const selectedCode = promoCodes.find((code) => code.code === promoCode);
+
+    if (!selectedCode) {
+      console.log("Invalid or inapplicable promo code.");
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from("promocodeusages")
+        .insert([
+          {
+            promo_code_id: selectedCode.id,
+            service_id: id,
+            user_id: user?.id,
+          },
+        ])
+        .select();
+
+      if (error) throw error;
+
+      setAppliedCode(selectedCode);
+
+      let discountedPrice = totalPrice;
+
+      if (selectedCode.type === "fixed") {
+        discountedPrice = Math.max(0, totalPrice - selectedCode.discount_value);
+      } else if (selectedCode.type === "percentage") {
+        const discount = (totalPrice * selectedCode.discount_value) / 100;
+        discountedPrice = Math.max(0, totalPrice - discount);
+      }
+
+      setDiscountedPrice(discountedPrice);
+    } catch (error) {
+      console.error("Error applying promo code:", error.message);
+    }
+  };
+
+  const removePromoCode = async (reset) => {
+    if (!appliedCode) {
+      console.log("No promo code applied.");
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from("promocodeusages")
+        .delete()
+        .eq("promo_code_id", appliedCode?.id);
+
+      if (error) throw error;
+
+      setDiscountedPrice(basePrice);
+      setAppliedCode("");
+      reset();
+      console.log("Promo Code Removed. Total Price Reset:", basePrice);
+    } catch (error) {
+      console.error("Error removing promo code:", error.message);
+    }
+  };
+
   return (
     <BookingContext.Provider
       value={{
@@ -90,6 +164,12 @@ export const BookingProvider = ({ children }) => {
         finalPrice,
         clientSecret,
         paymentIntentId,
+        setDiscountedPrice,
+        applyPromoCode,
+        appliedCode,
+        setAppliedCode,
+        promoCodes,
+        removePromoCode,
       }}
     >
       {children}

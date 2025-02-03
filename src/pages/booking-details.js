@@ -40,7 +40,7 @@ const BookingDetails = () => {
       try {
         const { data: bookingData, error: bookingError } = await supabase
           .from("servicebookings")
-          .select("*")
+          .select(`*,  created_by(*), service_id(*)`)
           .eq("id", booking_id)
           .single();
 
@@ -86,7 +86,7 @@ const BookingDetails = () => {
     }
   }, [booking_id]);
 
-  
+  if (!bookingDetails) return null;
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col py-8">
@@ -125,9 +125,7 @@ const BookingDetails = () => {
                 },
                 {
                   label: "Booked By",
-                  value: users?.find(
-                    (user) => user.id === bookingDetails.created_by
-                  )?.name,
+                  value: bookingDetails?.created_by?.name
                 },
                 {
                   label: "Booking Time",
@@ -150,7 +148,7 @@ const BookingDetails = () => {
               <h2 className="text-3xl font-bold text-gray-800 text-center">
                 {service?.name}
               </h2>
-              <p className="text-lg text-gray-500 mt-2 text-center">
+              <p className="text-lg text-gray-500 mt-2 text-center break-words">
                 {service?.description}
               </p>
               <p className="text-lg text-gray-500 mt-2 text-center">
@@ -211,7 +209,7 @@ const BookingDetails = () => {
                 <h3 className="text-md text-gray-600 font-semibold">
                   Cancellation Policy
                 </h3>
-                <p className="text-lg text-gray-800">
+                <p className="text-lg text-gray-800 break-words">
                   {service?.cancellation_policy}
                 </p>
               </div>
@@ -258,7 +256,10 @@ const BookingDetails = () => {
                 height={500}
                 width={400}
                 className="rounded-t-xl w-full object-cover"
-                src={`https://picsum.photos/500/400?random=${1}`}
+                src={
+                  JSON.parse(service?.images?.[0] ?? "{}")?.url ??
+                  `https://picsum.photos/500/400?random=${1}`
+                }
                 alt="Service Image"
               />
               <div className="backdrop-blur-sm bg-white/80 absolute bottom-4 right-4 rounded-full p-2 px-4 flex items-center text-xs shadow-md">
@@ -274,7 +275,7 @@ const BookingDetails = () => {
               <h2 className="text-xl font-semibold text-gray-800">
                 {service?.name}
               </h2>
-              <p className="text-gray-600 mt-4">{service?.description}</p>
+              <p className="text-gray-600 mt-4 break-words">{service?.description}</p>
             </CardContent>
           </Card>
 

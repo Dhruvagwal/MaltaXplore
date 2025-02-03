@@ -39,7 +39,7 @@ import { useServiceReviews } from "@/features/reviews/getServiceReviews";
 function TourismPage() {
   const router = useRouter();
   const { id } = router.query;
-  const { user, session, setSession, setUser } = useAuthState();
+  const { user } = useAuthState();
   const { likeService, unlikeService } = useServicesState();
   const [isLiked, setIsLiked] = useState(false);
   const { data: service, isLoading, isError } = useService(id);
@@ -98,6 +98,23 @@ function TourismPage() {
       </div>
     );
   }
+
+  const totalReviews = allReviews?.length;
+  // const ratingCounts = [5, 4, 3, 2, 1].reduce((acc, star) => {
+  //   acc[star] = allReviews?.filter((review) => review.rating === star).length;
+  //   return acc;
+  // }, {});
+
+  const averageRating =
+    totalReviews > 0
+      ? (
+          allReviews.reduce((sum, review) => sum + review.rating, 0) /
+          totalReviews
+        ).toFixed(1)
+      : 0;
+
+  console.log(service);
+
   return (
     <main className="min-h-screen bg-white">
       <div className="md:pt-24 mx-8 md:mx-20">
@@ -176,42 +193,51 @@ function TourismPage() {
           })}
         </div>
 
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 w-full sm:w-auto">
-            <div className="flex items-center">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <Star
-                  key={star}
-                  className="w-4 h-4 sm:w-5 sm:h-5 fill-[#E5484D] text-[#E5484D]"
-                />
-              ))}
-              <span className="ml-2 text-sm sm:text-base text-gray-600">
-                5 (235 review)
-              </span>
-            </div>
-            <div className="flex items-center gap-2 text-sm sm:text-base text-gray-600">
-              <MapPin className="w-4 h-4" />
-              <span className="line-clamp-1">{service?.location}</span>
-            </div>
-          </div>
+        {service && service?.status === "active" && (
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 w-full sm:w-auto">
+              <div className="flex items-center">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Star
+                    key={star}
+                    className={`w-5 h-5 ${
+                      star <= Math.round(averageRating)
+                        ? "fill-red-500 text-red-500"
+                        : "fill-gray-300 text-gray-300"
+                    }`}
+                  />
+                ))}
 
-          <div className="flex gap-2 self-end sm:self-auto">
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center">
-              <Button
-                variant="outline"
-                className={cn(
-                  "rounded-full w-10 h-10 p-0 text-primary bg-[#FFE4E5] hover:bg-[#FFE4E5]"
-                )}
-                onClick={handleLikesbutton}
-              >
-                <Heart className={cn(isLiked && "fill-primary text-primary")} />
-              </Button>
+                <span className="ml-2 text-sm sm:text-base text-gray-600">
+                  ({allReviews?.length} review)
+                </span>
+              </div>
+              <div className="flex items-center gap-2 text-sm sm:text-base text-gray-600">
+                <MapPin className="w-4 h-4" />
+                <span className="line-clamp-1">{service?.location}</span>
+              </div>
             </div>
-            <button className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center bg-[#FFE4E5] text-[#E5484D] transition-all duration-300">
-              <Share2 className="w-4 h-4 sm:w-5 sm:h-5" />
-            </button>
+
+            <div className="flex gap-2 self-end sm:self-auto">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center">
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "rounded-full w-10 h-10 p-0 text-primary bg-[#FFE4E5] hover:bg-[#FFE4E5]"
+                  )}
+                  onClick={handleLikesbutton}
+                >
+                  <Heart
+                    className={cn(isLiked && "fill-primary text-primary")}
+                  />
+                </Button>
+              </div>
+              <button className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center bg-[#FFE4E5] text-[#E5484D] transition-all duration-300">
+                <Share2 className="w-4 h-4 sm:w-5 sm:h-5" />
+              </button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Booking Section */}
@@ -275,12 +301,12 @@ function TourismPage() {
               </div>
             </div>
             <Separator className="my-10" />
-            {allReviews?.length > 0 && (
-              <ReviewsPage serviceId={id} allReviews={allReviews} />
-            )}
+            {allReviews?.length > 0 && <ReviewsPage allReviews={allReviews} />}
           </div>
 
-          <BookingCard service={service} isLoading={isLoading} />
+          {service && service?.status === "active" && (
+            <BookingCard service={service} isLoading={isLoading} />
+          )}
         </div>
       </section>
       <TopPicks />

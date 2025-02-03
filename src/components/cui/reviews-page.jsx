@@ -9,8 +9,7 @@ import { reviewsSchema } from "@/lib/schema";
 import { useAuthState } from "@/context/ueAuthContext";
 // import { addReview } from "@/features/reviews/addServiceReview";
 
-export default function ReviewsPage({ serviceId,allReviews }) {
-  const { user } = useAuthState();
+export default function ReviewsPage({allReviews }) {
   const {
     FormWrapper,
     FormInput,

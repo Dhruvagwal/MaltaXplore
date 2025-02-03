@@ -1,7 +1,6 @@
 // import emailjs from "@emailjs/browser";
 import axios from "axios";
 export const sendEmail = async (paymentDetails) => {
-
   try {
     const date = new Date(paymentDetails.created * 1000).toLocaleString();
     const price = (paymentDetails.amount / 100).toFixed(2);
@@ -34,18 +33,19 @@ export const sendEmail = async (paymentDetails) => {
         },
       }
     );
+    console.log("sendEmail", response);
   } catch (error) {
     console.error("Error sending email:", error);
   }
 };
 
 export const sendEmailToBookingPersons = async (templateDetails) => {
-  const bookingLink = `${window.location.origin}/booking-details?booking_id=${templateDetails?.Booking_id}`;
+  const bookingLink = `${window.location.origin}/booking-details?booking_id=${templateDetails?.booking_id}`;
   try {
     const templateParams = {
       user_email: templateDetails.email,
       guest_name: templateDetails.guest_name,
-      booking_id: templateDetails?.Booking_id,
+      booking_id: templateDetails?.booking_id,
       service_name: templateDetails?.service_name,
       service_date: templateDetails?.service_date,
       service_location: templateDetails?.service_location,
@@ -56,7 +56,7 @@ export const sendEmailToBookingPersons = async (templateDetails) => {
     };
 
     const response = await axios.post(
-      "http://127.0.0.1:5000/send_email",
+      "https://api.maltaxplore.com/send_email",
       {
         id: "confirmation-email-template",
         to: templateParams?.user_email,
@@ -70,7 +70,42 @@ export const sendEmailToBookingPersons = async (templateDetails) => {
         },
       }
     );
-    console.log(response)
+    console.log("sendEmailToBookingPersons", response);
+  } catch (error) {
+    console.error("Error sending email:", error);
+  }
+};
+
+export const sendCancellationEmail = async (templateDetails) => {
+  console.log(templateDetails);
+  const bookingLink = `${window.location.origin}/booking-details?booking_id=${templateDetails?.booking_id}`;
+  try {
+    const templateParams = {
+      user_email: templateDetails.email,
+      guest_name: templateDetails.guest_name,
+      service_name: templateDetails?.service_name,
+      booking_id: templateDetails?.booking_id,
+      refund_amount: templateDetails?.refund_amount,
+      booking_link: bookingLink,
+      company_name: "MaltaXplore",
+    };
+
+    const response = await axios.post(
+      "https://api.maltaxplore.com/send_email",
+      {
+        id: "booking-cancelled-email",
+        to: templateParams?.user_email,
+        values: templateParams,
+        header: "Hello, this is a test email!",
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": 1234,
+        },
+      }
+    );
+    console.log("sendCancellationEmail", response);
   } catch (error) {
     console.error("Error sending email:", error);
   }

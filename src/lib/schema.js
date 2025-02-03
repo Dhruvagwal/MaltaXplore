@@ -257,3 +257,7 @@ export const bookingSchema = z
     message: "startDate must be before endDate",
     path: ["startDate"],
   });
+
+export const promoCodeSchema = z.object({
+  promoCode: z.string().optional(1, "Promo Code cannot be empty"),
+});

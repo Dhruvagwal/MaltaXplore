@@ -14,7 +14,6 @@ import { useToast } from "@/hooks/use-toast";
 import useCustomForm from "@/hooks/use-custom-form";
 import { bookingSchema } from "@/lib/schema";
 import { currency } from "@/data/currency";
-import { endOfDay } from "date-fns";
 import { useEffect, useState } from "react";
 
 const Count = ({ onUpdate, count, heading }) => {
@@ -50,6 +49,7 @@ const Count = ({ onUpdate, count, heading }) => {
 const BookingCard = ({ service, isLoading }) => {
   const { toast } = useToast();
   const router = useRouter();
+  const { user } = useAuthState();
   const { FormWrapper, FormDatePicker, setValue, watch } = useCustomForm({
     schema: bookingSchema,
     defaultValues: {

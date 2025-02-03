@@ -22,6 +22,8 @@ import { HoverCardComponent } from "@/components/cui/hover-card";
 import { useBooking } from "@/context/bookingContext";
 import { format } from "date-fns";
 import { formatDate } from "@/utils/date";
+import { currency } from "@/data/currency";
+import { MoreOffersComponent } from "../cui/more-promo-code";
 
 function BookingDetailCard() {
   const {
@@ -55,7 +57,10 @@ function BookingDetailCard() {
               </CardDescription>
             </div>
             <img
-              src="https://media-cdn.tripadvisor.com/media/attractions-splice-spp-360x240/07/ae/17/80.jpg"
+              src={
+                JSON.parse(tourData?.images?.[0] ?? "{}")?.url ??
+                `https://picsum.photos/500/400?random=${1}`
+              }
               alt="Description of the image"
               className="w-28 h-28 object-cover rounded-md"
             />
@@ -90,7 +95,10 @@ function BookingDetailCard() {
         <CardFooter className="bg-[#E5484D] text-white rounded-b-xl flex flex-col justify-between py-8 font-semibold">
           <div className="flex justify-between items-center w-full">
             <span className="text-white/90">Base Price</span>
-            <span className="text-white/90">${basePrice}</span>
+            <span className="text-white/90">
+              {currency.sign}
+              {basePrice}
+            </span>
           </div>
 
           <div className="flex justify-between items-center w-full mt-2">
@@ -102,16 +110,28 @@ function BookingDetailCard() {
                 data={"Disclaier: This includes transaction taxes"}
               />
             </span>
-            <span className="text-white/90">+${taxesAndFees}</span>
+            <span className="text-white/90">
+              +{currency.sign}
+              {taxesAndFees}
+            </span>
           </div>
           <div className="flex justify-between items-center w-full mt-2">
-            <span className="text-white/90">Discount </span>
-            <span className="text-white/90">- ${discountAmount}</span>
+            <span className="text-white/90 flex items-center gap-2">
+              Discount
+              <MoreOffersComponent />
+            </span>
+            <span className="text-white/90">
+              - {currency.sign}
+              {discountAmount}
+            </span>
           </div>
           <Separator className="my-4" />
           <div className="flex justify-between items-center w-full">
             <span className="text-white/90">Total</span>
-            <span className="text-white/90">${finalPrice}</span>
+            <span className="text-white/90">
+              {currency.sign}
+              {finalPrice}
+            </span>
           </div>
         </CardFooter>
       </Card>

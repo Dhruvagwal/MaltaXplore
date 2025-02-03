@@ -262,7 +262,7 @@ const reviews = () => {
         </div>
 
         {/* Write Review Section */}
-        <div className="w-full md:w-1/2 mt-16">
+        {/* <div className="w-full md:w-1/2 mt-16">
           <h2 className="text-3xl font-bold mb-8">Write a review</h2>
           <Card>
             <CardContent className="p-6">
@@ -311,7 +311,7 @@ const reviews = () => {
               </FormWrapper>
             </CardContent>
           </Card>
-        </div>
+        </div> */}
       </div>
     </div>
   );

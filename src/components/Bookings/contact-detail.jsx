@@ -7,7 +7,7 @@ import useCustomForm from "@/hooks/use-custom-form";
 import { useToast } from "@/hooks/use-toast";
 import { contactDetailsSchema } from "@/lib/schema";
 import { useContactDetails } from "@/context/contactDetailsContext";
-import { useBooking } from "@/context/bookingContext";
+import { BookingProvider, useBooking } from "@/context/bookingContext";
 import { supabase } from "@/supabaseConfig";
 import { useRouter } from "next/router";
 import { MoreOffersComponent } from "../cui/more-promo-code";
@@ -17,14 +17,12 @@ const ContactDetailsPage = ({ nextStep }) => {
   const { id } = router.query;
   const { toast } = useToast();
   const { setUserId, setUserEmail } = useContactDetails();
-  const { adults, child } = useBooking();
+  const { adults, child, totalPrice } = useBooking();
   const totalForms = adults + child;
-
+  const originalPrice = totalPrice;
   const { FormWrapper, FormInput } = useCustomForm({
     schema: contactDetailsSchema,
   });
-  const [appliedCode, setAppliedCode] = useState("");
-
   const handleSubmit = async (data) => {
     const formData = [];
     for (let i = 0; i < totalForms; i++) {
@@ -110,6 +108,7 @@ const ContactDetailsPage = ({ nextStep }) => {
       description: errors,
     });
   };
+
   return (
     <div>
       <div className="mt-16 pt-1">
@@ -174,29 +173,21 @@ const ContactDetailsPage = ({ nextStep }) => {
             </div>
           ))}
 
-          <div className="my-12">
-            <p className="text-2xl font-semibold flex gap-2 items-center">
-              Promo Code{" "}
-              <MoreOffersComponent
-                serviceId={id}
-                setAppliedCode={setAppliedCode}
-                appliedCode={appliedCode}
-              />
-            </p>
-            <Separator className="my-4" />
-            <PromCodeDialog
-              serviceId={id}
-              setAppliedCode={setAppliedCode}
-              appliedCode={appliedCode}
-            />
-          </div>
-
           <div className="flex justify-center">
             <Button variant="destructive" className="w-3/5 h-12 rounded-full">
               Next
             </Button>
           </div>
         </FormWrapper>
+
+        {/* <div className="my-12">
+          <p className="text-2xl font-semibold flex gap-2 items-center">
+            Promo Code
+            <MoreOffersComponent />
+          </p>
+          <Separator className="my-4" />
+          <PromCodeDialog />
+        </div> */}
       </div>
     </div>
   );

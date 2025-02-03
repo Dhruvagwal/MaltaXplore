@@ -152,112 +152,16 @@ CREATE TABLE promocodeusages (
     created_at TIMESTAMPTZ DEFAULT NOW() -- Timestamp of when the promo code is used
 );
 
-
-
--- <!DOCTYPE html>
--- <html>
--- <head>
---   <style>
---     body {
---       font-family: Arial, sans-serif;
---       background-color: #f9f9f9;
---       margin: 0;
---       padding: 0;
---     }
---     .email-container {
---       max-width: 600px;
---       margin: 20px auto;
---       background-color: #ffffff;
---       border: 1px solid #e0e0e0;
---       border-radius: 8px;
---       overflow: hidden;
---     }
---     .header {
---       background-color: #da262b;
---       color: white;
---       padding: 20px;
---       text-align: center;
---     }
---     .header h1 {
---       margin: 0;
---       font-size: 24px;
---     }
---     .content {
---       padding: 20px;
---       color: #333333;
---     }
---     .content p {
---       margin: 10px 0;
---       line-height: 1.6;
---     }
---     .content .details {
---       background-color: #f0f8ff;
---       padding: 10px;
---       border-radius: 4px;
---     }
---     .content .details p {
---       margin: 5px 0;
---     }
---     .link-container {
---       margin-top: 20px;
---       text-align: center;
---     }
---     .link-container a {
---       display: inline-block;
---       background-color: #da262b;
---       color: white;
---       text-decoration: none;
---       padding: 10px 20px;
---       border-radius: 5px;
---       font-size: 16px;
---     }
---     .footer {
---       background-color: #f2f2f2;
---       text-align: center;
---       padding: 15px;
---       font-size: 12px;
---       color: #666666;
---     }
---   </style>
--- </head>
--- <body>
---   <div class="email-container">
---     <div class="header">
---       <h1>Confirmation! 🎉</h1>
---     </div>
---     <div class="content">
---       <p>Dear {{guest_name}},</p>
---       <p>We’re excited to confirm your booking! Below are your booking details:</p>
-      
---       <div class="details">
---         <p><strong>Booking Id:</strong> {{booking_id}}</p>
---         <p><strong>Service Name:</strong> {{service_name}}</p>
---         <p><strong>Date of Service:</strong> {{service_date}}</p>
---         <p><strong>Location:</strong> {{service_location}}</p>
---         <p><strong>Ticket Holder:</strong> {{booker_name}}</p>
---         <p><strong>Number of Tickets:</strong> {{total_tickets_booked}}</p>
---       </div>
-      
---       <p>Please ensure you arrive on time for the service and bring this email as proof of your booking.</p>
-      
---       <!-- Add link to view booking -->
---       <div class="link-container">
---         <a href="{{booking_link}}" target="_blank">View Your Booking</a>
---       </div>
-
---       <p>If you have any questions or need further assistance, don’t hesitate to reach out to us.</p>
-
---       <p>Looking forward to seeing you at the event!</p>
---     </div>
---     <div class="footer">
---       <p>Best Regards,</p>
---       <p>{{company_name}} Team</p>
---       <p><a href="mailto:{{company_email}}">Contact Us</a></p>
---     </div>
---   </div>
--- </body>
--- </html>
-
-
-
--- <!DOCTYPE html> <html> <head> <style> body { font-family: Arial, sans-serif; background-color: #f9f9f9; margin: 0; padding: 0; } .email-container { max-width: 600px; margin: 20px auto; background-color: #ffffff; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; } .header { background-color: #da262b; color: white; padding: 20px; text-align: center; } .header h1 { margin: 0; font-size: 24px; } .content { padding: 20px; color: #333333; } .content p { margin: 10px 0; line-height: 1.6; } .content .details { background-color: #f0f8ff; padding: 10px; border-radius: 4px; } .content .details p { margin: 5px 0; } .footer { background-color: #f2f2f2; text-align: center; padding: 15px; font-size: 12px; color: #666666; } </style> </head> <body> <div class="email-container"> <div class="header"> <h1>Thank You for Booking with MaltaXplore! 🌴</h1> </div> <div class="content"> <p>Dear {{user_name}},</p> <p>We’re excited to confirm your booking! Below are your booking details:</p> <div class="details"> <p><strong>Booking Date:</strong> {{booking_date}}</p> <p><strong>Payment Amount:</strong> ${{payment_amount}}</p> <p><strong>Payment Method:</strong> {{payment_method}}</p> <p><strong>Payment Intent Id:</strong> {{payment_intent}}</p> </div> <p>If you have any questions or need further assistance, please don’t hesitate to contact us.</p> <p>We look forward to seeing you soon!</p> </div> <div class="footer"> <p>Thank you for choosing MaltaXplore!</p> <p>Email sent via EmailJS.com</p> </div> </div> </body> </html>
+CREATE TABLE events (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    title TEXT NOT NULL,
+    description TEXT,
+    location TEXT NOT NULL,
+    event_date DATE NOT NULL,
+    start_time TIME NOT NULL,
+    end_time TIME NOT NULL,
+    redirect_url TEXT,
+    more_info TEXT,
+    created_by TEXT DEFAULT 'admin' NOT NULL,
+    image TEXT
+);

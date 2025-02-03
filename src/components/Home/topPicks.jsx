@@ -30,7 +30,7 @@ const TopPicks = () => {
   }, [user]);
 
   return (
-    <div className="my-32 px-9 md:px-32">
+    <div className="my-32 px-8 md:px-20">
       <div className="flex flex-col md:flex-row lg:gap-64 justify-between items-center">
         {isLoading ? (
           <div className="flex flex-col gap-4 w-1/2">

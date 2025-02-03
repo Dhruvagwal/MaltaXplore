@@ -72,7 +72,7 @@ export const Categories = ({ className }) => {
           <Component1Icon />
           Date
         </p>
-        <DatePicker date={date} setDate={setDate} />
+        <DatePicker date={date} onChange={setDate} />
       </div>
       <div>
         <p className="text-sm text-muted-foreground p-1 flex items-center gap-1 text-primary-foreground0 py-2">

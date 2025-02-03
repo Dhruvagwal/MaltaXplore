@@ -8,37 +8,39 @@ import Link from "next/link";
 
 const CategoryCard = ({ data, index }) => {
   return (
-    <Card className="col-span-1 group hover:text-white hover:bg-primary transition-all ease-in-out p-4 text-left">
-      <div className="relative overflow-visible">
-        <div className="cut-bottom_right_corner  rounded-xl overflow-hidden">
-          <Image
-            height={400}
-            width={400}
-            className=" w-full group-hover:scale-125 transition-all ease-in-out object-cover"
-            src={data?.image??""}
-          />
-        </div>
-        <Button
-          asChild
-          variant="outline"
-          className="rounded-full p-6 text-black group-hover:scale-125 transition-all ease-in-out absolute bottom-0 rotate-[33deg] border h-auto right-0 "
-        >
-          <Link
-            href={{
-              pathname: search,
-              query: { category: data.id },
-            }}
+      <Card className="col-span-1 group hover:text-white hover:bg-primary transition-all ease-in-out p-4 text-left">
+        <div className="relative overflow-visible">
+          <div className="cut-bottom_right_corner  rounded-xl overflow-hidden">
+            <Image
+              height={400}
+              width={400}
+              className=" w-full group-hover:scale-125 transition-all ease-in-out object-cover"
+              src={data?.image ?? ""}
+            />
+          </div>
+          <Button
+            asChild
+            variant="outline"
+            className="rounded-full p-6 text-black group-hover:scale-125 transition-all ease-in-out absolute bottom-0 rotate-[33deg] border h-auto right-0 "
           >
-            <ArrowTopRightIcon />
-          </Link>
-        </Button>
-      </div>
+            <Link
+              href={{
+                pathname: search,
+                query: { category: data.id },
+              }}
+            >
+              <ArrowTopRightIcon />
+            </Link>
+          </Button>
+        </div>
 
-      <div className="mt-16">
-        <p className="text-xl font-semibold">{data.name}</p>
-        {/* <p className="group-hover:text-gray-200 text-white">{data.desc}</p> */}
-      </div>
-    </Card>
+        <div className="mt-16">
+          <p className="text-xl font-semibold line-clamp-1 hover:line-clamp-none">
+            {data.name}
+          </p>
+          {/* <p className="group-hover:text-gray-200 text-white">{data.desc}</p> */}
+        </div>
+      </Card>
   );
 };
 

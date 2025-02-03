@@ -68,6 +68,7 @@ const BookingCard = ({ service, isLoading }) => {
     const pStartDate = new Date(startDate).getTime();
     const pEndDate = new Date(endDate).getTime();
     if (
+      user !== null &&
       pStartDate > new Date().getTime() &&
       pStartDate < pEndDate &&
       adults >= 1

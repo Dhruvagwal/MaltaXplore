@@ -103,6 +103,7 @@ export const HeroSearch = ({ className }) => {
             date={date}
             setDate={setDate}
             className="h-12 md:h-16 rounded-xl md:rounded-2xl"
+            placeholder={"Select Date"}
           />
         </motion.div>
         <motion.div 

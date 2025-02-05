@@ -31,7 +31,7 @@ const staggerContainer = {
 };
 
 export default function Home() {
-  const { data: services } = useFetchServices();
+  const { data: services, isLoading } = useFetchServices();
   const { data: serviceBookingPersons } = useFetchServiceBookingPersons();
 
   return (
@@ -119,7 +119,11 @@ export default function Home() {
 
           {/* Rest of the sections */}
           <PhoneFeatures />
-          <TopPicks />
+          <TopPicks
+            heading={"Top Picks for Your Maltese Adventure"}
+            services={services}
+            isLoading={isLoading}
+          />
           <CCategories />
           <Iteneray />
           <Events />

@@ -1,27 +1,20 @@
 import { supabase } from "@/supabaseConfig";
 import { useQuery } from "@tanstack/react-query";
 
-
 export const getServiceReviews = async (serviceId) => {
   try {
     const { data, error } = await supabase
       .from("servicecomments")
-      .select(
-        `
-        *,
-        users (id, name, email, mobile_no, auth_id, created_at)
-      `
-      )
+      .select("*")
       .eq("service_id", serviceId);
 
-    if (error) throw error;
+    if (error) console.log(error);
     return data;
   } catch (error) {
     console.error("Error fetching reviews with user data:", error.message);
-    throw new Error("Failed to fetch reviews");
+    console.log("Failed to fetch reviews");
   }
 };
-
 
 export const useServiceReviews = (serviceId) => {
   return useQuery({
@@ -33,21 +26,27 @@ export const useServiceReviews = (serviceId) => {
 
 export const getAllServiceReviews = async () => {
   try {
-    const { data, error } = await supabase
-      .from("servicecomments")
-      .select(
-        `
-        *,
-        users (id, name, email, mobile_no, auth_id, created_at),
-        services (id, name)
+    const { data, error } = await supabase.from("servicecomments").select(
       `
-      );
+        *,
+        services ()
+      `
+    );
 
     if (error) throw error;
     return data;
   } catch (error) {
-    console.error("Error fetching reviews with user and service data:", error.message);
+    console.error(
+      "Error fetching reviews with user and service data:",
+      error.message
+    );
     return [];
   }
 };
 
+export const useAllServiceReviews = () => {
+  return useQuery({
+    queryKey: ["serviceReviews"],
+    queryFn: () => getServiceReviews(),
+  });
+};

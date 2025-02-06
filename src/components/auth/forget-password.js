@@ -41,10 +41,9 @@ function ForgotPassword({ redirect = () => {} }) {
   };
 
   return (
-    <div className="p-16 flex flex-col">
+    <div className="">
       <FormWrapper onSubmit={onSubmit} onError={onError}>
-        <div className="h-full grid place-content-center">
-          <div className="flex w-[30vw] flex-col gap-1">
+          <div className="flex flex-col gap-1 mx-8">
             <h1 className="text-2xl font-semibold">Forgot Password</h1>
             <h3 className="text-sm text-muted-foreground">
               Enter your email to continue
@@ -72,7 +71,6 @@ function ForgotPassword({ redirect = () => {} }) {
               Login
             </Button>
           </div>
-        </div>
       </FormWrapper>
     </div>
   );

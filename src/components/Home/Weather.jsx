@@ -187,7 +187,7 @@ class Weather extends React.Component {
         transitionSpeed={2000}
         gyroscope={false}
       >
-        <div className="flex flex-col bg-red-200 rounded-[3rem] lg:w-[26.5vw] h-full lg:h-[560px] p-4 max-lg:space-y-8">
+        <div className="flex flex-col bg-white rounded-[3rem] lg:w-[26.5vw] h-full lg:h-[560px] p-4 max-lg:space-y-4">
           {this.state.loading ? (
             <Skeleton className={"bg-gray-300 p-4 rounded-[3rem]"} />
           ) : (
@@ -204,13 +204,13 @@ class Weather extends React.Component {
           {this.state.loading ? (
             <Skeleton className={"bg-gray-300 h-full rounded-3xl"} />
           ) : (
-            <div className="bg-gradient-to-r from-black to-green-800 flex-col flex justify-center h-full rounded-3xl text-white lg:mt-5">
+            <div className="bg-gradient-to-r from-black to-green-800 flex-col flex justify-center h-full rounded-3xl text-white lg:mt-5 p-4 lg:p-0">
               <h2 className="text-xl font-md pl-4">Today</h2>
               <div className="grid grid-cols-4">
                 {this.state.hourlyWeather?.map((hour, index) => (
                   <div
                     key={index}
-                    className="flex flex-col items-center gap-2 py-8 lg:py-4"
+                    className="flex flex-col items-center gap-2 py-4"
                   >
                     <p className="text-xs md:text-base font-thin">
                       {hour.time}

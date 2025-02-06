@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/router";
 import { useServiceTypeState } from "@/context/servicesContext";
+import { Separator } from "../ui/separator";
 
 const searchItemVariants = {
   initial: { y: 20, opacity: 0 },
@@ -52,10 +53,18 @@ export const HeroSearch = ({ className }) => {
       initial="initial"
       animate="animate"
       className={cn(
-        "flex flex-col md:flex-row gap-4 md:gap-6 p-6 md:p-8 border bg-white w-full shadow-lg rounded-2xl",
+        "flex flex-col gap-4 md:gap-6 p-6 md:p-8 border bg-white w-full lg:max-w-sm shadow-lg rounded-2xl",
         className
       )}
     >
+      <motion.div
+        variants={searchItemVariants}
+        className="flex-1 min-w-0 text-xl"
+        custom={0}
+      >
+        Check your prefer destination{" "}
+      </motion.div>
+      <Separator />
       <motion.div
         variants={searchItemVariants}
         className="flex-1 min-w-0"

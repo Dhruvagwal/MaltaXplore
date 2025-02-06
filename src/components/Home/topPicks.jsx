@@ -9,13 +9,12 @@ import {
   CarouselProgress,
 } from "@/components/ui/zoom_carousel";
 import { ServiceCard } from "@/components/cui/ServiceCard";
-import { useServicesState } from "@/context/servicesContext";
 import { supabase } from "@/supabaseConfig";
 import { useAuthState } from "@/context/ueAuthContext";
 
-const TopPicks = () => {
-  const { services:all, isLoading } = useServicesState();
-  const services = all.slice(0,5)
+const TopPicks = ({ heading, services, isLoading }) => {
+  if (!services || services.length === 0) return null;
+  const sServices = services?.slice(0, 5);
   const { user } = useAuthState();
   const [likes, setLikes] = useState();
   useEffect(() => {
@@ -28,7 +27,6 @@ const TopPicks = () => {
     };
     fetchLikes();
   }, [user]);
-
   return (
     <div className="my-32 px-8 md:px-20">
       <div className="flex flex-col md:flex-row lg:gap-64 justify-between items-center">
@@ -38,9 +36,7 @@ const TopPicks = () => {
             <Skeleton className="h-8" />
           </div>
         ) : (
-          <p className="text-4xl md:text-5xl font-bold">
-            Top Picks for Your Maltese Adventure
-          </p>
+          <p className="text-4xl md:text-5xl font-bold">{heading} </p>
         )}
         {isLoading ? (
           <div className="flex flex-col gap-4 w-1/2 ">
@@ -62,7 +58,7 @@ const TopPicks = () => {
         className="w-full mt-16"
       >
         <CarouselContent className="max-md:mr-10">
-          {services?.map((item, index) => (
+          {sServices?.map((item, index) => (
             <CarouselItem index={index} className="md:basis-1/2 lg:basis-1/3">
               <ServiceCard
                 data={item}
@@ -75,16 +71,16 @@ const TopPicks = () => {
           ))}
 
           <CarouselItem
-            index={services?.length}
+            index={sServices?.length}
             className="md:basis-1/2 lg:basis-1/3"
           />
           <CarouselItem
-            index={services?.length + 1}
+            index={sServices?.length + 1}
             className="md:basis-1/2 lg:basis-1/3"
           />
         </CarouselContent>
         <div className="my-16"></div>
-        <CarouselProgress length={services?.length} />
+        <CarouselProgress length={sServices?.length} />
         <CarouselPrevious />
         <CarouselNext />
       </Carousel>

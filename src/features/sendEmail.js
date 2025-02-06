@@ -37,7 +37,8 @@ export const sendEmail = async (paymentDetails, templateDetails) => {
 
 export const sendEmailToBookingPersons = async (
   templateDetails,
-  emailTemplate
+  emailTemplate,
+  bookingData
 ) => {
   const bookingLink = `${window.location.origin}/booking-details?booking_id=${templateDetails?.booking_id}`;
   try {
@@ -46,15 +47,14 @@ export const sendEmailToBookingPersons = async (
       guest_name: emailTemplate.guest_name,
       booking_id: templateDetails?.booking_id,
       service_name: templateDetails?.service_name,
-      booking_start_date: templateDetails?.booking_start_date,
-      booking_end_date: templateDetails?.booking_end_date,
+      booking_start_date: bookingData[0]?.booking_id?.start_date,
+      booking_end_date: bookingData[0]?.booking_id?.end_date,
       service_location: templateDetails?.service_location,
       booker_name: templateDetails?.booker_name,
       total_tickets_booked: templateDetails?.total_tickets_booked,
       company_name: "MaltaXplore",
       booking_link: bookingLink,
     };
-
     const response = await axios.post(
       "https://api.maltaxplore.com/send_email",
       {
@@ -79,15 +79,15 @@ export const sendCancellationEmail = async (templateDetails) => {
   const bookingLink = `${window.location.origin}/booking-details?booking_id=${templateDetails?.booking_id}`;
   try {
     const templateParams = {
-      user_email: emailTemplate.email,
-      guest_name: templateDetails.guest_name,
+      user_email: templateDetails?.user_email,
+      guest_name: templateDetails?.guest_name,
       service_name: templateDetails?.service_name,
       booking_id: templateDetails?.booking_id,
       refund_amount: templateDetails?.refund_amount,
       booking_link: bookingLink,
       company_name: "MaltaXplore",
     };
-
+    console.log("templateParams", templateParams);
     const response = await axios.post(
       "https://api.maltaxplore.com/send_email",
       {

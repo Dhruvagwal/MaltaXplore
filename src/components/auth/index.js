@@ -158,7 +158,7 @@ function index() {
                 </div>
               </div>
             </div>
-            <Card className="lg:mx-20">{pages[active]}</Card>
+            <Card className="lg:mx-20 place-content-center">{pages[active]}</Card>
           </div>
         </div>{" "}
       </div>

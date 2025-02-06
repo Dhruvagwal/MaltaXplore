@@ -31,7 +31,11 @@ function Signup({ redirect = () => {} }) {
       const auth = await supabase.auth.signUp({
         email: values.email,
         password: values.password,
+        options: {
+          emailRedirectTo: window.location.origin,
+        },
       });
+
       if (auth.error) {
         console.error(auth.error);
         toast({

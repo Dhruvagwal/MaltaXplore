@@ -11,12 +11,16 @@ export const getServicesBySupplierAccessId = async (supplierAccessId) => {
            supplier_company_id:suppliercompany(*)
          )`
       )
-      .eq("supplier_access_id", supplierAccessId);
+      .eq("supplier_access_id", supplierAccessId)
+      .eq("status", "active");
 
     if (error) throw error;
     return services;
   } catch (error) {
-    console.error(`Error fetching services for Supplier Access ID ${supplierAccessId}:`, error.message);
+    console.error(
+      `Error fetching services for Supplier Access ID ${supplierAccessId}:`,
+      error.message
+    );
     throw error;
   }
 };

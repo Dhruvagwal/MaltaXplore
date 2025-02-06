@@ -134,15 +134,15 @@ export default function ReviewsPage({allReviews }) {
                       <Avatar>
                         <AvatarImage
                           src={review?.users?.avatar}
-                          alt={review?.users.name}
+                          alt={review?.users?.name}
                         />
                         <AvatarFallback>
-                          {review?.users.name.charAt(0)}
+                          {review?.users?.name?.charAt(0)}
                         </AvatarFallback>
                       </Avatar>
                       <div>
-                        <h3 className="font-semibold">{review?.users.name}</h3>
-                        <h3 className="text-sm font-md">{review.location}</h3>
+                        <h3 className="font-semibold">{review?.users?.name}</h3>
+                        <h3 className="text-sm font-md">{review?.location}</h3>
                       </div>
                     </div>
                   </div>

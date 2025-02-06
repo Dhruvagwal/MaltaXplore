@@ -8,6 +8,7 @@ import { supabase } from "@/supabaseConfig";
 import { useAuthState } from "@/context/ueAuthContext";
 import { getUserFromDatabase } from "@/features/getUser";
 import { CancelBookingDialog } from "@/components/cui/cancel-booking-dialog";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const BookingDetails = () => {
   const router = useRouter();
@@ -16,7 +17,7 @@ const BookingDetails = () => {
   const [users, setUsers] = useState([]);
   const [service, setService] = useState(null);
   const [bookingDetails, setBookingDetails] = useState(null);
-
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     const fetchUserData = async () => {
       const { data, error } = await supabase.auth.getUser();
@@ -37,6 +38,8 @@ const BookingDetails = () => {
     if (!booking_id) return;
 
     const fetchBookingPersons = async () => {
+      setLoading(true);
+
       try {
         const { data: bookingData, error: bookingError } = await supabase
           .from("servicebookings")
@@ -78,7 +81,11 @@ const BookingDetails = () => {
           console.log(usersRes.data);
           console.log(servicesRes.data[0]);
         }
-      } catch (err) {}
+      } catch (err) {
+        console.error("Unexpected error:", err);
+      } finally {
+        setLoading(false);
+      }
     };
 
     if (booking_id) {
@@ -87,6 +94,16 @@ const BookingDetails = () => {
   }, [booking_id]);
 
   if (!bookingDetails) return null;
+
+  if (loading) {
+    return (
+      <div className="space-y-2 px-32 min-h-screen">
+        <Skeleton className="h-6 w-full" />
+        <Skeleton className="h-6 w-[90%]" />
+        <Skeleton className="h-6 w-[70%]" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col py-8">
@@ -125,7 +142,7 @@ const BookingDetails = () => {
                 },
                 {
                   label: "Booked By",
-                  value: bookingDetails?.created_by?.name
+                  value: bookingDetails?.created_by?.name,
                 },
                 {
                   label: "Booking Time",
@@ -275,7 +292,9 @@ const BookingDetails = () => {
               <h2 className="text-xl font-semibold text-gray-800">
                 {service?.name}
               </h2>
-              <p className="text-gray-600 mt-4 break-words">{service?.description}</p>
+              <p className="text-gray-600 mt-4 break-words">
+                {service?.description}
+              </p>
             </CardContent>
           </Card>
 
@@ -313,9 +332,7 @@ const BookingDetails = () => {
               </ul>
               {bookingDetails?.status !== "cancelled" && (
                 <div className="mt-6 w-full flex justify-center">
-                  <CancelBookingDialog
-                    bookingDetails={bookingDetails}
-                  />
+                  <CancelBookingDialog bookingDetails={bookingDetails} />
                 </div>
               )}
             </CardContent>

@@ -81,7 +81,7 @@ export default function UserWrapper({ children, pageProps }) {
       setSession(session);
     });
     return () => subscription.unsubscribe();
-  }, []);
+  }, [session]);
 
   if (!session) {
     return <Auth />;

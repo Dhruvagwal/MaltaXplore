@@ -26,6 +26,7 @@ import { filtersSchema } from "@/lib/schema";
 import { useAuthState } from "@/context/ueAuthContext";
 import { getUserLikes } from "@/features/getUserLikes";
 import { HeroSearch } from "@/components/Home/hero-search";
+import { useAllServiceReviews } from "@/features/reviews/getServiceReviews";
 
 const chunkArray = (array, size) => {
   const result = [];
@@ -55,6 +56,7 @@ function ExploreCategories() {
   const { user } = useAuthState();
   const { services, isLoading } = useServicesState();
   const { serviceType } = useServiceTypeState();
+  const { serviceReviews } = useAllServiceReviews();
   const [likes, setLikes] = useState();
   const [filteredData, setFilteredData] = useState([]);
   const [checkedServiceTypeIds, setCheckedServiceTypeIds] = useState([]);
@@ -135,6 +137,8 @@ function ExploreCategories() {
         }
 
         const { data, error } = await queryBuilder;
+        console.log("data", data)
+        console.log("error", error)
         if (error) {
           console.error("Error fetching filtered data:", error);
         } else {
@@ -172,14 +176,16 @@ function ExploreCategories() {
   };
 
   const handleServiceTypeCheckboxChange = (id, isChecked) => {
+    const Id = id?.split(".")[1];
     setCheckedServiceTypeIds((prev) =>
-      isChecked ? [...prev, id] : prev.filter((checkedId) => checkedId !== id)
+      isChecked ? [...prev, Id] : prev.filter((checkedId) => checkedId !== Id)
     );
   };
 
   const onSubmit = async (data) => {
+    console.log("data", data);
     try {
-      let queryBuilder = supabase.from("services").select("*");
+      let queryBuilder = supabase.from("services").select("*").eq("status" , "active");
 
       if (data.location) {
         queryBuilder = queryBuilder.eq("location", data.location);
@@ -191,15 +197,28 @@ function ExploreCategories() {
           .lte("price", data.max);
       }
 
-      const selectedIds = Object.keys(data).filter(
-        (key) => data[key] === true && !isNaN(key) === false
+      const selectedServiceTypes = Object.keys(data.type || {}).filter(
+        (key) => data.type[key] === true
       );
 
-      if (selectedIds.length > 0) {
-        queryBuilder = queryBuilder.in("service_type", selectedIds);
+      if (selectedServiceTypes.length > 0) {
+        queryBuilder = queryBuilder.in("service_type", selectedServiceTypes);
       }
 
+      const selectedSubTypes = Object.keys(data.sub || {}).filter(
+        (key) => data.sub[key] === true
+      );
+
+      if (selectedSubTypes.length > 0) {
+        queryBuilder = queryBuilder.in("service_sub_type", selectedSubTypes);
+      }
+
+      // const selectedRatigs = Object.keys(data.ratings || {}).filter(
+      //   (key) => data.ratings[key] === true
+      // );
+
       const { data: filterData, error } = await queryBuilder;
+      console.log("filterData", filterData);
 
       if (error) {
         console.error("Error fetching filtered data:", error);
@@ -222,7 +241,8 @@ function ExploreCategories() {
             <p className="text-2xl md:text-3xl font-bold text-white">
               Explore Experiences
             </p>
-            <HeroSearch className="transform-gpu" />
+            {/* <HeroSearch className="transform-gpu" /> */}
+            <Categories className="transform-gpu" />
           </div>
         </Banner>
         <div className="px-8 md:px-32 grid grid-cols-1 gap-8 md:grid-cols-6 py-16 mt-16">
@@ -240,7 +260,7 @@ function ExploreCategories() {
                   <Separator />
                   {serviceType?.map((cat) => (
                     <FormCheckbox
-                      id={`sub.${cat.id}`}
+                      id={`type.${cat.id}`}
                       title={cat?.name}
                       key={cat.id}
                       onCheckboxChange={handleServiceTypeCheckboxChange}
@@ -256,7 +276,10 @@ function ExploreCategories() {
                     {" "}
                     {serviceSubType?.map((subCat) => (
                       <div key={subCat.id} className="flex flex-col gap-4">
-                        <FormCheckbox id={`sub.${subCat.id}`} title={subCat.name} />
+                        <FormCheckbox
+                          id={`sub.${subCat.id}`}
+                          title={subCat.name}
+                        />
                       </div>
                     ))}
                   </div>

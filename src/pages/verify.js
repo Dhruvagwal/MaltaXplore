@@ -112,8 +112,6 @@ function verify() {
             service_location: service[0]?.location,
             booker_name: bookingData?.[0]?.booking_id?.created_by?.name,
             total_tickets_booked: users.length,
-            booking_start_date: bookingData?.booking_id?.start_date,
-            booking_end_date: bookingData?.booking_id?.start_date,
           };
 
           for (const user of users) {
@@ -123,8 +121,9 @@ function verify() {
               email: user.email,
               id: user.id,
             };
+
             sendEmail(paymentDetails, templateDetails);
-            sendEmailToBookingPersons(templateDetails, emailTemplate);
+            sendEmailToBookingPersons(templateDetails, emailTemplate,bookingData);
           }
         }
         router.replace({

@@ -72,7 +72,12 @@ export const Categories = ({ className }) => {
           <Component1Icon />
           Date
         </p>
-        <DatePicker date={date} onChange={setDate} />
+        <DatePicker
+          date={date}
+          onChange={setDate}
+          className="w-full md:w-[10vw]"
+          placeholder={"Select date"}
+        />
       </div>
       <div>
         <p className="text-sm text-muted-foreground p-1 flex items-center gap-1 text-primary-foreground0 py-2">
@@ -83,6 +88,7 @@ export const Categories = ({ className }) => {
           onChange={(e) => setGuest(e.target.value)}
           placeholder="Search Here..."
           type="number"
+          className="w-full md:w-[10vw]"
         />
       </div>
       <Button asChild className="md:p-9 flex items-center gap-2 text-xl">

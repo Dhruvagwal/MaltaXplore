@@ -41,7 +41,7 @@ function Forcast(props) {
         <Skeleton className={"bg-gray-300 h-full rounded-3xl my-4"} />
       ) : (
         
-          <div className="p-6 h-full flex flex-col justify-center bg-gradient-to-r from-red-800 to-red-500 mt-2.5 rounded-3xl">
+          <div className="p-3 lg:p-6 h-full flex flex-col justify-center bg-gradient-to-r from-red-800 to-red-500 mt-2.5 rounded-3xl">
             <ul>
               <div className="text-white">
                 <div className="flex justify-evenly">
@@ -54,24 +54,24 @@ function Forcast(props) {
                   </p>
                 </div>
                 <Separator className="my-2" />
-                <div className="flex flex-col md:flex-row justify-evenly max-md:space-y-4">
+                <div className="max-lg:text-sm flex flex-row justify-evenly items-center">
                   <li className="flex flex-col items-center space-y-1">
                     <Umbrella />
-                    <span className="temp text-xl md:text-2xl pb-1">
+                    <span className="temp text-lg md:text-2xl pb-1">
                       {props?.data?.precipitation}%
                     </span>
                     Precipitation
                   </li>
-                  <li className="flex flex-col items-center space-y-1">
+                  <li className="max-lg:text-sm flex flex-col items-center space-y-1">
                     <Droplets />
-                    <span className="temp text-xl md:text-2xl pb-1">
+                    <span className="temp text-lg md:text-2xl pb-1">
                       {props?.data?.humidity}%
                     </span>
                     Humidity{" "}
                   </li>
-                  <li className="flex flex-col items-center space-y-1">
+                  <li className="max-lg:text-sm flex flex-col items-center space-y-1">
                     <Wind />
-                    <span className="temp text-xl md:text-2xl pb-1">
+                    <span className="temp text-lg md:text-2xl pb-1">
                       {props?.data?.wind} Km/h
                     </span>
                     Wind Speed{" "}

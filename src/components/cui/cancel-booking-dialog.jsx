@@ -64,6 +64,7 @@ export const CancelBookingDialog = ({ bookingDetails }) => {
         const updatedBooking = await updateBookingStatus(bookingDetails?.id);
 
         const paymentData = {
+          user_email: bookingDetails?.created_by?.email,
           booking_id: bookingDetails?.id,
           user_id: bookingDetails?.created_by?.id,
           supplier_id: bookingDetails?.supplier_id,
